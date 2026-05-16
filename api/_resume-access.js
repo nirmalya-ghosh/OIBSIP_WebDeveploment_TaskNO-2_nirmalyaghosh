@@ -1,7 +1,8 @@
 const crypto = require('crypto');
+const nodemailer = require('nodemailer');
 
 const OWNER_EMAIL = 'nirmalyaghosh2127@gmail.com';
-const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || 'Portfolio Access <onboarding@resend.dev>';
+const FROM_EMAIL = process.env.SMTP_FROM || 'Portfolio Verification <nirmalyaghosh2127@gmail.com>';
 const RESUME_URL = 'https://drive.google.com/file/d/11PAPOiUQRf-lMziJCz0ROhQoja_QhBSx/view?usp=sharing';
 const OTP_EXPIRY_MS = 10 * 60 * 1000;
 
@@ -73,38 +74,41 @@ const supabaseFetch = async (path, options = {}) => {
     return data;
 };
 
-const sendEmail = async ({ to, subject, html, replyTo }) => {
-    const apiKey = process.env.RESEND_API_KEY;
-    if (!apiKey) throw new Error('Email service is not configured.');
+let smtpTransporter;
 
-    const response = await fetch('https://api.resend.com/emails', {
-        method: 'POST',
-        headers: {
-            Authorization: `Bearer ${apiKey}`,
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            from: FROM_EMAIL,
-            to,
-            subject,
-            html,
-            ...(replyTo ? { reply_to: replyTo } : {})
-        })
-    });
+const getSmtpTransporter = () => {
+    if (smtpTransporter) return smtpTransporter;
 
-    const result = await response.json();
-    if (!response.ok) {
-        const message = result?.message || 'Email could not be sent.';
-        if (
-            message.includes('onboarding@resend.dev') ||
-            message.includes('resend.dev') ||
-            message.includes('You can only send testing emails')
-        ) {
-            throw new Error('Email sending is in Resend test mode. Verify a domain in Resend and set RESEND_FROM_EMAIL in Vercel to send OTPs to any address.');
-        }
-        throw new Error(message);
+    const host = process.env.SMTP_HOST || 'smtp.gmail.com';
+    const port = Number(process.env.SMTP_PORT || 465);
+    const user = process.env.SMTP_USER;
+    const pass = process.env.SMTP_PASS;
+
+    if (!user || !pass) {
+        throw new Error('SMTP email service is not configured.');
     }
-    return result;
+
+    smtpTransporter = nodemailer.createTransport({
+        host,
+        port,
+        secure: port === 465,
+        auth: {
+            user,
+            pass
+        }
+    });
+    return smtpTransporter;
+};
+
+const sendEmail = async ({ to, subject, html, replyTo }) => {
+    const transporter = getSmtpTransporter();
+    return transporter.sendMail({
+        from: FROM_EMAIL,
+        to,
+        subject,
+        html,
+        ...(replyTo ? { replyTo } : {})
+    });
 };
 
 const verifyTurnstile = async (request, token) => {

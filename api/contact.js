@@ -1,32 +1,15 @@
-const CONTACT_RECIPIENT = 'nirmalyaghosh2127@gmail.com';
-const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || 'Portfolio Contact <onboarding@resend.dev>';
-
-const sendJson = (response, statusCode, payload) => {
-    response.statusCode = statusCode;
-    response.setHeader('Content-Type', 'application/json');
-    response.setHeader('Cache-Control', 'no-store');
-    response.end(JSON.stringify(payload));
-};
-
-const escapeHtml = (value = '') =>
-    String(value)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
-
-const isValidEmail = (email = '') => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+const {
+    OWNER_EMAIL,
+    escapeHtml,
+    isValidEmail,
+    sendEmail,
+    sendJson
+} = require('./_resume-access');
 
 module.exports = async (request, response) => {
     if (request.method !== 'POST') {
         response.setHeader('Allow', 'POST');
         return sendJson(response, 405, { error: 'Method not allowed' });
-    }
-
-    const apiKey = process.env.RESEND_API_KEY;
-    if (!apiKey) {
-        return sendJson(response, 500, { error: 'Email service is not configured.' });
     }
 
     let payload = request.body || {};
@@ -63,30 +46,15 @@ module.exports = async (request, response) => {
     `;
 
     try {
-        const resendResponse = await fetch('https://api.resend.com/emails', {
-            method: 'POST',
-            headers: {
-                Authorization: `Bearer ${apiKey}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                from: FROM_EMAIL,
-                to: CONTACT_RECIPIENT,
-                reply_to: email,
-                subject: `Portfolio Contact: ${subject}`,
-                html
-            })
+        const result = await sendEmail({
+            to: OWNER_EMAIL,
+            replyTo: email,
+            subject: `Portfolio Contact: ${subject}`,
+            html
         });
 
-        const result = await resendResponse.json();
-        if (!resendResponse.ok) {
-            return sendJson(response, 502, {
-                error: result?.message || 'Email could not be sent.'
-            });
-        }
-
-        return sendJson(response, 200, { ok: true, id: result.id });
+        return sendJson(response, 200, { ok: true, id: result.messageId });
     } catch (error) {
-        return sendJson(response, 502, { error: 'Email service unavailable.' });
+        return sendJson(response, 502, { error: error.message || 'Email service unavailable.' });
     }
 };
