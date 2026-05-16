@@ -1175,7 +1175,7 @@ const initScrollProgress = () => {
 };
 
 const initProfileIconBounce = () => {
-    if (PERF_CONFIG.reducedMotion) return;
+    if (!allowEnhancedMotion()) return;
 
     const wrapper = document.querySelector('.hero-image-wrapper');
     const portrait = document.querySelector('.hero-portrait-shell');

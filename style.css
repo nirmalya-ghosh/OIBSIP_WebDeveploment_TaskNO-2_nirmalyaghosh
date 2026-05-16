@@ -8984,3 +8984,413 @@ footer {
         transform: translateY(-8px) rotate(-45deg) !important;
     }
 }
+
+/* Final mobile responsiveness and performance layer */
+@media (max-width: 768px) {
+    :root {
+        --mobile-gutter: clamp(0.85rem, 4vw, 1.15rem);
+    }
+
+    html {
+        -webkit-text-size-adjust: 100%;
+        scroll-padding-top: 82px;
+    }
+
+    html,
+    body {
+        max-width: 100%;
+        overflow-x: clip;
+    }
+
+    body {
+        font-size: 1rem;
+        line-height: 1.6;
+        text-rendering: optimizeSpeed;
+    }
+
+    body::before,
+    #canvas-container,
+    .terminal-rail,
+    .cursor-dot,
+    .cursor-outline {
+        display: none !important;
+    }
+
+    .navbar {
+        min-height: 68px;
+        padding: 0.7rem var(--mobile-gutter) !important;
+    }
+
+    .nav-actions,
+    .nav-status-cluster {
+        gap: 0.65rem;
+        min-width: 0;
+    }
+
+    .live-metrics-button {
+        border-radius: 12px;
+        min-height: 42px;
+        padding: 0.65rem 0.7rem;
+    }
+
+    .live-metrics-button span {
+        display: none;
+    }
+
+    .logo {
+        font-size: 1.35rem;
+        line-height: 1;
+    }
+
+    .hamburger {
+        min-height: 42px;
+        min-width: 42px;
+        place-content: center;
+    }
+
+    main,
+    section,
+    footer {
+        max-width: 100%;
+        overflow-x: clip;
+    }
+
+    section {
+        min-height: auto !important;
+        padding: 78px var(--mobile-gutter) !important;
+    }
+
+    #hero {
+        gap: 1rem !important;
+        grid-template-columns: 1fr !important;
+        min-height: auto !important;
+        padding-top: 92px !important;
+    }
+
+    .hero-text,
+    .hero-image-wrapper,
+    .about-story-panel,
+    .about-focus-panel,
+    .education-container,
+    .skills-header-panel,
+    .skill-pill,
+    .heatmap-card,
+    .project-card,
+    .contact-copy-panel,
+    .contact-form-panel,
+    .metrics-modal-panel,
+    .document-gate-panel,
+    .resume-viewer-panel {
+        border-radius: 18px !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        width: 100% !important;
+    }
+
+    .hero-text {
+        align-items: stretch !important;
+        padding: 1.15rem !important;
+        text-align: left !important;
+    }
+
+    .hero-greeting,
+    .section-kicker,
+    .heatmap-kicker {
+        font-size: 0.68rem !important;
+        letter-spacing: 0.08em !important;
+    }
+
+    .hero-name {
+        font-size: clamp(2.45rem, 14vw, 3.75rem) !important;
+        line-height: 1.03 !important;
+        overflow-wrap: anywhere;
+        text-align: left !important;
+    }
+
+    .hero-typewriter,
+    .terminal-typewriter-line {
+        max-width: 100%;
+        overflow-wrap: anywhere;
+        white-space: normal !important;
+    }
+
+    .hero-role,
+    .about-bio,
+    .contact-intro,
+    .education-item .edu-degree,
+    .education-item .edu-details,
+    .skills-header-panel p {
+        font-size: 0.92rem !important;
+        line-height: 1.7 !important;
+    }
+
+    .hero-signal-grid,
+    .hero-text .hero-buttons,
+    .metrics-summary,
+    .metrics-detail-grid,
+    .github-metrics-panel,
+    .leetcode-meta-panel,
+    .projects-horizontal-track,
+    .activity-wrapper,
+    .about-panel-grid,
+    .education-heading-row,
+    #contact .contact-wrapper,
+    .skills-header-panel,
+    .skills-grid-new,
+    .relocated-stats {
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+    }
+
+    .hero-signal-grid {
+        gap: 0.55rem !important;
+    }
+
+    .hero-text .hero-buttons {
+        gap: 0.7rem !important;
+    }
+
+    .cta-button,
+    .hero-text .hero-buttons .cta-button,
+    .submit-btn,
+    .document-otp-button {
+        justify-content: center !important;
+        min-height: 46px;
+        width: 100% !important;
+    }
+
+    .hero-image-wrapper {
+        gap: 0.85rem !important;
+        min-height: 0 !important;
+        padding: 1rem !important;
+    }
+
+    .hero-portrait-shell {
+        max-width: min(100%, 300px) !important;
+        padding: 0.55rem !important;
+    }
+
+    .hero-img {
+        aspect-ratio: 4 / 5 !important;
+        height: auto !important;
+        max-height: 360px !important;
+        object-fit: cover !important;
+        object-position: 50% 18% !important;
+        width: 100% !important;
+    }
+
+    .hero-bg-shape,
+    .hero-image-wrapper .orbit-icon {
+        display: none !important;
+    }
+
+    .hero-status-card {
+        position: static !important;
+    }
+
+    .hero-image-tagline {
+        font-size: 0.86rem !important;
+        line-height: 1.55 !important;
+        max-width: 32ch !important;
+    }
+
+    #about .about-arrow-header,
+    #skills .about-arrow-header,
+    #contact .section-title,
+    .section-title {
+        font-size: clamp(1.9rem, 10vw, 2.75rem) !important;
+        line-height: 1.08 !important;
+        overflow-wrap: anywhere;
+    }
+
+    .about-story-panel,
+    .about-focus-panel,
+    .education-container,
+    .skills-header-panel,
+    .skill-pill,
+    .heatmap-card,
+    .project-card,
+    .contact-copy-panel,
+    .contact-form-panel {
+        padding: 1rem !important;
+    }
+
+    .about-focus-list div {
+        grid-template-columns: 1.6rem minmax(0, 1fr);
+    }
+
+    .education-item {
+        grid-template-columns: 1fr !important;
+    }
+
+    .education-item h3,
+    .education-item .edu-degree,
+    .education-item .edu-details {
+        grid-column: auto !important;
+    }
+
+    .skill-pill,
+    .skill-pill:hover,
+    .skill-pill:focus {
+        min-height: auto !important;
+    }
+
+    .skill-pill .pill-content {
+        max-height: none !important;
+        opacity: 1 !important;
+        overflow: visible !important;
+        transform: none !important;
+    }
+
+    .skill-pill::after {
+        content: "</>" !important;
+    }
+
+    .heatmap-card {
+        overflow: hidden !important;
+    }
+
+    .heatmap-header {
+        align-items: flex-start !important;
+    }
+
+    .heatmap-months,
+    .contribution-heatmap {
+        -webkit-overflow-scrolling: touch;
+        max-width: 100% !important;
+        overflow-x: auto !important;
+        overscroll-behavior-inline: contain;
+    }
+
+    .leetcode-overview {
+        grid-template-areas:
+            "ring"
+            "legend"
+            "meta" !important;
+        grid-template-columns: 1fr !important;
+        justify-items: stretch !important;
+    }
+
+    .leetcode-progress-ring {
+        justify-self: center;
+        width: min(46vw, 142px) !important;
+    }
+
+    .project-card {
+        min-height: 0 !important;
+    }
+
+    #contact .container,
+    #about .about-wrapper,
+    #skills .about-wrapper,
+    #contact .contact-wrapper {
+        max-width: 100% !important;
+        width: 100% !important;
+    }
+
+    .contact-grid {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+
+    .contact-box {
+        min-height: 76px !important;
+    }
+
+    .contact-box:last-child {
+        grid-column: 1 / -1;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .document-email-card input {
+        font-size: 16px !important;
+        min-width: 0;
+    }
+
+    .metrics-modal,
+    .document-gate-modal,
+    .resume-viewer-modal {
+        padding: 0.75rem !important;
+    }
+
+    .metrics-modal-panel,
+    .document-gate-panel {
+        max-height: calc(100dvh - 1.5rem) !important;
+        overflow-y: auto !important;
+        padding: 1rem !important;
+    }
+
+    .resume-viewer-panel {
+        height: calc(100dvh - 1.5rem) !important;
+        padding: 0.75rem !important;
+        width: 100% !important;
+    }
+
+    .resume-viewer-header {
+        align-items: flex-start !important;
+    }
+
+    .loader-content {
+        width: min(100%, 360px) !important;
+    }
+}
+
+@media (max-width: 420px) {
+    :root {
+        --mobile-gutter: 0.75rem;
+    }
+
+    .navbar {
+        min-height: 64px;
+    }
+
+    section {
+        padding-bottom: 64px !important;
+        padding-top: 70px !important;
+    }
+
+    #hero {
+        padding-top: 84px !important;
+    }
+
+    .hero-text,
+    .hero-image-wrapper,
+    .about-story-panel,
+    .about-focus-panel,
+    .education-container,
+    .skills-header-panel,
+    .skill-pill,
+    .heatmap-card,
+    .project-card,
+    .contact-copy-panel,
+    .contact-form-panel {
+        padding: 0.9rem !important;
+    }
+
+    .hero-name {
+        font-size: clamp(2.25rem, 15vw, 3.1rem) !important;
+    }
+
+    .hero-role,
+    .about-bio,
+    .contact-intro,
+    .education-item .edu-degree,
+    .education-item .edu-details,
+    .skills-header-panel p {
+        font-size: 0.86rem !important;
+    }
+
+    .hero-portrait-shell {
+        max-width: min(100%, 270px) !important;
+    }
+
+    .contact-grid {
+        gap: 0.55rem !important;
+    }
+
+    .contact-box {
+        min-height: 70px !important;
+        padding: 0.7rem 0.45rem !important;
+    }
+}
