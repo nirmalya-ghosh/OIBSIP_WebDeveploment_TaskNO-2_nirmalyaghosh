@@ -479,20 +479,26 @@ const renderHeatmap = (container, days, getDayData, options = {}) => {
 
     container.classList.remove('is-loading', 'is-error');
     container.innerHTML = '';
+    const leadingBlanks = days[0].getDay();
+    const totalColumns = Math.ceil((days.length + leadingBlanks) / 7);
+    container.style.gridTemplateColumns = `repeat(${totalColumns}, var(--heatmap-cell))`;
+
     renderHeatmapMonths(options.monthsContainer, days);
-    if (options.monthsContainer) {
+    if (options.monthsContainer && !container.dataset.monthSyncReady) {
+        container.dataset.monthSyncReady = 'true';
         container.addEventListener('scroll', () => {
             options.monthsContainer.scrollLeft = container.scrollLeft;
         }, { passive: true });
     }
 
-    const leadingBlanks = days[0].getDay();
+    const fragment = document.createDocumentFragment();
+
     for (let i = 0; i < leadingBlanks; i++) {
         const blank = document.createElement('span');
         blank.className = 'heatmap-day heatmap-day-blank';
         blank.setAttribute('aria-hidden', 'true');
         blank.style.visibility = 'hidden';
-        container.appendChild(blank);
+        fragment.appendChild(blank);
     }
 
     days.forEach((day, index) => {
@@ -514,8 +520,10 @@ const renderHeatmap = (container, days, getDayData, options = {}) => {
                 options.focusElement.textContent = `${formatShortDate(day)}: ${count} ${options.unit || 'activities'}`;
             }
         });
-        container.appendChild(square);
+        fragment.appendChild(square);
     });
+
+    container.appendChild(fragment);
 };
 
 const setHeatmapError = (container) => {

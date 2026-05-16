@@ -2498,12 +2498,14 @@ section {
     grid-template-rows: repeat(7, var(--heatmap-cell));
     grid-auto-columns: var(--heatmap-cell);
     gap: var(--heatmap-gap);
-    min-height: 108px;
+    min-height: calc((7 * var(--heatmap-cell)) + (6 * var(--heatmap-gap)) + 1.1rem);
     max-width: 100%;
     overflow-x: auto;
     overflow-y: hidden;
     padding: 0.25rem 0 0.85rem;
     scrollbar-width: thin;
+    -webkit-overflow-scrolling: touch;
+    contain: layout paint;
 }
 
 .contribution-heatmap.is-loading::before,
@@ -2531,7 +2533,7 @@ section {
 
 .contribution-heatmap:not(.is-loading) .heatmap-day:not(.heatmap-day-blank) {
     animation: heatmapPop 0.38s ease both;
-    animation-delay: calc(var(--heatmap-index, 0) * 8ms);
+    animation-delay: calc(var(--heatmap-index, 0) * 2ms);
 }
 
 @keyframes heatmapPop {
@@ -6880,6 +6882,15 @@ footer {
     .contribution-heatmap,
     .heatmap-months {
         width: 100%;
+    }
+
+    .contribution-heatmap:not(.is-loading) .heatmap-day:not(.heatmap-day-blank) {
+        animation: none !important;
+    }
+
+    .heatmap-day {
+        opacity: 1;
+        transform: none;
     }
 }
 
