@@ -975,54 +975,58 @@ const initMobileMenu = () => {
     });
 };
 
-// Contact Form (Hidden Iframe Method - Robust)
+// Contact Form (Resend API via Vercel Function)
 const initForm = () => {
     const form = document.getElementById('contactForm');
-    const btn = form.querySelector('.cta-button');
-
     if (!form) return;
 
-    // Configure Form Attributes programmatically
-    form.action = "https://formsubmit.co/nirmalyaghosh2127@gmail.com";
-    form.method = "POST";
-    form.target = "hidden_iframe"; // Target the invisible iframe
+    const btn = form.querySelector('.cta-button');
+    const originalBtnText = btn?.innerHTML || 'Send Message';
 
-    // Hidden configurations
-    const addHiddenInput = (name, value) => {
-        let input = form.querySelector(`input[name="${name}"]`);
-        if (!input) {
-            input = document.createElement('input');
-            input.type = 'hidden';
-            input.name = name;
-            form.appendChild(input);
-        }
-        input.value = value;
-    };
+    form.action = '/api/contact';
+    form.method = 'POST';
+    form.removeAttribute('target');
 
-    addHiddenInput('_captcha', 'false');
-    addHiddenInput('_template', 'table');
-    addHiddenInput('_subject', 'New Portfolio Message!');
+    form.addEventListener('submit', async event => {
+        event.preventDefault();
+        if (!btn) return;
 
-    form.addEventListener('submit', () => {
-        // Since we target an iframe, the page won't reload.
-        // We simulate 'Sending' state and then 'Success'.
+        const payload = {
+            name: form.name?.value?.trim(),
+            email: form.email?.value?.trim(),
+            subject: form.subject?.value?.trim(),
+            message: form.message?.value?.trim()
+        };
 
-        const originalBtnText = btn.innerText;
-        btn.innerText = 'Sending...';
-        btn.style.opacity = '0.7';
+        btn.disabled = true;
+        btn.innerHTML = 'Sending...';
+        btn.style.opacity = '0.72';
 
-        // We can't confirm 100% when the iframe loads due to CORS,
-        // so we assume success after a reasonable delay for UX.
-        setTimeout(() => {
-            btn.innerText = 'Message Sent!';
-            btn.style.opacity = '1';
-            alert('Message Sent Successfully!');
+        try {
+            const response = await fetch('/api/contact', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result?.error || 'Message could not be sent.');
+            }
+
+            btn.innerHTML = 'Message Sent!';
             form.reset();
-
-            setTimeout(() => {
-                btn.innerText = originalBtnText;
+            alert('Message Sent Successfully!');
+        } catch (error) {
+            btn.innerHTML = 'Try Again';
+            alert(error.message || 'Message could not be sent. Please try again.');
+        } finally {
+            btn.disabled = false;
+            btn.style.opacity = '1';
+            window.setTimeout(() => {
+                btn.innerHTML = originalBtnText;
             }, 3000);
-        }, 1500); // 1.5s delay to simulate network
+        }
     });
 };
 
