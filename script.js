@@ -965,6 +965,135 @@ const initScrollProgress = () => {
     update();
 };
 
+const initProfileIconBounce = () => {
+    if (PERF_CONFIG.reducedMotion) return;
+
+    const wrapper = document.querySelector('.hero-image-wrapper');
+    const portrait = document.querySelector('.hero-portrait-shell');
+    const icons = Array.from(document.querySelectorAll('.hero-image-wrapper .orbit-icon'));
+    if (!wrapper || !portrait || !icons.length) return;
+
+    const states = icons.map((icon, index) => {
+        icon.classList.add('profile-bounce-icon');
+        icon.style.setProperty('--bounce-x', '0px');
+        icon.style.setProperty('--bounce-y', '0px');
+
+        const directionX = icon.classList.contains('orbit-1') || icon.classList.contains('orbit-2') ? -1 : 1;
+        const directionY = icon.classList.contains('orbit-2') || icon.classList.contains('orbit-3') ? -1 : 1;
+        const speed = 12 + index * 2.4;
+
+        return {
+            icon,
+            x: 0,
+            y: 0,
+            vx: directionX * speed,
+            vy: directionY * speed * 0.72,
+            width: 0,
+            height: 0,
+            baseLeft: 0,
+            baseTop: 0
+        };
+    });
+
+    let bounds = null;
+    let isVisible = true;
+    let lastTime = performance.now();
+
+    const measure = () => {
+        const wrapperRect = wrapper.getBoundingClientRect();
+        const portraitRect = portrait.getBoundingClientRect();
+
+        bounds = {
+            width: wrapperRect.width,
+            height: wrapperRect.height,
+            portrait: {
+                left: portraitRect.left - wrapperRect.left,
+                right: portraitRect.right - wrapperRect.left,
+                top: portraitRect.top - wrapperRect.top,
+                bottom: portraitRect.bottom - wrapperRect.top
+            }
+        };
+
+        states.forEach(state => {
+            state.width = state.icon.offsetWidth;
+            state.height = state.icon.offsetHeight;
+            state.baseLeft = state.icon.offsetLeft;
+            state.baseTop = state.icon.offsetTop;
+        });
+    };
+
+    const intersectsPortrait = (left, top, width, height) => {
+        const gap = 4;
+        return (
+            left < bounds.portrait.right + gap &&
+            left + width > bounds.portrait.left - gap &&
+            top < bounds.portrait.bottom + gap &&
+            top + height > bounds.portrait.top - gap
+        );
+    };
+
+    const bounceFromPortrait = (state, left, top) => {
+        const iconCenterX = left + state.width / 2;
+        const iconCenterY = top + state.height / 2;
+        const portraitCenterX = (bounds.portrait.left + bounds.portrait.right) / 2;
+        const portraitCenterY = (bounds.portrait.top + bounds.portrait.bottom) / 2;
+
+        if (Math.abs(iconCenterX - portraitCenterX) > Math.abs(iconCenterY - portraitCenterY)) {
+            state.vx = Math.abs(state.vx) * (iconCenterX < portraitCenterX ? -1 : 1);
+            state.x += state.vx > 0 ? 2 : -2;
+        } else {
+            state.vy = Math.abs(state.vy) * (iconCenterY < portraitCenterY ? -1 : 1);
+            state.y += state.vy > 0 ? 2 : -2;
+        }
+    };
+
+    const tick = (time) => {
+        const dt = Math.min((time - lastTime) / 1000, 0.04);
+        lastTime = time;
+
+        if (bounds && isVisible) {
+            states.forEach(state => {
+                state.x += state.vx * dt;
+                state.y += state.vy * dt;
+
+                let left = state.baseLeft + state.x;
+                let top = state.baseTop + state.y;
+
+                if (left <= 0 || left + state.width >= bounds.width) {
+                    state.vx *= -1;
+                    state.x = Math.min(Math.max(state.x, -state.baseLeft), bounds.width - state.baseLeft - state.width);
+                    left = state.baseLeft + state.x;
+                }
+
+                if (top <= 0 || top + state.height >= bounds.height) {
+                    state.vy *= -1;
+                    state.y = Math.min(Math.max(state.y, -state.baseTop), bounds.height - state.baseTop - state.height);
+                    top = state.baseTop + state.y;
+                }
+
+                if (intersectsPortrait(left, top, state.width, state.height)) {
+                    bounceFromPortrait(state, left, top);
+                }
+
+                state.icon.style.setProperty('--bounce-x', `${state.x.toFixed(2)}px`);
+                state.icon.style.setProperty('--bounce-y', `${state.y.toFixed(2)}px`);
+            });
+        }
+
+        requestAnimationFrame(tick);
+    };
+
+    const observer = new IntersectionObserver(entries => {
+        isVisible = entries[0]?.isIntersecting ?? true;
+    }, { threshold: 0.05 });
+
+    measure();
+    observer.observe(wrapper);
+    window.addEventListener('resize', measure, { passive: true });
+    window.addEventListener('load', measure, { once: true });
+    requestAnimationFrame(tick);
+};
+
 // Mobile Menu
 const initMobileMenu = () => {
     const hamburger = document.querySelector('.hamburger');
@@ -1429,5 +1558,6 @@ document.addEventListener('DOMContentLoaded', () => {
     initActiveNav();
     initDigitalClock();
     initTypewriters();
+    initProfileIconBounce();
     initScrollProgress();
 });

@@ -8583,6 +8583,11 @@ footer {
     will-change: transform;
 }
 
+.hero-image-wrapper .orbit-icon.profile-bounce-icon {
+    animation: none !important;
+    transform: translate3d(var(--bounce-x, 0), var(--bounce-y, 0), 0) scale(var(--orbit-scale)) !important;
+}
+
 .hero-image-wrapper .orbit-icon:hover,
 .hero-image-wrapper .orbit-icon:focus {
     --orbit-scale: 1.08;
