@@ -1217,17 +1217,36 @@ const initMobileMenu = () => {
     const hamburger = document.querySelector('.hamburger');
     const navLinks = document.querySelector('.nav-links');
     const links = document.querySelectorAll('.nav-links a');
+    if (!hamburger || !navLinks) return;
 
-    hamburger.addEventListener('click', () => {
-        navLinks.classList.toggle('active');
-        hamburger.classList.toggle('active');
+    const setMenuOpen = (isOpen) => {
+        navLinks.classList.toggle('active', isOpen);
+        hamburger.classList.toggle('active', isOpen);
+        hamburger.setAttribute('aria-expanded', String(isOpen));
+        document.body.classList.toggle('nav-open', isOpen);
+    };
+
+    hamburger.setAttribute('aria-expanded', 'false');
+    hamburger.setAttribute('aria-controls', 'site-navigation');
+    navLinks.id = navLinks.id || 'site-navigation';
+
+    hamburger.addEventListener('click', () => setMenuOpen(!navLinks.classList.contains('active')));
+
+    hamburger.addEventListener('keydown', event => {
+        if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            setMenuOpen(!navLinks.classList.contains('active'));
+        }
     });
 
     links.forEach(link => {
         link.addEventListener('click', () => {
-            navLinks.classList.remove('active');
-            hamburger.classList.remove('active');
+            setMenuOpen(false);
         });
+    });
+
+    window.addEventListener('keydown', event => {
+        if (event.key === 'Escape') setMenuOpen(false);
     });
 };
 
