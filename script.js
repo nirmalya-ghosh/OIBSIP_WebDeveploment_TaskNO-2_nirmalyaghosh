@@ -790,6 +790,7 @@ const initDocumentGate = () => {
 
         turnstileWidgetId = window.turnstile.render(turnstileElement, {
             sitekey,
+            size: 'flexible',
             theme: 'dark',
             callback: token => {
                 turnstileToken = token;

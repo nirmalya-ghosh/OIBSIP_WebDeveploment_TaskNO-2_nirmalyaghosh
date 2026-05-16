@@ -8319,10 +8319,12 @@ footer {
 .turnstile-widget {
     grid-column: 1 / -1;
     min-height: 65px;
+    overflow: hidden;
+    width: 100%;
 }
 
 .turnstile-widget iframe {
-    max-width: 100%;
+    max-width: none;
 }
 
 #captcha-code {
@@ -8453,6 +8455,7 @@ footer {
     .document-gate-panel {
         border-radius: 22px;
         padding: 1.15rem;
+        width: min(100%, 360px);
     }
 
     .document-gate-panel h3 {
@@ -8461,6 +8464,40 @@ footer {
 
     .document-captcha-card {
         padding: 0.85rem;
+        overflow: hidden;
+    }
+
+    .turnstile-widget {
+        height: 61px;
+        min-height: 61px;
+    }
+
+    .turnstile-widget > div {
+        transform: scale(0.92);
+        transform-origin: left top;
+    }
+}
+
+@media (max-width: 370px) {
+    .document-gate-modal {
+        padding: 0.75rem;
+    }
+
+    .document-gate-panel {
+        padding: 1rem;
+    }
+
+    .document-captcha-card {
+        padding: 0.75rem;
+    }
+
+    .turnstile-widget {
+        height: 56px;
+        min-height: 56px;
+    }
+
+    .turnstile-widget > div {
+        transform: scale(0.86);
     }
 }
 
