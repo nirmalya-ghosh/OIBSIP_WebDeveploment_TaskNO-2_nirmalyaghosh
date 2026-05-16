@@ -8452,6 +8452,29 @@ footer {
     opacity: 0.72;
 }
 
+.document-gate-form .submit-btn.is-redirecting {
+    animation: documentRedirectPulse 1s ease-in-out infinite;
+    background: linear-gradient(90deg, #f8fafc, #99f6e4, #f8fafc) !important;
+    background-size: 220% 100% !important;
+}
+
+@keyframes documentRedirectPulse {
+    0% {
+        background-position: 0% 50%;
+        transform: translateY(0);
+    }
+
+    50% {
+        background-position: 100% 50%;
+        transform: translateY(-1px);
+    }
+
+    100% {
+        background-position: 0% 50%;
+        transform: translateY(0);
+    }
+}
+
 /* Smoothness/performance pass */
 #scroll-progress {
     will-change: transform;

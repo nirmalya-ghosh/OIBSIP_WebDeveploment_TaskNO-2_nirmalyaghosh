@@ -773,6 +773,7 @@ const initDocumentGate = () => {
     let turnstileToken = '';
     let otpRequestId = '';
     let verifiedOtpEmail = '';
+    let approvalPollTimer = null;
 
     const setError = (message = '') => {
         if (errorElement) errorElement.textContent = message;
@@ -791,6 +792,68 @@ const initDocumentGate = () => {
         verifiedOtpEmail = '';
         if (otpInput) otpInput.value = '';
         setOtpStatus('');
+    };
+
+    const stopApprovalPolling = () => {
+        if (approvalPollTimer) {
+            window.clearInterval(approvalPollTimer);
+            approvalPollTimer = null;
+        }
+    };
+
+    const setRedirectingState = (url) => {
+        stopApprovalPolling();
+        setError('');
+        setOtpStatus('Approved. Redirecting to resume...');
+        submitButton.disabled = true;
+        submitButton.classList.add('is-redirecting');
+        submitButton.innerHTML = 'Approved. Opening Resume <i class="fas fa-spinner fa-spin"></i>';
+
+        window.setTimeout(() => {
+            window.open(url, '_blank', 'noopener,noreferrer');
+            setOpen(false);
+        }, 1400);
+    };
+
+    const startApprovalPolling = ({ requestId, email }) => {
+        stopApprovalPolling();
+        let checks = 0;
+
+        const checkStatus = async () => {
+            checks += 1;
+            try {
+                const response = await fetch('/api/resume-access-status', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ requestId, email })
+                });
+                const result = await response.json();
+
+                if (!response.ok) throw new Error(result?.error || 'Approval check failed.');
+
+                if (result.status === 'approved' && result.url) {
+                    setRedirectingState(result.url);
+                    return;
+                }
+
+                if (result.status === 'rejected') {
+                    stopApprovalPolling();
+                    setError(result.message || 'Your resume access request was not approved.');
+                    submitButton.innerHTML = 'Request Not Approved <i class="fas fa-times"></i>';
+                    return;
+                }
+
+                const dotCount = (checks % 3) + 1;
+                setOtpStatus(`Waiting for approval${'.'.repeat(dotCount)}`);
+            } catch (error) {
+                if (checks > 3) {
+                    setOtpStatus('Waiting for approval. Keep this window open.');
+                }
+            }
+        };
+
+        checkStatus();
+        approvalPollTimer = window.setInterval(checkStatus, 4500);
     };
 
     const renderTurnstile = () => {
@@ -837,13 +900,16 @@ const initDocumentGate = () => {
 
         if (isOpen) {
             setError('');
+            stopApprovalPolling();
             resetOtp();
             if (companyEmailInput) companyEmailInput.value = '';
             if (emailCard) emailCard.hidden = activeDocumentId !== 'resume';
             submitButton.disabled = false;
+            submitButton.classList.remove('is-redirecting');
             submitButton.innerHTML = submitButtonOriginalHtml;
             window.setTimeout(renderTurnstile, 80);
         } else if (window.turnstile && turnstileWidgetId !== null) {
+            stopApprovalPolling();
             window.turnstile.reset(turnstileWidgetId);
             turnstileToken = '';
             resetOtp();
@@ -854,10 +920,10 @@ const initDocumentGate = () => {
         link.addEventListener('click', event => {
             event.preventDefault();
             activeDocumentId = link.dataset.documentId || '';
-            activeLabel = link.dataset.documentLabel || 'document';
+                activeLabel = link.dataset.documentLabel || 'document';
             if (copyElement) {
                 copyElement.textContent = activeDocumentId === 'resume'
-                    ? 'Verify your email with OTP. After approval, the resume link will be emailed to you.'
+                    ? 'Verify your email with OTP. After approval, keep this window open and the resume will open here.'
                     : `Complete the verification to open ${activeLabel}.`;
             }
             setOpen(true);
@@ -974,9 +1040,10 @@ const initDocumentGate = () => {
             if (result?.pendingApproval) {
                 requestCompleted = true;
                 setError('');
-                setOtpStatus(result.message || 'Request sent. You will receive the resume link after approval.');
+                setOtpStatus(result.message || 'Request sent. Keep this window open; the resume will open after approval.');
                 submitButton.disabled = true;
-                submitButton.innerHTML = 'Request Sent <i class="fas fa-check"></i>';
+                submitButton.innerHTML = 'Waiting For Approval <i class="fas fa-hourglass-half"></i>';
+                startApprovalPolling({ requestId: otpRequestId, email: accessEmail });
             }
         } catch (error) {
             setError(error.message || 'Verification failed. Please try again.');

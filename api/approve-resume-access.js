@@ -1,5 +1,4 @@
 const {
-    RESUME_URL,
     escapeHtml,
     sendEmail,
     sendHtml,
@@ -29,7 +28,7 @@ module.exports = async (request, response) => {
         }
 
         if (record.status === 'approved') {
-            return sendHtml(response, 200, '<h1>Already approved</h1><p>The resume link was already sent.</p>');
+            return sendHtml(response, 200, '<h1>Already approved</h1><p>The requester can view the resume from the website.</p>');
         }
 
         if (record.status !== 'pending') {
@@ -52,12 +51,12 @@ module.exports = async (request, response) => {
                 <div style="font-family:Arial,sans-serif;line-height:1.6;color:#111827">
                     <h2>Resume access approved</h2>
                     <p>Your request to view Nirmalya Ghosh's resume has been approved.</p>
-                    <p><a href="${RESUME_URL}" style="display:inline-block;background:#0f766e;color:#fff;padding:10px 16px;border-radius:8px;text-decoration:none">Open Resume</a></p>
+                    <p>Please return to the portfolio website. If your secure access window is still open, it will automatically redirect to the resume.</p>
                 </div>
             `
         });
 
-        return sendHtml(response, 200, `<h1>Approved</h1><p>Resume link sent to ${escapeHtml(record.email)}.</p>`);
+        return sendHtml(response, 200, `<h1>Approved</h1><p>${escapeHtml(record.email)} can now view the resume from the website.</p>`);
     } catch (error) {
         return sendHtml(response, 500, `<h1>Approval failed</h1><p>${escapeHtml(error.message || 'Please try again.')}</p>`);
     }

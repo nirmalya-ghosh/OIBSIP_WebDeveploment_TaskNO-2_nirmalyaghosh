@@ -114,7 +114,7 @@ module.exports = async (request, response) => {
         return sendJson(response, 200, {
             ok: true,
             pendingApproval: true,
-            message: 'Your email is verified. Access request sent for approval.'
+            message: 'Your email is verified. Keep this window open; the resume will open after approval.'
         });
     } catch (error) {
         return sendJson(response, 502, { error: error.message || 'Verification service unavailable.' });
