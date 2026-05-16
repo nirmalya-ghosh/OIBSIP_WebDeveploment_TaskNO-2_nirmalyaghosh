@@ -721,6 +721,112 @@ const initMetricsModal = () => {
     }, { passive: true });
 };
 
+const initDocumentGate = () => {
+    const links = document.querySelectorAll('.protected-document-link');
+    const modal = document.getElementById('document-gate-modal');
+    const form = document.getElementById('document-gate-form');
+    const closeButton = modal?.querySelector('.document-gate-close');
+    const refreshButton = document.getElementById('captcha-refresh');
+    const codeElement = document.getElementById('captcha-code');
+    const codeInput = document.getElementById('captcha-input');
+    const mathInput = document.getElementById('captcha-math-input');
+    const mathLabel = document.getElementById('captcha-math-label');
+    const copyElement = document.getElementById('document-gate-copy');
+    const errorElement = document.getElementById('document-gate-error');
+
+    if (!links.length || !modal || !form || !closeButton || !codeElement || !codeInput || !mathInput || !mathLabel) return;
+
+    const alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    let activeUrl = '';
+    let activeLabel = 'document';
+    let currentCode = '';
+    let mathAnswer = 0;
+    let attempts = 0;
+    let lockedUntil = 0;
+
+    const randomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+
+    const generateCode = () => {
+        currentCode = Array.from({ length: 6 }, () => alphabet[randomInt(0, alphabet.length - 1)]).join('');
+        const first = randomInt(11, 39);
+        const second = randomInt(7, 24);
+        mathAnswer = first + second;
+
+        codeElement.textContent = currentCode;
+        mathLabel.textContent = `Solve challenge: ${first} + ${second}`;
+        codeInput.value = '';
+        mathInput.value = '';
+        if (errorElement) errorElement.textContent = '';
+    };
+
+    const setOpen = (isOpen) => {
+        modal.classList.toggle('active', isOpen);
+        modal.setAttribute('aria-hidden', String(!isOpen));
+        document.body.classList.toggle('modal-open', isOpen);
+
+        if (isOpen) {
+            generateCode();
+            window.setTimeout(() => codeInput.focus(), 80);
+        }
+    };
+
+    const lockoutRemaining = () => Math.max(0, Math.ceil((lockedUntil - Date.now()) / 1000));
+
+    links.forEach(link => {
+        link.addEventListener('click', event => {
+            event.preventDefault();
+            activeUrl = link.dataset.protectedUrl || '';
+            activeLabel = link.dataset.documentLabel || 'document';
+            if (copyElement) copyElement.textContent = `Complete the verification to open ${activeLabel}.`;
+            setOpen(true);
+        });
+    });
+
+    refreshButton?.addEventListener('click', generateCode);
+    closeButton.addEventListener('click', () => setOpen(false));
+
+    modal.addEventListener('click', event => {
+        if (event.target === modal) setOpen(false);
+    });
+
+    window.addEventListener('keydown', event => {
+        if (event.key === 'Escape' && modal.classList.contains('active')) setOpen(false);
+    });
+
+    form.addEventListener('submit', event => {
+        event.preventDefault();
+
+        const honeypot = form.querySelector('.document-honeypot');
+        if (honeypot?.value) return;
+
+        const remaining = lockoutRemaining();
+        if (remaining > 0) {
+            if (errorElement) errorElement.textContent = `Too many failed attempts. Try again in ${remaining}s.`;
+            return;
+        }
+
+        const enteredCode = codeInput.value.trim().toUpperCase().replace(/\s+/g, '');
+        const enteredMath = Number(mathInput.value);
+
+        if (enteredCode !== currentCode || enteredMath !== mathAnswer) {
+            attempts += 1;
+            if (attempts >= 3) {
+                lockedUntil = Date.now() + 30000;
+                attempts = 0;
+                if (errorElement) errorElement.textContent = 'Verification locked for 30 seconds. Please try again.';
+            } else if (errorElement) {
+                errorElement.textContent = `Verification failed. ${3 - attempts} attempt${3 - attempts === 1 ? '' : 's'} left.`;
+            }
+            generateCode();
+            return;
+        }
+
+        attempts = 0;
+        setOpen(false);
+        if (activeUrl) window.open(activeUrl, '_blank', 'noopener,noreferrer');
+    });
+};
+
 // Custom Cursor Logic
 const initCursor = () => {
     const cursorDot = document.querySelector('[data-cursor-dot]');
@@ -1229,6 +1335,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initCodingHeatmaps();
     initVisitorAnalytics();
     initMetricsModal();
+    initDocumentGate();
     if (document.getElementById('contactForm')) initForm();
     initAdvancedAnimations();
     initActiveNav();

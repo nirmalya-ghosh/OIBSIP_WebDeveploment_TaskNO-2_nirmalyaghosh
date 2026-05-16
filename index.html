@@ -175,6 +175,47 @@
         </div>
     </div>
 
+    <div id="document-gate-modal" class="document-gate-modal" role="dialog" aria-modal="true"
+        aria-labelledby="document-gate-title" aria-hidden="true">
+        <div class="document-gate-panel">
+            <button type="button" class="document-gate-close" aria-label="Close document verification">
+                <i class="fas fa-times"></i>
+            </button>
+
+            <span class="section-kicker">Human Verification</span>
+            <h3 id="document-gate-title">Secure Document Access</h3>
+            <p id="document-gate-copy">Complete the verification to open this document.</p>
+
+            <div class="document-captcha-card">
+                <span class="captcha-label">Verification code</span>
+                <strong id="captcha-code">------</strong>
+                <button type="button" id="captcha-refresh" class="captcha-refresh" aria-label="Generate new code">
+                    <i class="fas fa-rotate-right"></i>
+                </button>
+            </div>
+
+            <form id="document-gate-form" class="document-gate-form" autocomplete="off">
+                <input type="text" name="company" class="document-honeypot" tabindex="-1" autocomplete="off"
+                    aria-hidden="true">
+
+                <div class="form-group">
+                    <input type="text" id="captcha-input" placeholder=" " required autocomplete="off"
+                        autocapitalize="characters">
+                    <label for="captcha-input">Enter verification code</label>
+                </div>
+
+                <div class="form-group">
+                    <input type="number" id="captcha-math-input" placeholder=" " required autocomplete="off">
+                    <label id="captcha-math-label" for="captcha-math-input">Solve challenge</label>
+                </div>
+
+                <p id="document-gate-error" class="document-gate-error" aria-live="polite"></p>
+                <button type="submit" class="cta-button submit-btn">Verify & Open <i
+                        class="fas fa-lock-open"></i></button>
+            </form>
+        </div>
+    </div>
+
     <!-- 3D Canvas -->
     <div id="canvas-container"></div>
 
@@ -199,15 +240,17 @@
 
                 <div class="hero-buttons">
                     <!-- Resume -->
-                    <a href="https://drive.google.com/file/d/11PAPOiUQRf-lMziJCz0ROhQoja_QhBSx/view?usp=sharing"
-                        target="_blank" class="cta-button subtle-btn">
+                    <a href="#" class="cta-button subtle-btn protected-document-link"
+                        data-document-label="Resume"
+                        data-protected-url="https://drive.google.com/file/d/11PAPOiUQRf-lMziJCz0ROhQoja_QhBSx/view?usp=sharing">
                         <span class="btn-text">Resume</span>
                         <i class="fas fa-download"></i>
                     </a>
 
                     <!-- Certifications -->
-                    <a href="https://little-cake-29a6.nirmalyaghosh2127.workers.dev/" target="_blank"
-                        class="cta-button subtle-btn">
+                    <a href="#" class="cta-button subtle-btn protected-document-link"
+                        data-document-label="Certifications"
+                        data-protected-url="https://little-cake-29a6.nirmalyaghosh2127.workers.dev/">
                         <span class="btn-text">Certifications</span>
                         <i class="fas fa-certificate"></i>
                     </a>
