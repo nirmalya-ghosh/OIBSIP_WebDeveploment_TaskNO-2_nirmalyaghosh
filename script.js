@@ -758,6 +758,11 @@ const initDocumentGate = () => {
     const copyElement = document.getElementById('document-gate-copy');
     const errorElement = document.getElementById('document-gate-error');
     const submitButton = form?.querySelector('button[type="submit"]');
+    const emailCard = document.getElementById('document-email-card');
+    const companyEmailInput = document.getElementById('document-company-email');
+    const otpInput = document.getElementById('document-otp');
+    const sendOtpButton = document.getElementById('document-send-otp');
+    const otpStatus = document.getElementById('document-otp-status');
 
     if (!links.length || !modal || !form || !closeButton || !turnstileElement || !submitButton) return;
 
@@ -765,9 +770,54 @@ const initDocumentGate = () => {
     let activeLabel = 'document';
     let turnstileWidgetId = null;
     let turnstileToken = '';
+    let otpToken = '';
+    let verifiedOtpEmail = '';
+
+    const personalEmailDomains = new Set([
+        'gmail.com',
+        'googlemail.com',
+        'yahoo.com',
+        'ymail.com',
+        'outlook.com',
+        'hotmail.com',
+        'live.com',
+        'msn.com',
+        'icloud.com',
+        'me.com',
+        'mac.com',
+        'aol.com',
+        'proton.me',
+        'protonmail.com',
+        'pm.me',
+        'zoho.com',
+        'mail.com',
+        'gmx.com',
+        'gmx.net',
+        'yandex.com',
+        'rediffmail.com'
+    ]);
 
     const setError = (message = '') => {
         if (errorElement) errorElement.textContent = message;
+    };
+
+    const setOtpStatus = (message = '') => {
+        if (otpStatus) otpStatus.textContent = message;
+    };
+
+    const getCompanyEmail = () => String(companyEmailInput?.value || '').trim().toLowerCase();
+
+    const isCompanyEmail = (email = '') => {
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return false;
+        const domain = email.split('@').pop().toLowerCase();
+        return Boolean(domain && !personalEmailDomains.has(domain));
+    };
+
+    const resetOtp = () => {
+        otpToken = '';
+        verifiedOtpEmail = '';
+        if (otpInput) otpInput.value = '';
+        setOtpStatus('');
     };
 
     const renderTurnstile = () => {
@@ -814,10 +864,14 @@ const initDocumentGate = () => {
 
         if (isOpen) {
             setError('');
+            resetOtp();
+            if (companyEmailInput) companyEmailInput.value = '';
+            if (emailCard) emailCard.hidden = activeDocumentId !== 'resume';
             window.setTimeout(renderTurnstile, 80);
         } else if (window.turnstile && turnstileWidgetId !== null) {
             window.turnstile.reset(turnstileWidgetId);
             turnstileToken = '';
+            resetOtp();
         }
     };
 
@@ -826,9 +880,56 @@ const initDocumentGate = () => {
             event.preventDefault();
             activeDocumentId = link.dataset.documentId || '';
             activeLabel = link.dataset.documentLabel || 'document';
-            if (copyElement) copyElement.textContent = `Complete the verification to open ${activeLabel}.`;
+            if (copyElement) {
+                copyElement.textContent = activeDocumentId === 'resume'
+                    ? 'Use your company email, enter the OTP, and complete the captcha to open Resume.'
+                    : `Complete the verification to open ${activeLabel}.`;
+            }
             setOpen(true);
         });
+    });
+
+    sendOtpButton?.addEventListener('click', async () => {
+        const email = getCompanyEmail();
+
+        if (!isCompanyEmail(email)) {
+            setError('Please enter a valid company email address.');
+            return;
+        }
+
+        sendOtpButton.disabled = true;
+        setError('');
+        setOtpStatus('Sending OTP...');
+
+        try {
+            const response = await fetch('/api/request-document-otp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email,
+                    documentId: activeDocumentId
+                })
+            });
+            const result = await response.json();
+
+            if (!response.ok || !result?.otpToken) {
+                throw new Error(result?.error || 'OTP could not be sent.');
+            }
+
+            otpToken = result.otpToken;
+            verifiedOtpEmail = email;
+            setOtpStatus('OTP sent. Check your company inbox.');
+            otpInput?.focus();
+        } catch (error) {
+            resetOtp();
+            setError(error.message || 'OTP could not be sent.');
+        } finally {
+            sendOtpButton.disabled = false;
+        }
+    });
+
+    companyEmailInput?.addEventListener('input', () => {
+        if (getCompanyEmail() !== verifiedOtpEmail) resetOtp();
     });
 
     closeButton.addEventListener('click', () => setOpen(false));
@@ -852,6 +953,20 @@ const initDocumentGate = () => {
             return;
         }
 
+        const companyEmail = getCompanyEmail();
+        const otp = String(otpInput?.value || '').trim();
+        if (activeDocumentId === 'resume') {
+            if (!isCompanyEmail(companyEmail)) {
+                setError('Please enter a valid company email address.');
+                return;
+            }
+
+            if (!otpToken || companyEmail !== verifiedOtpEmail || !/^\d{6}$/.test(otp)) {
+                setError('Please request the OTP and enter the 6-digit code.');
+                return;
+            }
+        }
+
         submitButton.disabled = true;
         submitButton.classList.add('is-loading');
         setError('Verifying...');
@@ -862,7 +977,10 @@ const initDocumentGate = () => {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     token: turnstileToken,
-                    documentId: activeDocumentId
+                    documentId: activeDocumentId,
+                    email: companyEmail,
+                    otp,
+                    otpToken
                 })
             });
             const result = await response.json();

@@ -8306,6 +8306,73 @@ footer {
     padding: 1rem;
 }
 
+.document-email-card {
+    background: rgba(2, 6, 23, 0.48);
+    border: 1px solid rgba(148, 163, 184, 0.16);
+    border-radius: 20px;
+    display: grid;
+    gap: 0.7rem;
+    margin: 1rem 0;
+    padding: 1rem;
+}
+
+.document-email-card[hidden] {
+    display: none !important;
+}
+
+.document-email-card label {
+    color: #cbd5e1;
+    font-size: 0.78rem;
+    font-weight: 800;
+}
+
+.document-email-row {
+    display: grid;
+    gap: 0.6rem;
+    grid-template-columns: 1fr auto;
+}
+
+.document-email-card input {
+    background: rgba(2, 6, 23, 0.52);
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    border-radius: 14px;
+    color: #f8fafc;
+    font: inherit;
+    min-height: 46px;
+    outline: none;
+    padding: 0 0.9rem;
+    width: 100%;
+}
+
+.document-email-card input:focus {
+    border-color: rgba(94, 234, 212, 0.64);
+    box-shadow: 0 0 0 3px rgba(45, 212, 191, 0.12);
+}
+
+.document-otp-button {
+    background: rgba(94, 234, 212, 0.13);
+    border: 1px solid rgba(94, 234, 212, 0.36);
+    border-radius: 14px;
+    color: #5eead4;
+    cursor: pointer;
+    font: inherit;
+    font-size: 0.78rem;
+    font-weight: 900;
+    padding: 0 0.9rem;
+    white-space: nowrap;
+}
+
+.document-otp-button:disabled {
+    cursor: wait;
+    opacity: 0.58;
+}
+
+#document-otp-status {
+    color: #7dd3fc;
+    font-size: 0.78rem;
+    min-height: 1rem;
+}
+
 .captcha-label {
     color: #7dd3fc;
     display: block;
@@ -8465,6 +8532,19 @@ footer {
     .document-captcha-card {
         padding: 0.85rem;
         overflow: hidden;
+    }
+
+    .document-email-card {
+        padding: 0.85rem;
+    }
+
+    .document-email-row {
+        grid-template-columns: 1fr;
+    }
+
+    .document-otp-button {
+        min-height: 44px;
+        width: 100%;
     }
 
     .turnstile-widget {

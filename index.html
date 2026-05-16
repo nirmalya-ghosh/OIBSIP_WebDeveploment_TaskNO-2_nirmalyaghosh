@@ -187,6 +187,20 @@
             <h3 id="document-gate-title">Secure Document Access</h3>
             <p id="document-gate-copy">Complete the verification to open this document.</p>
 
+            <div id="document-email-card" class="document-email-card" hidden>
+                <span class="captcha-label">Company Email OTP</span>
+                <label for="document-company-email">Company email</label>
+                <div class="document-email-row">
+                    <input type="email" id="document-company-email" name="companyEmail"
+                        placeholder="name@company.com" autocomplete="email">
+                    <button type="button" id="document-send-otp" class="document-otp-button">Send OTP</button>
+                </div>
+                <label for="document-otp">Verification code</label>
+                <input type="text" id="document-otp" name="otp" inputmode="numeric" pattern="[0-9]*"
+                    maxlength="6" placeholder="6-digit code" autocomplete="one-time-code">
+                <small id="document-otp-status" aria-live="polite"></small>
+            </div>
+
             <div class="document-captcha-card">
                 <span class="captcha-label">Cloudflare Turnstile</span>
                 <div id="turnstile-widget" class="turnstile-widget"
