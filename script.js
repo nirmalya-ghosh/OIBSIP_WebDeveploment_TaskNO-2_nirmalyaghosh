@@ -765,37 +765,14 @@ const initDocumentGate = () => {
     const otpStatus = document.getElementById('document-otp-status');
 
     if (!links.length || !modal || !form || !closeButton || !turnstileElement || !submitButton) return;
+    const submitButtonOriginalHtml = submitButton.innerHTML;
 
     let activeDocumentId = '';
     let activeLabel = 'document';
     let turnstileWidgetId = null;
     let turnstileToken = '';
-    let otpToken = '';
+    let otpRequestId = '';
     let verifiedOtpEmail = '';
-
-    const personalEmailDomains = new Set([
-        'gmail.com',
-        'googlemail.com',
-        'yahoo.com',
-        'ymail.com',
-        'outlook.com',
-        'hotmail.com',
-        'live.com',
-        'msn.com',
-        'icloud.com',
-        'me.com',
-        'mac.com',
-        'aol.com',
-        'proton.me',
-        'protonmail.com',
-        'pm.me',
-        'zoho.com',
-        'mail.com',
-        'gmx.com',
-        'gmx.net',
-        'yandex.com',
-        'rediffmail.com'
-    ]);
 
     const setError = (message = '') => {
         if (errorElement) errorElement.textContent = message;
@@ -805,16 +782,12 @@ const initDocumentGate = () => {
         if (otpStatus) otpStatus.textContent = message;
     };
 
-    const getCompanyEmail = () => String(companyEmailInput?.value || '').trim().toLowerCase();
+    const getAccessEmail = () => String(companyEmailInput?.value || '').trim().toLowerCase();
 
-    const isCompanyEmail = (email = '') => {
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return false;
-        const domain = email.split('@').pop().toLowerCase();
-        return Boolean(domain && !personalEmailDomains.has(domain));
-    };
+    const isValidEmail = (email = '') => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
     const resetOtp = () => {
-        otpToken = '';
+        otpRequestId = '';
         verifiedOtpEmail = '';
         if (otpInput) otpInput.value = '';
         setOtpStatus('');
@@ -867,6 +840,8 @@ const initDocumentGate = () => {
             resetOtp();
             if (companyEmailInput) companyEmailInput.value = '';
             if (emailCard) emailCard.hidden = activeDocumentId !== 'resume';
+            submitButton.disabled = false;
+            submitButton.innerHTML = submitButtonOriginalHtml;
             window.setTimeout(renderTurnstile, 80);
         } else if (window.turnstile && turnstileWidgetId !== null) {
             window.turnstile.reset(turnstileWidgetId);
@@ -882,7 +857,7 @@ const initDocumentGate = () => {
             activeLabel = link.dataset.documentLabel || 'document';
             if (copyElement) {
                 copyElement.textContent = activeDocumentId === 'resume'
-                    ? 'Use your company email, enter the OTP, and complete the captcha to open Resume.'
+                    ? 'Verify your email with OTP. After approval, the resume link will be emailed to you.'
                     : `Complete the verification to open ${activeLabel}.`;
             }
             setOpen(true);
@@ -890,10 +865,10 @@ const initDocumentGate = () => {
     });
 
     sendOtpButton?.addEventListener('click', async () => {
-        const email = getCompanyEmail();
+        const email = getAccessEmail();
 
-        if (!isCompanyEmail(email)) {
-            setError('Please enter a valid company email address.');
+        if (!isValidEmail(email)) {
+            setError('Please enter a valid email address.');
             return;
         }
 
@@ -912,13 +887,13 @@ const initDocumentGate = () => {
             });
             const result = await response.json();
 
-            if (!response.ok || !result?.otpToken) {
+            if (!response.ok || !result?.requestId) {
                 throw new Error(result?.error || 'OTP could not be sent.');
             }
 
-            otpToken = result.otpToken;
+            otpRequestId = result.requestId;
             verifiedOtpEmail = email;
-            setOtpStatus('OTP sent. Check your company inbox.');
+            setOtpStatus('OTP sent. Check your inbox.');
             otpInput?.focus();
         } catch (error) {
             resetOtp();
@@ -929,7 +904,7 @@ const initDocumentGate = () => {
     });
 
     companyEmailInput?.addEventListener('input', () => {
-        if (getCompanyEmail() !== verifiedOtpEmail) resetOtp();
+        if (getAccessEmail() !== verifiedOtpEmail) resetOtp();
     });
 
     closeButton.addEventListener('click', () => setOpen(false));
@@ -953,15 +928,15 @@ const initDocumentGate = () => {
             return;
         }
 
-        const companyEmail = getCompanyEmail();
+        const accessEmail = getAccessEmail();
         const otp = String(otpInput?.value || '').trim();
         if (activeDocumentId === 'resume') {
-            if (!isCompanyEmail(companyEmail)) {
-                setError('Please enter a valid company email address.');
+            if (!isValidEmail(accessEmail)) {
+                setError('Please enter a valid email address.');
                 return;
             }
 
-            if (!otpToken || companyEmail !== verifiedOtpEmail || !/^\d{6}$/.test(otp)) {
+            if (!otpRequestId || accessEmail !== verifiedOtpEmail || !/^\d{6}$/.test(otp)) {
                 setError('Please request the OTP and enter the 6-digit code.');
                 return;
             }
@@ -970,6 +945,7 @@ const initDocumentGate = () => {
         submitButton.disabled = true;
         submitButton.classList.add('is-loading');
         setError('Verifying...');
+        let requestCompleted = false;
 
         try {
             const response = await fetch('/api/verify-turnstile', {
@@ -978,25 +954,36 @@ const initDocumentGate = () => {
                 body: JSON.stringify({
                     token: turnstileToken,
                     documentId: activeDocumentId,
-                    email: companyEmail,
+                    email: accessEmail,
                     otp,
-                    otpToken
+                    requestId: otpRequestId
                 })
             });
             const result = await response.json();
 
-            if (!response.ok || !result?.url) {
+            if (!response.ok) {
                 throw new Error(result?.error || 'Verification failed. Please try again.');
             }
 
-            setOpen(false);
-            window.open(result.url, '_blank', 'noopener,noreferrer');
+            if (result?.url) {
+                setOpen(false);
+                window.open(result.url, '_blank', 'noopener,noreferrer');
+                return;
+            }
+
+            if (result?.pendingApproval) {
+                requestCompleted = true;
+                setError('');
+                setOtpStatus(result.message || 'Request sent. You will receive the resume link after approval.');
+                submitButton.disabled = true;
+                submitButton.innerHTML = 'Request Sent <i class="fas fa-check"></i>';
+            }
         } catch (error) {
             setError(error.message || 'Verification failed. Please try again.');
             if (window.turnstile && turnstileWidgetId !== null) window.turnstile.reset(turnstileWidgetId);
             turnstileToken = '';
         } finally {
-            submitButton.disabled = false;
+            if (!requestCompleted) submitButton.disabled = false;
             submitButton.classList.remove('is-loading');
         }
     });
