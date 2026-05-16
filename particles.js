@@ -6,6 +6,7 @@
 const initParticles = () => {
     const container = document.getElementById('canvas-container');
     if (!container) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     // SCENE SETUP
     const scene = new THREE.Scene();
@@ -22,8 +23,8 @@ const initParticles = () => {
     container.appendChild(renderer.domElement);
 
     // PARTICLES CONFIG
-    const particleCount = window.innerWidth < 900 ? 60 : 120; // Fewer particles on mobile
-    const connectionDistance = 120;
+    const particleCount = window.innerWidth < 900 ? 32 : 88;
+    const connectionDistance = window.innerWidth < 900 ? 86 : 118;
     const particles = [];
     const particleGeometry = new THREE.BufferGeometry();
     const particlePositions = new Float32Array(particleCount * 3);
@@ -48,18 +49,18 @@ const initParticles = () => {
 
     // MATERIAL
     const particleMaterial = new THREE.PointsMaterial({
-        color: 0x007bff, // Blue accent
-        size: 5, // Slightly larger for circles
+        color: 0x20f7b4,
+        size: window.innerWidth < 900 ? 2.8 : 3.6,
         map: createCircleTexture(),
         alphaTest: 0.5, // Discard transparent pixels
         transparent: true,
-        opacity: 0.8
+        opacity: 0.72
     });
 
     const lineMaterial = new THREE.LineBasicMaterial({
-        color: 0x007bff,
+        color: 0x7dd3fc,
         transparent: true,
-        opacity: 0.15
+        opacity: 0.14
     });
 
     // CREATE PARTICLES
@@ -72,9 +73,9 @@ const initParticles = () => {
             x: x,
             y: y,
             z: z,
-            vx: (Math.random() - 0.5) * 0.2, // Velocity X
-            vy: (Math.random() - 0.5) * 0.2, // Velocity Y
-            vz: (Math.random() - 0.5) * 0.1  // Velocity Z
+            vx: (Math.random() - 0.5) * 0.075,
+            vy: (Math.random() - 0.5) * 0.075,
+            vz: (Math.random() - 0.5) * 0.035
         });
 
         particlePositions[i * 3] = x;
@@ -115,8 +116,8 @@ const initParticles = () => {
         targetY = mouseY * 0.001;
 
         // Rotate scene slightly based on mouse
-        scene.rotation.y += 0.0005 + (targetX - scene.rotation.y) * 0.05;
-        scene.rotation.x += 0.0005 + (targetY - scene.rotation.x) * 0.05;
+        scene.rotation.y += 0.00025 + (targetX - scene.rotation.y) * 0.035;
+        scene.rotation.x += 0.00025 + (targetY - scene.rotation.x) * 0.035;
 
         // Update Particles
         const positions = particlesMesh.geometry.attributes.position.array;

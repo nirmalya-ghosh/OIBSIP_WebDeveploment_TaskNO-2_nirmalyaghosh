@@ -1,5 +1,726 @@
 // Theme Handling Removed for Permanent Light Mode
 
+const PROFILE_CONFIG = {
+    github: "nirmalya-ghosh",
+    leetcode: "nirmalya2127",
+    analyticsEndpoint: ""
+};
+
+const splitTextToSpans = () => {
+    // Kept as a safe hook for the existing GSAP setup.
+};
+
+const animateCount = (element, target, options = {}) => {
+    if (!element || !Number.isFinite(target)) return;
+    const suffix = options.suffix || '';
+    const decimals = options.decimals || 0;
+    const counter = { value: 0 };
+
+    gsap.to(counter, {
+        value: target,
+        duration: options.duration || 1.3,
+        ease: 'power2.out',
+        onUpdate: () => {
+            element.textContent = `${counter.value.toFixed(decimals)}${suffix}`;
+        }
+    });
+};
+
+const initTilt = () => {
+    if (typeof VanillaTilt === 'undefined') return;
+
+    VanillaTilt.init(document.querySelectorAll('[data-tilt]'), {
+        max: 12,
+        speed: 500,
+        glare: true,
+        "max-glare": 0.18
+    });
+};
+
+const initPreloader = () => {
+    const preloader = document.getElementById('preloader');
+    if (!preloader) return;
+
+    const progressBar = document.getElementById('loader-progress-bar');
+    const percentElement = document.getElementById('loader-percent');
+    const statusElement = document.getElementById('loader-status');
+    const statusSteps = [
+        { at: 18, text: 'Loading profile' },
+        { at: 42, text: 'Preparing projects' },
+        { at: 66, text: 'Syncing activity' },
+        { at: 84, text: 'Optimizing interface' },
+        { at: 100, text: 'Ready' }
+    ];
+    let progress = 0;
+    let stepIndex = 0;
+
+    const setProgress = (value) => {
+        progress = Math.min(100, Math.max(progress, value));
+        if (progressBar) progressBar.style.width = `${progress}%`;
+        if (percentElement) percentElement.textContent = `${String(Math.round(progress)).padStart(2, '0')}%`;
+
+        while (statusSteps[stepIndex] && progress >= statusSteps[stepIndex].at) {
+            if (statusElement) statusElement.textContent = statusSteps[stepIndex].text;
+            stepIndex += 1;
+        }
+    };
+
+    const progressTimer = window.setInterval(() => {
+        const remaining = 96 - progress;
+        const increment = Math.max(0.35, remaining * 0.09);
+        setProgress(progress + increment);
+    }, 95);
+
+    const hidePreloader = () => {
+        window.setTimeout(() => {
+            window.clearInterval(progressTimer);
+            setProgress(100);
+            preloader.classList.add('is-hidden');
+            window.setTimeout(() => preloader.remove(), 850);
+        }, 1250);
+    };
+
+    setProgress(4);
+
+    if (document.readyState === 'complete') {
+        hidePreloader();
+    } else {
+        window.addEventListener('load', hidePreloader, { once: true });
+    }
+};
+
+const initActiveNav = () => {
+    const navLinks = document.querySelectorAll('.nav-links a[href^="#"]');
+    const sections = Array.from(navLinks)
+        .map(link => document.querySelector(link.getAttribute('href')))
+        .filter(Boolean);
+
+    if (!sections.length) return;
+
+    const updateActiveLink = () => {
+        const current = sections.reduce((active, section) => {
+            const rect = section.getBoundingClientRect();
+            return rect.top <= 160 ? section : active;
+        }, sections[0]);
+
+        navLinks.forEach(link => {
+            link.classList.toggle('active', link.getAttribute('href') === `#${current.id}`);
+        });
+    };
+
+    updateActiveLink();
+    window.addEventListener('scroll', updateActiveLink, { passive: true });
+};
+
+const initDigitalClock = () => {
+    const dayElement = document.getElementById('clock-day');
+    const timeElement = document.getElementById('clock-time');
+    if (!dayElement || !timeElement) return;
+
+    const formatter = new Intl.DateTimeFormat('en-IN', {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false,
+        timeZone: 'Asia/Kolkata'
+    });
+
+    const dayFormatter = new Intl.DateTimeFormat('en-IN', {
+        weekday: 'short',
+        timeZone: 'Asia/Kolkata'
+    });
+
+    const updateClock = () => {
+        const now = new Date();
+        dayElement.textContent = dayFormatter.format(now).toUpperCase();
+        timeElement.textContent = formatter.format(now);
+    };
+
+    updateClock();
+    window.setInterval(updateClock, 1000);
+};
+
+const createTypewriter = (selector, phrases, options = {}) => {
+    const element = document.querySelector(selector);
+    if (!element || !phrases.length) return;
+
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reducedMotion) {
+        element.textContent = phrases[0];
+        return;
+    }
+
+    const typingSpeed = options.typingSpeed || 52;
+    const deletingSpeed = options.deletingSpeed || 28;
+    const holdDelay = options.holdDelay || 1500;
+    const nextDelay = options.nextDelay || 320;
+    let phraseIndex = 0;
+    let charIndex = 0;
+    let isDeleting = false;
+
+    const tick = () => {
+        const phrase = phrases[phraseIndex];
+
+        if (isDeleting) {
+            charIndex -= 1;
+        } else {
+            charIndex += 1;
+        }
+
+        element.textContent = phrase.slice(0, charIndex);
+
+        if (!isDeleting && charIndex === phrase.length) {
+            isDeleting = true;
+            window.setTimeout(tick, holdDelay);
+            return;
+        }
+
+        if (isDeleting && charIndex === 0) {
+            isDeleting = false;
+            phraseIndex = (phraseIndex + 1) % phrases.length;
+            window.setTimeout(tick, nextDelay);
+            return;
+        }
+
+        const cadence = isDeleting ? deletingSpeed : typingSpeed + Math.round(Math.random() * 24);
+        window.setTimeout(tick, cadence);
+    };
+
+    element.textContent = '';
+    window.setTimeout(tick, options.startDelay || 250);
+};
+
+const initTypewriters = () => {
+    createTypewriter('#hero-typewriter-text', [
+        'AI/ML-powered applications.',
+        'intelligent systems from data.',
+        'machine learning experiments.',
+        'DSA-backed engineering solutions.',
+        'secure AI-ready products.'
+    ], {
+        startDelay: 500,
+        holdDelay: 1600
+    });
+
+    createTypewriter('#about-typewriter-text', [
+        'I am a B.Tech student focused on AI/ML, strong DSA, intelligent applications, and practical software engineering.',
+        'I build toward machine learning, data-driven systems, automation, scalable code, and secure product thinking.',
+        'I am strengthening Python, Java, data structures, algorithms, web technologies, and cybersecurity fundamentals.'
+    ], {
+        startDelay: 850,
+        typingSpeed: 34,
+        deletingSpeed: 18,
+        holdDelay: 2200
+    });
+
+    createTypewriter('#contact-typewriter-text', [
+        'ready to join for internships in AI/ML, software engineering, and intelligent products.',
+        'open to big-tech-level learning, DSA-heavy engineering, and research-driven AI/ML builds.',
+        'available for internships, collaborations, and cybersecurity-aware product work.'
+    ], {
+        startDelay: 900,
+        typingSpeed: 38,
+        deletingSpeed: 20,
+        holdDelay: 1900
+    });
+};
+
+const getDateKey = (date) => date.toISOString().slice(0, 10);
+
+const getLastYearDays = () => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const start = new Date(today);
+    start.setDate(today.getDate() - 364);
+
+    const days = [];
+    for (let date = new Date(start); date <= today; date.setDate(date.getDate() + 1)) {
+        days.push(new Date(date));
+    }
+
+    return days;
+};
+
+const getLevelFromCount = (count, maxCount) => {
+    if (!count) return 0;
+    if (maxCount <= 4) return Math.min(4, count);
+    if (count >= maxCount * 0.75) return 4;
+    if (count >= maxCount * 0.5) return 3;
+    if (count >= maxCount * 0.25) return 2;
+    return 1;
+};
+
+const formatShortDate = (date) => date.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric'
+});
+
+const renderHeatmapMonths = (container, days) => {
+    if (!container || !days.length) return;
+
+    const leadingBlanks = days[0].getDay();
+    const totalColumns = Math.ceil((days.length + leadingBlanks) / 7);
+    container.innerHTML = '';
+    container.style.gridTemplateColumns = `repeat(${totalColumns}, var(--heatmap-cell))`;
+
+    let previousMonth = '';
+    days.forEach((day, index) => {
+        const month = day.toLocaleDateString('en-US', { month: 'short' });
+        if (month === previousMonth) return;
+
+        previousMonth = month;
+        const label = document.createElement('span');
+        label.textContent = month;
+        label.style.gridColumn = `${Math.floor((index + leadingBlanks) / 7) + 1} / span 3`;
+        label.style.gridRow = '1';
+        container.appendChild(label);
+    });
+};
+
+const getActivityInsights = (days, getCount) => {
+    let activeDays = 0;
+    let currentStreak = 0;
+    let longestStreak = 0;
+    let runningStreak = 0;
+    let bestCount = 0;
+    let bestDate = null;
+
+    days.forEach(day => {
+        const count = getCount(day);
+        if (count > 0) {
+            activeDays += 1;
+            runningStreak += 1;
+            if (runningStreak > longestStreak) longestStreak = runningStreak;
+            if (count > bestCount) {
+                bestCount = count;
+                bestDate = day;
+            }
+        } else {
+            runningStreak = 0;
+        }
+    });
+
+    for (let i = days.length - 1; i >= 0; i--) {
+        if (getCount(days[i]) <= 0) break;
+        currentStreak += 1;
+    }
+
+    return { activeDays, currentStreak, longestStreak, bestCount, bestDate };
+};
+
+const updateText = (id, value) => {
+    const element = document.getElementById(id);
+    if (element) element.textContent = value;
+};
+
+const sumCounts = (days, getCount) => {
+    return days.reduce((sum, day) => sum + getCount(day), 0);
+};
+
+const formatNumber = (value) => {
+    const number = Number(value);
+    if (!Number.isFinite(number)) return '--';
+    return number.toLocaleString('en-US');
+};
+
+const formatDuration = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${String(secs).padStart(2, '0')}`;
+};
+
+const getDeviceType = () => {
+    const width = window.innerWidth;
+    const agent = navigator.userAgent.toLowerCase();
+    if (/tablet|ipad/.test(agent)) return 'Tablet';
+    if (/mobi|android|iphone/.test(agent) || width < 700) return 'Mobile';
+    return 'Desktop';
+};
+
+const getBrowserName = () => {
+    const agent = navigator.userAgent;
+    if (agent.includes('Edg/')) return 'Edge';
+    if (agent.includes('Chrome/')) return 'Chrome';
+    if (agent.includes('Firefox/')) return 'Firefox';
+    if (agent.includes('Safari/') && !agent.includes('Chrome/')) return 'Safari';
+    return 'Browser';
+};
+
+const getFlagEmoji = (countryCode) => {
+    if (!countryCode || countryCode.length !== 2) return '🌐';
+    return countryCode
+        .toUpperCase()
+        .split('')
+        .map(char => String.fromCodePoint(127397 + char.charCodeAt(0)))
+        .join('');
+};
+
+const renderCountryTraffic = (countries = []) => {
+    const lists = [
+        document.getElementById('country-traffic-list'),
+        document.getElementById('metrics-country-list')
+    ].filter(Boolean);
+    if (!lists.length) return;
+
+    const normalized = countries
+        .filter(country => country && country.country)
+        .map(country => ({
+            country: country.country,
+            code: country.code || country.countryCode || '',
+            visitors: Number(country.visitors) || 0
+        }))
+        .sort((a, b) => b.visitors - a.visitors)
+        .slice(0, 5);
+
+    const maxVisitors = Math.max(1, ...normalized.map(country => country.visitors));
+
+    const markup = normalized.map(country => {
+        const width = Math.max(6, Math.round((country.visitors / maxVisitors) * 100));
+        return `<span><b>${getFlagEmoji(country.code)} ${country.country}</b><i style="--bar: ${width}%"></i><em>${formatNumber(country.visitors)}</em></span>`;
+    }).join('') || '<span><b>Unknown</b><i style="--bar: 0%"></i><em>--</em></span>';
+
+    lists.forEach(list => {
+        list.innerHTML = markup;
+    });
+};
+
+const renderVisitorGraph = (values) => {
+    const line = document.getElementById('visitor-graph-line');
+    const area = document.getElementById('visitor-graph-area');
+    if (!line || !area || !values.length) return;
+
+    const width = 320;
+    const height = 120;
+    const padding = 12;
+    const max = Math.max(1, ...values);
+    const points = values.map((value, index) => {
+        const x = values.length === 1 ? padding : padding + (index / (values.length - 1)) * (width - padding * 2);
+        const y = height - padding - (value / max) * (height - padding * 2);
+        return `${x.toFixed(1)},${y.toFixed(1)}`;
+    });
+
+    line.setAttribute('points', points.join(' '));
+    area.setAttribute('d', `M ${points[0]} L ${points.slice(1).join(' L ')} L ${width - padding},${height - padding} L ${padding},${height - padding} Z`);
+};
+
+const getStrongestDifficulty = (data) => {
+    const solved = [
+        { label: 'Easy', solved: Number(data.easySolved) || 0, total: Number(data.totalEasy) || 0 },
+        { label: 'Medium', solved: Number(data.mediumSolved) || 0, total: Number(data.totalMedium) || 0 },
+        { label: 'Hard', solved: Number(data.hardSolved) || 0, total: Number(data.totalHard) || 0 }
+    ];
+
+    return solved
+        .map(item => ({
+            ...item,
+            percent: item.total ? item.solved / item.total : 0
+        }))
+        .sort((a, b) => b.percent - a.percent)[0];
+};
+
+const updateLeetCodeOverview = (data) => {
+    const solved = Number(data.totalSolved) || 0;
+    const totalQuestions = Number(data.totalQuestions) || 0;
+    const completion = totalQuestions ? Math.min(100, (solved / totalQuestions) * 100) : 0;
+    const easySolved = Number(data.easySolved) || 0;
+    const mediumSolved = Number(data.mediumSolved) || 0;
+    const hardSolved = Number(data.hardSolved) || 0;
+    const strongest = getStrongestDifficulty(data);
+    const ring = document.querySelector('.leetcode-progress-ring');
+
+    updateText('leetcode-total', formatNumber(solved));
+    updateText('leetcode-total-questions', formatNumber(totalQuestions));
+    updateText('leetcode-easy', formatNumber(easySolved));
+    updateText('leetcode-medium', formatNumber(mediumSolved));
+    updateText('leetcode-hard', formatNumber(hardSolved));
+    updateText('leetcode-coverage', `${completion.toFixed(1)}%`);
+    updateText('leetcode-rank', formatNumber(data.ranking));
+    updateText('leetcode-strongest', strongest ? strongest.label : '--');
+    updateText('leetcode-difficulty-mix', `${formatNumber(easySolved)}/${formatNumber(mediumSolved)}/${formatNumber(hardSolved)}`);
+
+    if (ring) {
+        const degreesPerProblem = totalQuestions ? 360 / totalQuestions : 0;
+        ring.style.setProperty('--easy-deg', `${easySolved * degreesPerProblem}deg`);
+        ring.style.setProperty('--medium-deg', `${mediumSolved * degreesPerProblem}deg`);
+        ring.style.setProperty('--hard-deg', `${hardSolved * degreesPerProblem}deg`);
+        ring.setAttribute('aria-label', `${formatNumber(solved)} solved out of ${formatNumber(totalQuestions)} LeetCode problems`);
+        ring.title = `${completion.toFixed(1)}% complete: ${formatNumber(easySolved)} easy, ${formatNumber(mediumSolved)} medium, ${formatNumber(hardSolved)} hard`;
+    }
+
+    animateCount(document.getElementById('leetcode-total'), solved);
+    animateCount(document.getElementById('leetcode-easy'), easySolved);
+    animateCount(document.getElementById('leetcode-medium'), mediumSolved);
+    animateCount(document.getElementById('leetcode-hard'), hardSolved);
+};
+
+const renderHeatmap = (container, days, getDayData, options = {}) => {
+    if (!container) return;
+
+    container.classList.remove('is-loading', 'is-error');
+    container.innerHTML = '';
+    renderHeatmapMonths(options.monthsContainer, days);
+    if (options.monthsContainer) {
+        container.addEventListener('scroll', () => {
+            options.monthsContainer.scrollLeft = container.scrollLeft;
+        }, { passive: true });
+    }
+
+    const leadingBlanks = days[0].getDay();
+    for (let i = 0; i < leadingBlanks; i++) {
+        const blank = document.createElement('span');
+        blank.className = 'heatmap-day heatmap-day-blank';
+        blank.setAttribute('aria-hidden', 'true');
+        blank.style.visibility = 'hidden';
+        container.appendChild(blank);
+    }
+
+    days.forEach((day, index) => {
+        const { count, level } = getDayData(day);
+        const square = document.createElement('span');
+        square.className = 'heatmap-day';
+        square.dataset.level = level;
+        square.style.setProperty('--heatmap-index', index);
+        square.tabIndex = 0;
+        square.title = `${count} ${options.unit || 'activities'} on ${day.toLocaleDateString()}`;
+        square.setAttribute('aria-label', square.title);
+        square.addEventListener('mouseenter', () => {
+            if (options.focusElement) {
+                options.focusElement.textContent = `${formatShortDate(day)}: ${count} ${options.unit || 'activities'}`;
+            }
+        });
+        square.addEventListener('focus', () => {
+            if (options.focusElement) {
+                options.focusElement.textContent = `${formatShortDate(day)}: ${count} ${options.unit || 'activities'}`;
+            }
+        });
+        container.appendChild(square);
+    });
+};
+
+const setHeatmapError = (container) => {
+    if (!container) return;
+    container.innerHTML = '';
+    container.classList.remove('is-loading');
+    container.classList.add('is-error');
+};
+
+const initGitHubHeatmap = async () => {
+    const container = document.getElementById('github-heatmap');
+    const monthsContainer = document.getElementById('github-months');
+    const focusElement = document.getElementById('github-focus');
+    const totalElement = document.getElementById('github-total');
+    if (!container) return;
+
+    try {
+        const response = await fetch(`https://github-contributions-api.jogruber.de/v4/${PROFILE_CONFIG.github}?y=last`);
+        if (!response.ok) throw new Error('GitHub contribution request failed');
+
+        const data = await response.json();
+        const contributionMap = new Map(
+            (data.contributions || []).map(day => [day.date, {
+                count: Number(day.count) || 0,
+                level: Number(day.level) || 0
+            }])
+        );
+
+        if (totalElement) {
+            totalElement.textContent = data.total?.lastYear ?? '0';
+            animateCount(totalElement, Number(data.total?.lastYear) || 0);
+        }
+
+        const days = getLastYearDays();
+        const getGitHubDay = day => {
+            return contributionMap.get(getDateKey(day)) || { count: 0, level: 0 };
+        };
+        const insights = getActivityInsights(days, day => getGitHubDay(day).count);
+
+        updateText('github-active-days', insights.activeDays);
+        updateText('github-current-streak', insights.currentStreak);
+        updateText('github-density', `${Math.round((insights.activeDays / days.length) * 100)}%`);
+        updateText('github-average', insights.activeDays ? (sumCounts(days, day => getGitHubDay(day).count) / insights.activeDays).toFixed(1) : '0');
+        updateText('github-longest-streak', insights.longestStreak);
+        updateText('github-best-day', insights.bestDate ? `${insights.bestCount} on ${formatShortDate(insights.bestDate)}` : '0');
+        updateText('github-last-30', formatNumber(sumCounts(days.slice(-30), day => getGitHubDay(day).count)));
+        animateCount(document.getElementById('github-active-days'), insights.activeDays);
+        animateCount(document.getElementById('github-current-streak'), insights.currentStreak);
+        if (focusElement) {
+            focusElement.textContent = `Longest streak: ${insights.longestStreak} days. Hover a square for daily GitHub activity.`;
+        }
+
+        renderHeatmap(container, days, getGitHubDay, {
+            monthsContainer,
+            focusElement,
+            unit: 'contributions'
+        });
+    } catch (error) {
+        setHeatmapError(container);
+    }
+};
+
+const initLeetCodeHeatmap = async () => {
+    const container = document.getElementById('leetcode-heatmap');
+    const monthsContainer = document.getElementById('leetcode-months');
+    const focusElement = document.getElementById('leetcode-focus');
+    if (!container) return;
+
+    try {
+        const response = await fetch(`https://leetcode-api-faisalshohag.vercel.app/${PROFILE_CONFIG.leetcode}`);
+        if (!response.ok) throw new Error('LeetCode activity request failed');
+
+        const data = await response.json();
+        const calendar = data.submissionCalendar || {};
+        const calendarByDate = new Map(
+            Object.entries(calendar).map(([timestamp, count]) => {
+                const date = new Date(Number(timestamp) * 1000);
+                return [getDateKey(date), Number(count) || 0];
+            })
+        );
+        const maxCount = Math.max(0, ...calendarByDate.values());
+
+        updateLeetCodeOverview(data);
+
+        const days = getLastYearDays();
+        const getLeetCodeDay = day => {
+            const count = calendarByDate.get(getDateKey(day)) || 0;
+            return { count, level: getLevelFromCount(count, maxCount) };
+        };
+        const insights = getActivityInsights(days, day => getLeetCodeDay(day).count);
+
+        updateText('leetcode-active-days', insights.activeDays);
+        updateText('leetcode-current-streak', insights.currentStreak);
+        if (focusElement) {
+            focusElement.textContent = `Longest streak: ${insights.longestStreak} days. Hover a square for daily LeetCode submissions.`;
+        }
+
+        renderHeatmap(container, days, getLeetCodeDay, {
+            monthsContainer,
+            focusElement,
+            unit: 'submissions'
+        });
+    } catch (error) {
+        setHeatmapError(container);
+    }
+};
+
+const initCodingHeatmaps = () => {
+    initGitHubHeatmap();
+    initLeetCodeHeatmap();
+};
+
+const initVisitorAnalytics = async () => {
+    const sessionStart = Date.now();
+    const visitorSeries = Array.from({ length: 18 }, () => 0);
+    const totalKey = 'portfolioTotalVisits';
+    const storedVisits = Number(localStorage.getItem(totalKey)) || 0;
+    const totalVisits = storedVisits + 1;
+    localStorage.setItem(totalKey, String(totalVisits));
+
+    updateText('metric-active-visitors', '1');
+    updateText('metric-total-visitors', formatNumber(totalVisits));
+    const deviceType = getDeviceType();
+    updateText('metric-device-type', deviceType);
+    updateText('metric-browser', getBrowserName());
+    updateText('metric-viewport', `${window.innerWidth} x ${window.innerHeight}`);
+    updateText('metric-timezone', Intl.DateTimeFormat().resolvedOptions().timeZone || 'Local');
+    updateText('metric-session-summary', 'Session started just now');
+    updateText('metric-environment-summary', `${deviceType} on ${getBrowserName()}`);
+    renderCountryTraffic([{ country: 'This device', visitors: totalVisits }]);
+    renderVisitorGraph(visitorSeries);
+
+    const tickSessionDuration = () => {
+        const elapsedSeconds = Math.floor((Date.now() - sessionStart) / 1000);
+        const duration = formatDuration(elapsedSeconds);
+        updateText('metric-session-duration', duration);
+        updateText('metric-session-summary', `${duration} active, ${formatNumber(totalVisits)} local visits`);
+        visitorSeries.push(1 + Math.round(Math.abs(Math.sin(elapsedSeconds / 7)) * 2));
+        visitorSeries.shift();
+        renderVisitorGraph(visitorSeries);
+    };
+    tickSessionDuration();
+    setInterval(tickSessionDuration, 1000);
+
+    try {
+        const geoResponse = await fetch('https://ipapi.co/json/');
+        if (geoResponse.ok) {
+            const geo = await geoResponse.json();
+            if (!PROFILE_CONFIG.analyticsEndpoint) {
+                renderCountryTraffic([{
+                    country: geo.country_name || 'Current country',
+                    code: geo.country_code,
+                    visitors: totalVisits
+                }]);
+                updateText('metric-source', 'Local session');
+                updateText('metric-visitor-source', geo.country_name || 'Local session');
+            }
+        }
+    } catch (error) {
+        // Keep local analytics if geo lookup is blocked.
+    }
+
+    if (!PROFILE_CONFIG.analyticsEndpoint) return;
+
+    try {
+        const response = await fetch(PROFILE_CONFIG.analyticsEndpoint);
+        if (!response.ok) throw new Error('Analytics endpoint failed');
+        const data = await response.json();
+
+        updateText('metric-active-visitors', formatNumber(data.activeVisitors));
+        updateText('metric-total-visitors', formatNumber(data.totalVisitors));
+        if (data.averageSessionDuration) {
+            updateText('metric-session-duration', data.averageSessionDuration);
+        }
+        if (data.deviceTypes?.top) {
+            updateText('metric-device-type', data.deviceTypes.top);
+        }
+        if (Array.isArray(data.countries)) {
+            renderCountryTraffic(data.countries);
+        }
+        if (Array.isArray(data.visitorSeries)) {
+            renderVisitorGraph(data.visitorSeries.map(value => Number(value) || 0));
+            updateText('metric-graph-caption', 'Live feed');
+        }
+
+        updateText('metric-source', 'Live feed');
+        updateText('metric-visitor-source', 'Live feed');
+    } catch (error) {
+        updateText('metric-source', 'Local session');
+        updateText('metric-visitor-source', 'Local session');
+    }
+};
+
+const initMetricsModal = () => {
+    const modal = document.getElementById('metrics-modal');
+    const openButton = document.getElementById('live-metrics-button');
+    const closeButton = modal?.querySelector('.metrics-close');
+    if (!modal || !openButton || !closeButton) return;
+
+    const setOpen = (isOpen) => {
+        modal.classList.toggle('active', isOpen);
+        modal.setAttribute('aria-hidden', String(!isOpen));
+        openButton.setAttribute('aria-expanded', String(isOpen));
+        document.body.classList.toggle('modal-open', isOpen);
+        if (isOpen) closeButton.focus();
+    };
+
+    openButton.addEventListener('click', () => setOpen(true));
+    closeButton.addEventListener('click', () => setOpen(false));
+    modal.addEventListener('click', (event) => {
+        if (event.target === modal) setOpen(false);
+    });
+    window.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && modal.classList.contains('active')) {
+            setOpen(false);
+            openButton.focus();
+        }
+    });
+    window.addEventListener('resize', () => {
+        updateText('metric-viewport', `${window.innerWidth} x ${window.innerHeight}`);
+        const deviceType = getDeviceType();
+        updateText('metric-device-type', deviceType);
+    }, { passive: true });
+};
+
 // Custom Cursor Logic
 const initCursor = () => {
     const cursorDot = document.querySelector('[data-cursor-dot]');
@@ -287,7 +1008,7 @@ const initMagneticButtons = () => {
     physicsWorld.init();
 
     // Interactive Magnets
-    const magnets = document.querySelectorAll('.cta-button, .nav-links a, .contact-box');
+    const magnets = document.querySelectorAll('.nav-links a, .contact-box');
     magnets.forEach(el => {
         physicsWorld.add(el, { magnetic: true });
     });
@@ -383,6 +1104,22 @@ document.addEventListener('DOMContentLoaded', () => {
 const initAdvancedAnimations = () => {
     gsap.registerPlugin(ScrollTrigger);
 
+    gsap.from(".hero-greeting, .hero-name, .hero-role, .hero-buttons .cta-button", {
+        opacity: 0,
+        y: 28,
+        duration: 0.9,
+        stagger: 0.12,
+        ease: "power3.out"
+    });
+
+    gsap.from(".hero-image-wrapper", {
+        opacity: 0,
+        scale: 0.94,
+        y: 24,
+        duration: 1,
+        ease: "power3.out"
+    });
+
     // 0. Text Reveals
     splitTextToSpans('.section-title, .about-arrow-header');
 
@@ -404,21 +1141,13 @@ const initAdvancedAnimations = () => {
 
     // 1. Responsive Layout Logic
     const handleLayout = () => {
-        const isMobile = window.innerWidth <= 900;
-        const hero = document.getElementById('hero');
         const heroText = document.querySelector('.hero-text');
         const heroBtns = document.querySelector('.hero-buttons');
 
-        if (!hero || !heroText || !heroBtns) return;
+        if (!heroText || !heroBtns) return;
 
-        if (isMobile) {
-            if (heroBtns.parentElement === heroText) {
-                hero.appendChild(heroBtns);
-            }
-        } else {
-            if (heroBtns.parentElement === hero) {
-                heroText.appendChild(heroBtns);
-            }
+        if (heroBtns.parentElement !== heroText) {
+            heroText.appendChild(heroBtns);
         }
     };
 
@@ -436,23 +1165,9 @@ const initAdvancedAnimations = () => {
         gsap.set(".hero-text", { clearProps: "all" });
         gsap.set(".hero-image-wrapper", { clearProps: "all" });
 
-        // HORIZONTAL SCROLL
         const projectTrack = document.querySelector(".projects-horizontal-track");
         if (projectTrack) {
-            const getScrollAmount = () => -(projectTrack.scrollWidth - window.innerWidth + 100);
-
-            gsap.to(projectTrack, {
-                x: getScrollAmount,
-                ease: "none",
-                scrollTrigger: {
-                    trigger: ".projects-wrapper",
-                    start: "top top",
-                    end: () => `+=${getScrollAmount() * -1}`,
-                    pin: true,
-                    scrub: 1,
-                    invalidateOnRefresh: true
-                }
-            });
+            gsap.set(projectTrack, { clearProps: "transform" });
         }
     });
 
@@ -463,7 +1178,7 @@ const initAdvancedAnimations = () => {
     });
 
     // Section Reveals
-    const sections = document.querySelectorAll("#about, #skills, #projects, #contact");
+    const sections = document.querySelectorAll("#about, #skills, #activity, #projects, #contact");
     sections.forEach(section => {
         gsap.fromTo(section, {
             opacity: 0,
@@ -482,8 +1197,17 @@ const initAdvancedAnimations = () => {
         });
     });
 
+    gsap.utils.toArray(".education-content, .skills-grid-new").forEach(timeline => {
+        ScrollTrigger.create({
+            trigger: timeline,
+            start: "top 75%",
+            onEnter: () => timeline.classList.add("timeline-visible"),
+            onLeaveBack: () => timeline.classList.remove("timeline-visible")
+        });
+    });
+
     // Staggered Animations (Updated)
-    gsap.utils.toArray(".glossy-card, .project-card, .contact-pill, .skill-item").forEach(el => {
+    gsap.utils.toArray(".glossy-card, .project-card, .heatmap-card, .contact-pill, .skill-item").forEach(el => {
         gsap.from(el, {
             scrollTrigger: {
                 trigger: el,
@@ -499,10 +1223,16 @@ const initAdvancedAnimations = () => {
 
 // Initialization
 document.addEventListener('DOMContentLoaded', () => {
+    initPreloader();
     initMobileMenu();
     initMagneticButtons();
+    initCodingHeatmaps();
+    initVisitorAnalytics();
+    initMetricsModal();
     if (document.getElementById('contactForm')) initForm();
     initAdvancedAnimations();
     initActiveNav();
+    initDigitalClock();
+    initTypewriters();
     initScrollProgress();
 });

@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nirmalya Ghosh | Portfolio</title>
-    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <link rel="icon" href="favicon.svg?v=3" type="image/svg+xml">
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -25,7 +25,36 @@
     <!-- Preloader -->
     <div id="preloader">
         <div class="loader-content">
-            <span class="loader-text">NG</span>
+            <div class="loader-brand">
+                <div class="loader-core" aria-hidden="true">
+                    <span class="loader-orbit loader-orbit-one"></span>
+                    <span class="loader-orbit loader-orbit-two"></span>
+                    <span class="loader-core-ring"></span>
+                    <strong>NG</strong>
+                </div>
+                <div>
+                    <span class="loader-kicker">Nirmalya Ghosh</span>
+                    <span class="loader-text">Portfolio<span>.</span></span>
+                </div>
+            </div>
+
+            <div class="loader-signal" aria-hidden="true">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+
+            <div class="loader-meta">
+                <span>AI/ML</span>
+                <span>Software Engineering</span>
+                <span>Cybersecurity</span>
+            </div>
+
+            <div class="loader-progress" aria-hidden="true"><span id="loader-progress-bar"></span></div>
+            <div class="loader-footer">
+                <strong class="loader-status" id="loader-status">Preparing experience</strong>
+                <b class="loader-percent" id="loader-percent">00%</b>
+            </div>
         </div>
     </div>
 
@@ -42,6 +71,7 @@
                 <li><a href="#hero">Home</a></li>
                 <li><a href="#about">About</a></li>
                 <li><a href="#skills">Skills</a></li>
+                <li><a href="#activity">Activity</a></li>
                 <li><a href="#projects">Work</a></li>
                 <li><a href="#contact">Contact</a></li>
             </ul>
@@ -51,10 +81,99 @@
                 <span></span>
                 <span></span>
             </div>
+
+            <button type="button" id="live-metrics-button" class="live-metrics-button" aria-haspopup="dialog"
+                aria-expanded="false">
+                <i class="fas fa-chart-line"></i>
+                <span>Live Metrics</span>
+            </button>
         </div>
 
-        <div class="logo">NG<span>.</span></div>
+        <div class="nav-status-cluster">
+            <div class="digital-clock" aria-label="Current time">
+                <span id="clock-day">---</span>
+                <strong id="clock-time">--:--:--</strong>
+            </div>
+            <div class="logo">NG<span>.</span></div>
+        </div>
     </nav>
+
+    <aside class="terminal-rail" aria-label="Portfolio command rail">
+        <div class="rail-lights" aria-hidden="true"><span></span><span></span><span></span></div>
+        <a href="#hero" aria-label="Home"><i class="fas fa-terminal"></i></a>
+        <a href="#about" aria-label="About"><i class="fas fa-user"></i></a>
+        <a href="#skills" aria-label="Skills"><i class="fas fa-code"></i></a>
+        <a href="#activity" aria-label="Activity"><i class="fas fa-chart-simple"></i></a>
+        <a href="#projects" aria-label="Projects"><i class="fas fa-folder-open"></i></a>
+        <a href="#contact" aria-label="Contact"><i class="fas fa-envelope"></i></a>
+    </aside>
+
+    <div id="metrics-modal" class="metrics-modal" role="dialog" aria-modal="true" aria-labelledby="metrics-modal-title"
+        aria-hidden="true">
+        <div class="metrics-modal-panel">
+            <button type="button" class="metrics-close" aria-label="Close live metrics">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="heatmap-header">
+                <div>
+                    <span class="heatmap-kicker">Visitors</span>
+                    <h3 id="metrics-modal-title">Live Portfolio Metrics</h3>
+                </div>
+                <div class="analytics-icon"><i class="fas fa-chart-line"></i></div>
+            </div>
+
+            <div class="metrics-modal-body">
+                <div class="metrics-summary">
+                    <div>
+                        <span>Current session</span>
+                        <strong id="metric-session-summary">--</strong>
+                    </div>
+                    <div>
+                        <span>Environment</span>
+                        <strong id="metric-environment-summary">--</strong>
+                    </div>
+                </div>
+
+                <div class="visitor-graph-card">
+                    <div class="country-panel-header">
+                        <strong>Real-time visitors graph</strong>
+                        <span id="metric-graph-caption">Session pulse</span>
+                    </div>
+                    <svg id="visitor-live-graph" class="visitor-live-graph" viewBox="0 0 320 120" aria-label="Real-time visitors graph">
+                        <defs>
+                            <linearGradient id="visitorGraphFill" x1="0" x2="0" y1="0" y2="1">
+                                <stop offset="0%" stop-color="#007bff" stop-opacity="0.28"></stop>
+                                <stop offset="100%" stop-color="#007bff" stop-opacity="0"></stop>
+                            </linearGradient>
+                        </defs>
+                        <path id="visitor-graph-area" d=""></path>
+                        <polyline id="visitor-graph-line" points=""></polyline>
+                    </svg>
+                </div>
+
+                <div class="metrics-detail-grid">
+                    <span><strong id="metric-active-visitors">--</strong> active now</span>
+                    <span><strong id="metric-total-visitors">--</strong> total visits</span>
+                    <span><strong id="metric-session-duration">--</strong> session duration</span>
+                    <span><strong id="metric-device-type">--</strong> device type</span>
+                    <span><strong id="metric-browser">--</strong> browser</span>
+                    <span><strong id="metric-viewport">--</strong> viewport</span>
+                    <span><strong id="metric-timezone">--</strong> timezone</span>
+                    <span><strong id="metric-source">Local session</strong> data source</span>
+                </div>
+
+                <div class="country-panel">
+                    <div class="country-panel-header">
+                        <strong>Country-wise traffic</strong>
+                        <span id="metric-visitor-source">Local session</span>
+                    </div>
+                    <div id="metrics-country-list" class="country-list">
+                        <span><b>--</b><i style="--bar: 0%"></i><em>--</em></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- 3D Canvas -->
     <div id="canvas-container"></div>
@@ -63,15 +182,52 @@
         <!-- Hero Section -->
         <section id="hero">
             <div class="hero-text">
-                <span class="hero-greeting">Hello, I'm</span>
+                <span class="hero-greeting">AI/ML Learner + Software Builder</span>
                 <h1 class="hero-name">Nirmalya <span>Ghosh</span></h1>
-                <p class="hero-role">App Development | UI/UX Designer | Ethical Hacking | Student</p>
+                <div class="hero-typewriter" aria-live="off">
+                    <span class="typewriter-prefix">I build</span>
+                    <span id="hero-typewriter-text" class="typewriter-dynamic"></span>
+                    <span class="typewriter-caret" aria-hidden="true"></span>
+                </div>
+                <p class="hero-role">I turn code, data, and security fundamentals into thoughtful products that feel fast, useful, and ready for real users.</p>
+
+                <div class="hero-signal-grid" aria-label="Core strengths">
+                    <span><i class="fas fa-brain"></i> AI/ML</span>
+                    <span><i class="fas fa-code"></i> DSA</span>
+                    <span><i class="fas fa-shield-halved"></i> Cybersecurity</span>
+                </div>
+
+                <div class="hero-buttons">
+                    <!-- Resume -->
+                    <a href="https://drive.google.com/file/d/11PAPOiUQRf-lMziJCz0ROhQoja_QhBSx/view?usp=sharing"
+                        target="_blank" class="cta-button subtle-btn">
+                        <span class="btn-text">Resume</span>
+                        <i class="fas fa-download"></i>
+                    </a>
+
+                    <!-- Certifications -->
+                    <a href="https://little-cake-29a6.nirmalyaghosh2127.workers.dev/" target="_blank"
+                        class="cta-button subtle-btn">
+                        <span class="btn-text">Certifications</span>
+                        <i class="fas fa-certificate"></i>
+                    </a>
+                </div>
             </div>
 
             <div class="hero-image-wrapper">
                 <div class="hero-bg-shape"></div>
-                <img src="./assets/images/profile.jpg" alt="Nirmalya Ghosh" class="hero-img" data-tilt
-                    fetchpriority="high" width="400" height="400">
+                <div class="hero-portrait-shell">
+                    <img src="./assets/images/profile.jpg" alt="Nirmalya Ghosh" class="hero-img" data-tilt
+                        fetchpriority="high" width="400" height="400">
+                </div>
+
+                <div class="hero-status-card" aria-label="Current focus">
+                    <span class="status-dot"></span>
+                    <div>
+                        <strong>Currently focused on</strong>
+                        <p>AI-ready products, clean engineering, and practical problem solving.</p>
+                    </div>
+                </div>
 
                 <!-- Orbiting Social Icons -->
                 <!-- LinkedIn (Top Rightish) -->
@@ -80,7 +236,7 @@
                     <i class="fab fa-linkedin-in"></i>
                 </a>
                 <!-- GitHub (Bottom Rightish) -->
-                <a href="https://github.com/TyphoonCoder2007" target="_blank" class="orbit-icon orbit-2"
+                <a href="https://github.com/nirmalya-ghosh" target="_blank" class="orbit-icon orbit-2"
                     aria-label="GitHub">
                     <i class="fab fa-github"></i>
                 </a>
@@ -93,87 +249,93 @@
                     <i class="fas fa-envelope"></i>
                 </a>
 
-                <p class="hero-image-tagline">“I build intelligent systems that solve real-world problems.”</p>
-            </div>
-
-            <div class="hero-buttons">
-                <!-- Resume -->
-                <a href="https://drive.google.com/file/d/11PAPOiUQRf-lMziJCz0ROhQoja_QhBSx/view?usp=sharing"
-                    target="_blank" class="cta-button subtle-btn">
-                    <span class="btn-text">Resume</span>
-                    <i class="fas fa-download"></i>
-                </a>
-
-                <!-- Certifications -->
-                <a href="https://little-cake-29a6.nirmalyaghosh2127.workers.dev/" target="_blank"
-                    class="cta-button subtle-btn">
-                    <span class="btn-text">Certifications</span>
-                    <i class="fas fa-certificate"></i>
-                </a>
+                <p class="hero-image-tagline">"Build useful intelligence. Ship reliable software."</p>
             </div>
         </section>
 
         <!-- About Section -->
         <section id="about">
             <div class="about-wrapper">
-
-                <!-- Floating Cubes for 3D Effect -->
-                <div class="floating-cube cube-1"></div>
-                <div class="floating-cube cube-2"></div>
-                <div class="floating-cube cube-3"></div>
-                <div class="cube-ghost"></div>
-
-                <!-- About Me Bio Section -->
-                <div class="bio-container">
-                    <div class="about-header">
-                        <h2 class="about-arrow-header"><span style="margin-right: 0.5em;">About</span>Me</h2>
+                <div class="about-panel-grid">
+                    <div class="bio-container about-story-panel">
+                        <span class="section-kicker">Profile</span>
+                        <div class="about-header">
+                            <h2 class="about-arrow-header">About Me</h2>
+                        </div>
+                        <div class="about-typewriter terminal-typewriter-line" aria-live="off">
+                            <span class="terminal-prompt">nirmalya@about:~$</span>
+                            <span id="about-typewriter-text" class="typewriter-dynamic"></span>
+                            <span class="typewriter-caret" aria-hidden="true"></span>
+                        </div>
+                        <p class="about-bio centered-bio">
+                            I am a passionate B.Tech student at <strong>KIIT ('29)</strong> building toward a strong
+                            software engineering foundation with a clear focus on <strong>AI/ML</strong>, DSA, and
+                            intelligent digital products.
+                        </p>
+                        <p class="about-bio centered-bio">
+                            My toolkit spans <strong>Python, Java, C, HTML, CSS, and JavaScript</strong>. I enjoy
+                            turning fundamentals into useful interfaces, clean logic, and projects that connect code,
+                            data, and practical product thinking.
+                        </p>
+                        <p class="about-bio centered-bio">
+                            I am also growing a cybersecurity-aware mindset through <strong>Ethical Hacking</strong>
+                            fundamentals, so the things I build are not only usable, but more thoughtful about trust,
+                            reliability, and real users.
+                        </p>
                     </div>
-                    <p class="about-bio centered-bio">
-                        I am a passionate B.Tech student at <strong>KIIT ('29)</strong> aspiring to become a skilled
-                        Software Engineer.
-                        My technical toolkit spans <strong>Java, Python, and C</strong> for backend logic and
-                        problem-solving,
-                        supported by hands-on experience in <strong>HTML, CSS, and JavaScript</strong> for crafting
-                        dynamic web interfaces.
-                    </p>
-                    <p class="about-bio centered-bio">
-                        Beyond core development, I am actively expanding my capabilities in <strong>App Development,
-                            UI/UX Design, and Ethical Hacking</strong>—enabling
-                        me to build secure, intuitive, and high-performance digital solutions. I am consistently working
-                        on projects that bridge the gap
-                        between theory and real-world application, while refining my understanding of user-centric
-                        design and system security.
-                    </p>
-                    <p class="about-bio centered-bio">
-                        I am open to internships and collaborative opportunities in software development, web
-                        development, and app-based innovation,
-                        where I can contribute meaningfully and continue to grow.
-                    </p>
+
+                    <div class="about-focus-panel">
+                        <span class="section-kicker">Direction</span>
+                        <h3>What I am building toward</h3>
+                        <div class="about-focus-list">
+                            <div>
+                                <i class="fas fa-brain"></i>
+                                <span>AI/ML systems</span>
+                                <p>Learning model building, automation, and practical AI product thinking.</p>
+                            </div>
+                            <div>
+                                <i class="fas fa-diagram-project"></i>
+                                <span>Engineering depth</span>
+                                <p>Practicing DSA, clean code, scalable structure, and dependable workflows.</p>
+                            </div>
+                            <div>
+                                <i class="fas fa-shield-halved"></i>
+                                <span>Security mindset</span>
+                                <p>Understanding how secure choices shape better software from the start.</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Education Section -->
                 <div class="education-container">
-                    <div class="about-header">
-                        <h2 class="about-arrow-header"> Education</h2>
+                    <div class="education-heading-row">
+                        <div class="about-header">
+                            <span class="section-kicker">Academic Path</span>
+                            <h2 class="about-arrow-header">Education</h2>
+                        </div>
+                        <p>Formal learning, strong fundamentals, and a practical engineering roadmap.</p>
                     </div>
 
                     <div class="education-content">
                         <!-- KIIT -->
                         <div class="education-item">
+                            <span class="education-year">2025 - 2029</span>
                             <h3>KIIT (Kalinga Institute of Industrial Technology) – Bhubaneswar</h3>
                             <p class="edu-degree">B.Tech in Computer Science / Information Technology (2029)</p>
                             <p class="edu-details"><strong>Relevant Coursework:</strong> Data Structures & Algorithms,
-                                Computer Networks, Database Management Systems, Web Technologies, Object-Oriented
-                                Programming.</p>
-                            <p class="edu-details"><strong>Academic Focus:</strong> Building a strong theoretical and
-                                practical foundation in software engineering principles.</p>
+                                Object-Oriented Programming, Computer Networks, Database Management Systems, Web
+                                Technologies, and core software engineering.</p>
+                            <p class="edu-details"><strong>Academic Focus:</strong> Building FAANG-level fundamentals in
+                                problem solving, clean engineering, AI/ML learning, and software engineering principles.</p>
                         </div>
 
                         <!-- Schools -->
                         <div class="education-item">
+                            <span class="education-year">2012 - 2025</span>
                             <h3>Schooling</h3>
-                            <p class="edu-details">Graduated from <strong>Beachwood School (CBSE)</strong> - 2025</p>
-                            <p class="edu-details">Graduated from <strong>St. Xavier's School (ICSE)</strong> - 2023</p>
+                            <p class="edu-details">Graduated from <strong>Beachwood School (CBSE - Higher Secondary)</strong> - 2025</p>
+                            <p class="edu-details">Graduated from <strong>St. Xavier's School (ICSE - Secondary Education)</strong> - 2023</p>
                         </div>
                     </div>
                 </div>
@@ -183,15 +345,19 @@
         <!-- Skills Section -->
         <section id="skills">
             <div class="about-wrapper">
-                <div class="about-header">
-                    <h2 class="about-arrow-header"> Skills</h2>
+                <div class="skills-header-panel">
+                    <div class="about-header">
+                        <span class="section-kicker">Capability Stack</span>
+                        <h2 class="about-arrow-header">Skills</h2>
+                    </div>
+                    <p>Tools and fundamentals I use to move from idea to working software: problem solving, product interfaces, AI learning, and security-aware engineering.</p>
                 </div>
 
                 <div class="about-content-row">
                     <!-- Skills Container -->
                     <div class="skills-grid-new">
                         <!-- Languages -->
-                        <div class="skill-pill" data-tilt>
+                        <div class="skill-pill" data-tilt tabindex="0">
                             <div class="pill-header">
                                 <i class="fas fa-code"></i>
                                 <h3>Languages</h3>
@@ -207,7 +373,7 @@
                         </div>
 
                         <!-- Web Development -->
-                        <div class="skill-pill" data-tilt>
+                        <div class="skill-pill" data-tilt tabindex="0">
                             <div class="pill-header">
                                 <i class="fas fa-globe"></i>
                                 <h3>Web Dev</h3>
@@ -222,7 +388,7 @@
                         </div>
 
                         <!-- App Development -->
-                        <div class="skill-pill" data-tilt>
+                        <div class="skill-pill" data-tilt tabindex="0">
                             <div class="pill-header">
                                 <i class="fas fa-mobile-alt"></i>
                                 <h3>App Dev</h3>
@@ -235,8 +401,23 @@
                             </div>
                         </div>
 
+                        <!-- AI / ML -->
+                        <div class="skill-pill" data-tilt tabindex="0">
+                            <div class="pill-header">
+                                <i class="fas fa-robot"></i>
+                                <h3>AI / ML Focus</h3>
+                            </div>
+                            <div class="pill-content">
+                                <span>Python for ML</span>
+                                <span>Data Analysis</span>
+                                <span>Model Building</span>
+                                <span>Automation</span>
+                                <span>AI Product Thinking</span>
+                            </div>
+                        </div>
+
                         <!-- UI/UX Design -->
-                        <div class="skill-pill" data-tilt>
+                        <div class="skill-pill" data-tilt tabindex="0">
                             <div class="pill-header">
                                 <i class="fas fa-pen-nib"></i>
                                 <h3>UI/UX Design</h3>
@@ -251,7 +432,7 @@
                         </div>
 
                         <!-- Databases -->
-                        <div class="skill-pill" data-tilt>
+                        <div class="skill-pill" data-tilt tabindex="0">
                             <div class="pill-header">
                                 <i class="fas fa-database"></i>
                                 <h3>Databases</h3>
@@ -263,7 +444,7 @@
                         </div>
 
                         <!-- Ethical Hacking -->
-                        <div class="skill-pill" data-tilt>
+                        <div class="skill-pill" data-tilt tabindex="0">
                             <div class="pill-header">
                                 <i class="fas fa-user-secret"></i>
                                 <h3>Ethical Hacking</h3>
@@ -278,7 +459,7 @@
                         </div>
 
                         <!-- Tools & Platforms -->
-                        <div class="skill-pill" data-tilt>
+                        <div class="skill-pill" data-tilt tabindex="0">
                             <div class="pill-header">
                                 <i class="fas fa-tools"></i>
                                 <h3>Tools</h3>
@@ -294,7 +475,7 @@
                         </div>
 
                         <!-- Concepts -->
-                        <div class="skill-pill" data-tilt>
+                        <div class="skill-pill" data-tilt tabindex="0">
                             <div class="pill-header">
                                 <i class="fas fa-brain"></i>
                                 <h3>Concepts</h3>
@@ -304,6 +485,8 @@
                                 <span>Data Structures</span>
                                 <span>Algorithms</span>
                                 <span>System Design</span>
+                                <span>Problem Solving</span>
+                                <span>Clean Code</span>
                             </div>
                         </div>
                     </div>
@@ -334,13 +517,108 @@
             </div>
         </section>
 
+        <!-- Coding Activity Section -->
+        <section id="activity">
+            <h2 class="section-title"><span style="margin-right: 0.5em;">Coding</span>Activity</h2>
+            <div class="activity-wrapper">
+                <article class="heatmap-card github-heatmap-card" data-tilt>
+                    <div class="heatmap-header">
+                        <div>
+                            <span class="heatmap-kicker">GitHub</span>
+                            <h3>Contribution Heatmap</h3>
+                        </div>
+                        <a href="https://github.com/nirmalya-ghosh" target="_blank" class="heatmap-link"
+                            aria-label="Open GitHub profile">
+                            <i class="fab fa-github"></i>
+                        </a>
+                    </div>
+                    <div class="heatmap-stats">
+                        <span><strong id="github-total">--</strong> contributions</span>
+                        <span>Last 12 months</span>
+                    </div>
+                    <div class="heatmap-insights">
+                        <span><strong id="github-active-days">--</strong> active days</span>
+                        <span><strong id="github-current-streak">--</strong> day streak</span>
+                    </div>
+                    <div class="github-metrics-panel">
+                        <span><strong id="github-density">--%</strong> consistency</span>
+                        <span><strong id="github-average">--</strong> avg / active day</span>
+                        <span><strong id="github-longest-streak">--</strong> longest streak</span>
+                        <span><strong id="github-best-day">--</strong> peak day</span>
+                        <span class="wide"><strong id="github-last-30">--</strong> contributions in the last 30 days</span>
+                    </div>
+                    <div id="github-months" class="heatmap-months" aria-hidden="true"></div>
+                    <div id="github-heatmap" class="contribution-heatmap is-loading" aria-label="GitHub contribution calendar">
+                    </div>
+                    <p id="github-focus" class="heatmap-focus">Hover a square to inspect a GitHub activity day.</p>
+                    <div class="heatmap-legend" aria-hidden="true">
+                        <span>Less</span>
+                        <i data-level="0"></i>
+                        <i data-level="1"></i>
+                        <i data-level="2"></i>
+                        <i data-level="3"></i>
+                        <i data-level="4"></i>
+                        <span>More</span>
+                    </div>
+                </article>
+
+                <article class="heatmap-card leetcode-heatmap-card" data-tilt>
+                    <div class="heatmap-header">
+                        <div>
+                            <span class="heatmap-kicker">LeetCode</span>
+                            <h3>Submission Heatmap</h3>
+                        </div>
+                        <a href="https://leetcode.com/u/nirmalya2127/" target="_blank" class="heatmap-link"
+                            aria-label="Open LeetCode profile">
+                            <img src="https://leetcode.com/static/images/LeetCode_logo_rvs.png" alt="" class="leetcode-logo">
+                        </a>
+                    </div>
+                    <div class="leetcode-overview">
+                        <button class="leetcode-progress-ring" type="button" aria-label="LeetCode solved progress">
+                            <span class="ring-center">
+                                <strong id="leetcode-total">--</strong>
+                                <span>Solved</span>
+                                <small><b id="leetcode-total-questions">--</b> total</small>
+                            </span>
+                        </button>
+                        <div class="leetcode-ring-legend" aria-label="LeetCode difficulty solved counts">
+                            <span class="easy"><i></i><strong id="leetcode-easy">--</strong> Easy</span>
+                            <span class="medium"><i></i><strong id="leetcode-medium">--</strong> Medium</span>
+                            <span class="hard"><i></i><strong id="leetcode-hard">--</strong> Hard</span>
+                        </div>
+                        <div class="leetcode-meta-panel">
+                            <span><strong id="leetcode-active-days">--</strong> active days</span>
+                            <span><strong id="leetcode-current-streak">--</strong> day streak</span>
+                            <span><strong id="leetcode-coverage">--%</strong> completion</span>
+                            <span><strong id="leetcode-rank">--</strong> rank</span>
+                            <span><strong id="leetcode-strongest">--</strong> strongest</span>
+                            <span><strong id="leetcode-difficulty-mix">--</strong> mix</span>
+                        </div>
+                    </div>
+                    <div id="leetcode-months" class="heatmap-months" aria-hidden="true"></div>
+                    <div id="leetcode-heatmap" class="contribution-heatmap is-loading" aria-label="LeetCode submission calendar">
+                    </div>
+                    <p id="leetcode-focus" class="heatmap-focus">Hover a square to inspect a LeetCode submission day.</p>
+                    <div class="heatmap-legend leetcode-legend" aria-hidden="true">
+                        <span>Less</span>
+                        <i data-level="0"></i>
+                        <i data-level="1"></i>
+                        <i data-level="2"></i>
+                        <i data-level="3"></i>
+                        <i data-level="4"></i>
+                        <span>More</span>
+                    </div>
+                </article>
+            </div>
+        </section>
+
         <!-- Connect Section -->
         <section id="projects">
             <h2 class="section-title"><span style="margin-right: 0.5em;">Latest</span>Projects</h2>
             <div class="projects-wrapper">
                 <div class="projects-horizontal-track">
                     <!-- Github -->
-                    <a href="https://github.com/TyphoonCoder2007?tab=repositories" target="_blank"
+                    <a href="https://github.com/nirmalya-ghosh?tab=repositories" target="_blank"
                         class="project-card card-github" data-tilt>
                         <div class="icon-circle"><i class="fab fa-github"></i></div>
                         <h3>Github Repos</h3>
@@ -360,7 +638,8 @@
                     <!-- LeetCode -->
                     <a href="https://leetcode.com/progress/" target="_blank" class="project-card card-leetcode"
                         data-tilt>
-                        <div class="icon-circle"><i class="fas fa-code"></i></div>
+                        <div class="icon-circle"><img src="https://leetcode.com/static/images/LeetCode_logo_rvs.png"
+                                alt="" class="leetcode-logo"></div>
                         <h3>LeetCode Progress</h3>
                         <p>Algorithmic problem solving, data structures, and coding achievements.</p>
                         <div class="view-project">View Project <i class="fas fa-external-link-alt"></i></div>
@@ -372,77 +651,93 @@
         <!-- Contact Section -->
         <section id="contact">
             <div class="container">
-                <h2 class="section-title">
-                    <span style="margin-right: 0.5em;">Get</span>
-                    <span style="margin-right: 0.5em;">In</span>
-                    Touch
-                </h2>
                 <div class="contact-wrapper">
-                    <div class="contact-info-center">
-                        <p class="contact-intro">I’m open to opportunities in software engineering, backend development,
-                            and AI-driven products. If you’re looking for someone who writes clean, scalable code and
-                            enjoys building real-world solutions, feel free to reach out. I also collaborate on
-                            impactful tech projects, research ideas, and internship opportunities.</p>
+                    <div class="contact-copy-panel">
+                        <span class="section-kicker">Open for work</span>
+                        <h2 class="section-title">Get In Touch</h2>
+                        <div class="contact-typewriter terminal-typewriter-line" aria-live="off">
+                            <span class="terminal-prompt">availability:</span>
+                            <span id="contact-typewriter-text" class="typewriter-dynamic"></span>
+                            <span class="typewriter-caret" aria-hidden="true"></span>
+                        </div>
+                        <p class="contact-intro">I’m ready to join for internships and open to opportunities in
+                            <strong>AI/ML, software engineering, intelligent web products, and cybersecurity-aware
+                                development</strong>. If you’re looking for someone who learns fast, writes clean code,
+                            practices DSA, understands fundamentals, and wants to grow toward big-tech engineering
+                            standards, feel free to reach out for internships,
+                            collaborations, research ideas, or impactful technical projects.</p>
+
+                        <div class="contact-highlights" aria-label="Collaboration interests">
+                            <span><i class="fas fa-briefcase"></i> Internships</span>
+                            <span><i class="fas fa-laptop-code"></i> Projects</span>
+                            <span><i class="fas fa-flask"></i> Research ideas</span>
+                        </div>
 
                         <div class="contact-grid">
                             <!-- Phone -->
                             <a href="tel:+918967836222" class="contact-box" aria-label="Phone">
                                 <i class="fas fa-phone"></i>
+                                <span>Phone</span>
                             </a>
 
                             <!-- LinkedIn -->
                             <a href="https://www.linkedin.com/in/nirmalya-ghosh-422569377/" target="_blank"
                                 class="contact-box" aria-label="LinkedIn">
                                 <i class="fab fa-linkedin-in"></i>
+                                <span>LinkedIn</span>
                             </a>
 
                             <!-- Email -->
                             <a href="mailto:nirmalyaghosh2127@gmail.com" class="contact-box" aria-label="Email">
                                 <i class="fas fa-envelope"></i>
+                                <span>Email</span>
                             </a>
 
                             <!-- GitHub -->
-                            <a href="https://github.com/TyphoonCoder2007" target="_blank" class="contact-box"
+                            <a href="https://github.com/nirmalya-ghosh" target="_blank" class="contact-box"
                                 aria-label="GitHub">
                                 <i class="fab fa-github"></i>
+                                <span>GitHub</span>
                             </a>
 
                             <!-- WhatsApp -->
                             <a href="https://wa.me/918967836222" target="_blank" class="contact-box"
                                 aria-label="WhatsApp">
                                 <i class="fab fa-whatsapp"></i>
+                                <span>WhatsApp</span>
                             </a>
                         </div>
+                    </div>
 
-                        <!-- Message Box / Contact Form -->
-                        <div class="form-container">
-                            <form id="contactForm" action="https://formsubmit.co/nirmalyaghosh2127@gmail.com"
-                                method="POST">
-                                <!-- Hidden Configuration -->
-                                <input type="hidden" name="_captcha" value="false">
-                                <input type="hidden" name="_template" value="table">
-                                <input type="hidden" name="_subject" value="New Portfolio Message!">
+                    <!-- Message Box / Contact Form -->
+                    <div class="form-container contact-form-panel">
+                        <span class="section-kicker">Message Console</span>
+                        <form id="contactForm" action="https://formsubmit.co/nirmalyaghosh2127@gmail.com"
+                            method="POST">
+                            <!-- Hidden Configuration -->
+                            <input type="hidden" name="_captcha" value="false">
+                            <input type="hidden" name="_template" value="table">
+                            <input type="hidden" name="_subject" value="New Portfolio Message!">
 
-                                <div class="form-group">
-                                    <input type="text" id="name" name="name" placeholder=" " required>
-                                    <label for="name">Name</label>
-                                </div>
-                                <div class="form-group">
-                                    <input type="email" id="email" name="email" placeholder=" " required>
-                                    <label for="email">Your Email</label>
-                                </div>
-                                <div class="form-group">
-                                    <input type="text" id="subject" name="subject" placeholder=" " required>
-                                    <label for="subject">Subject</label>
-                                </div>
-                                <div class="form-group">
-                                    <textarea id="message" name="message" rows="5" placeholder=" " required></textarea>
-                                    <label for="message">Message</label>
-                                </div>
-                                <button type="submit" class="cta-button">Send Message <i
-                                        class="fas fa-paper-plane"></i></button>
-                            </form>
-                        </div>
+                            <div class="form-group">
+                                <input type="text" id="name" name="name" placeholder=" " required>
+                                <label for="name">Name</label>
+                            </div>
+                            <div class="form-group">
+                                <input type="email" id="email" name="email" placeholder=" " required>
+                                <label for="email">Your Email</label>
+                            </div>
+                            <div class="form-group">
+                                <input type="text" id="subject" name="subject" placeholder=" " required>
+                                <label for="subject">Subject</label>
+                            </div>
+                            <div class="form-group">
+                                <textarea id="message" name="message" rows="5" placeholder=" " required></textarea>
+                                <label for="message">Message</label>
+                            </div>
+                            <button type="submit" class="cta-button submit-btn">Send Message <i
+                                    class="fas fa-paper-plane"></i></button>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -450,7 +745,7 @@
     </main>
 
     <footer>
-        <p>Designed & Built by Nirmalya Ghosh &copy; 2025</p>
+        <p>Designed & Built by Nirmalya Ghosh &copy; 2026</p>
         <a href="#hero" class="back-to-top" aria-label="Back to top"><i class="fas fa-arrow-up"></i></a>
     </footer>
 

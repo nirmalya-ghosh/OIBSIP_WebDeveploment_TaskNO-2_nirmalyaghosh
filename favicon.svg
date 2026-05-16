@@ -1,10 +1,13 @@
 <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect width="64" height="64" rx="20" fill="url(#paint0_linear)"/>
-<text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" font-family="'Times New Roman', serif" font-weight="bold" font-size="42" fill="white">N</text>
-<defs>
-<linearGradient id="paint0_linear" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
-<stop stop-color="#FF5722"/>
-<stop offset="1" stop-color="#FF9100"/>
-</linearGradient>
-</defs>
+  <rect width="64" height="64" rx="10" fill="#02080D"/>
+  <rect width="64" height="64" fill="url(#glow)"/>
+  <text x="7" y="41" font-family="Poppins, Arial, sans-serif" font-size="30" font-weight="900" letter-spacing="-2" fill="#EAF2FB">NG</text>
+  <circle cx="53" cy="42" r="4" fill="#2DF5B7"/>
+  <defs>
+    <radialGradient id="glow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(45 14) rotate(133) scale(58 52)">
+      <stop stop-color="#102334"/>
+      <stop offset="0.56" stop-color="#07111F" stop-opacity="0.72"/>
+      <stop offset="1" stop-color="#02080D" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
 </svg>
