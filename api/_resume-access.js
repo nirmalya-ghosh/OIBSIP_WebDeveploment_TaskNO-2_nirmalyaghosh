@@ -1,7 +1,7 @@
 const crypto = require('crypto');
 
 const OWNER_EMAIL = 'nirmalyaghosh2127@gmail.com';
-const FROM_EMAIL = 'Portfolio Access <onboarding@resend.dev>';
+const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || 'Portfolio Access <onboarding@resend.dev>';
 const RESUME_URL = 'https://drive.google.com/file/d/11PAPOiUQRf-lMziJCz0ROhQoja_QhBSx/view?usp=sharing';
 const OTP_EXPIRY_MS = 10 * 60 * 1000;
 
@@ -94,7 +94,11 @@ const sendEmail = async ({ to, subject, html, replyTo }) => {
 
     const result = await response.json();
     if (!response.ok) {
-        throw new Error(result?.message || 'Email could not be sent.');
+        const message = result?.message || 'Email could not be sent.';
+        if (message.includes('onboarding@resend.dev') || message.includes('resend.dev')) {
+            throw new Error('Email sending is in Resend test mode. Verify a domain in Resend and set RESEND_FROM_EMAIL in Vercel to send OTPs to any address.');
+        }
+        throw new Error(message);
     }
     return result;
 };

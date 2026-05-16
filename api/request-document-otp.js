@@ -41,6 +41,8 @@ module.exports = async (request, response) => {
     const expiresAt = new Date(Date.now() + OTP_EXPIRY_MS).toISOString();
     const requestToken = createToken();
 
+    let requestRecordId = '';
+
     try {
         const [record] = await supabaseFetch('resume_access_requests', {
             method: 'POST',
@@ -56,6 +58,7 @@ module.exports = async (request, response) => {
                 requested_document: 'resume'
             })
         });
+        requestRecordId = record.id;
 
         const html = `
             <div style="font-family:Arial,sans-serif;line-height:1.6;color:#111827">
@@ -79,6 +82,17 @@ module.exports = async (request, response) => {
             expiresAt
         });
     } catch (error) {
+        if (requestRecordId) {
+            try {
+                await supabaseFetch(`resume_access_requests?id=eq.${encodeURIComponent(requestRecordId)}`, {
+                    method: 'PATCH',
+                    headers: { Prefer: 'return=minimal' },
+                    body: JSON.stringify({ status: 'expired' })
+                });
+            } catch (_) {
+                // Best-effort cleanup only.
+            }
+        }
         return sendJson(response, 502, { error: error.message || 'OTP could not be sent.' });
     }
 };

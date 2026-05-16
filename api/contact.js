@@ -1,5 +1,5 @@
 const CONTACT_RECIPIENT = 'nirmalyaghosh2127@gmail.com';
-const FROM_EMAIL = 'Portfolio Contact <onboarding@resend.dev>';
+const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || 'Portfolio Contact <onboarding@resend.dev>';
 
 const sendJson = (response, statusCode, payload) => {
     response.statusCode = statusCode;
