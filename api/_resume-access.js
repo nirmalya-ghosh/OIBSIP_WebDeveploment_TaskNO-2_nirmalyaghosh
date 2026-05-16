@@ -3,8 +3,10 @@ const nodemailer = require('nodemailer');
 
 const OWNER_EMAIL = 'nirmalyaghosh2127@gmail.com';
 const FROM_EMAIL = process.env.SMTP_FROM || 'Portfolio Verification <nirmalyaghosh2127@gmail.com>';
-const RESUME_URL = 'https://drive.google.com/file/d/11PAPOiUQRf-lMziJCz0ROhQoja_QhBSx/view?usp=sharing';
 const OTP_EXPIRY_MS = 10 * 60 * 1000;
+const RESUME_BUCKET = process.env.RESUME_BUCKET || 'private-resume';
+const RESUME_FILE = process.env.RESUME_FILE || 'nirmalya-ghosh-resume.pdf';
+const RESUME_SIGNED_URL_SECONDS = Number(process.env.RESUME_SIGNED_URL_SECONDS || 300);
 
 const sendJson = (response, statusCode, payload) => {
     response.statusCode = statusCode;
@@ -74,6 +76,40 @@ const supabaseFetch = async (path, options = {}) => {
     return data;
 };
 
+const supabaseStorageFetch = async (path, options = {}) => {
+    const { url, key } = ensureSupabaseConfig();
+    const response = await fetch(`${url.replace(/\/$/, '')}/storage/v1/${path}`, {
+        ...options,
+        headers: {
+            apikey: key,
+            Authorization: `Bearer ${key}`,
+            ...(options.body instanceof Buffer ? {} : { 'Content-Type': 'application/json' }),
+            ...(options.headers || {})
+        }
+    });
+
+    const text = await response.text();
+    const data = text ? JSON.parse(text) : null;
+    if (!response.ok) {
+        throw new Error(data?.message || data?.error || 'Supabase storage request failed.');
+    }
+    return data;
+};
+
+const createResumeSignedUrl = async () => {
+    const { url } = ensureSupabaseConfig();
+    const encodedPath = RESUME_FILE.split('/').map(encodeURIComponent).join('/');
+    const result = await supabaseStorageFetch(`object/sign/${encodeURIComponent(RESUME_BUCKET)}/${encodedPath}`, {
+        method: 'POST',
+        body: JSON.stringify({
+            expiresIn: RESUME_SIGNED_URL_SECONDS
+        })
+    });
+    const signedPath = result.signedURL || result.signedUrl || result.url;
+    if (!signedPath) throw new Error('Resume signed URL could not be created.');
+    return signedPath.startsWith('http') ? signedPath : `${url.replace(/\/$/, '')}/storage/v1${signedPath}`;
+};
+
 let smtpTransporter;
 
 const getSmtpTransporter = () => {
@@ -137,7 +173,10 @@ const verifyTurnstile = async (request, token) => {
 module.exports = {
     OWNER_EMAIL,
     OTP_EXPIRY_MS,
-    RESUME_URL,
+    RESUME_BUCKET,
+    RESUME_FILE,
+    RESUME_SIGNED_URL_SECONDS,
+    createResumeSignedUrl,
     createToken,
     escapeHtml,
     getBaseUrl,

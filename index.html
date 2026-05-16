@@ -218,6 +218,26 @@
         </div>
     </div>
 
+    <div id="resume-viewer-modal" class="resume-viewer-modal" role="dialog" aria-modal="true"
+        aria-labelledby="resume-viewer-title" aria-hidden="true">
+        <div class="resume-viewer-panel">
+            <div class="resume-viewer-header">
+                <div>
+                    <span class="section-kicker">Approved Access</span>
+                    <h3 id="resume-viewer-title">Resume Viewer</h3>
+                    <p id="resume-viewer-note">Temporary secure access is active.</p>
+                </div>
+                <button type="button" class="resume-viewer-close" aria-label="Close resume viewer">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="resume-viewer-frame-wrap">
+                <iframe id="resume-viewer-frame" class="resume-viewer-frame" title="Nirmalya Ghosh Resume"></iframe>
+                <div id="resume-viewer-watermark" class="resume-viewer-watermark" aria-hidden="true"></div>
+            </div>
+        </div>
+    </div>
+
     <!-- 3D Canvas -->
     <div id="canvas-container"></div>
 

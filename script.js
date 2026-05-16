@@ -763,6 +763,11 @@ const initDocumentGate = () => {
     const otpInput = document.getElementById('document-otp');
     const sendOtpButton = document.getElementById('document-send-otp');
     const otpStatus = document.getElementById('document-otp-status');
+    const resumeViewerModal = document.getElementById('resume-viewer-modal');
+    const resumeViewerFrame = document.getElementById('resume-viewer-frame');
+    const resumeViewerNote = document.getElementById('resume-viewer-note');
+    const resumeViewerWatermark = document.getElementById('resume-viewer-watermark');
+    const resumeViewerClose = resumeViewerModal?.querySelector('.resume-viewer-close');
 
     if (!links.length || !modal || !form || !closeButton || !turnstileElement || !submitButton) return;
     const submitButtonOriginalHtml = submitButton.innerHTML;
@@ -810,9 +815,36 @@ const initDocumentGate = () => {
         submitButton.innerHTML = 'Approved. Opening Resume <i class="fas fa-spinner fa-spin"></i>';
 
         window.setTimeout(() => {
-            window.open(url, '_blank', 'noopener,noreferrer');
+            openResumeViewer(url, verifiedOtpEmail);
             setOpen(false);
         }, 1400);
+    };
+
+    const openResumeViewer = (url, email) => {
+        if (!resumeViewerModal || !resumeViewerFrame) {
+            window.location.href = url;
+            return;
+        }
+
+        const viewerUrl = `${url}#toolbar=0&navpanes=0&scrollbar=1`;
+        resumeViewerFrame.src = viewerUrl;
+        if (resumeViewerNote) resumeViewerNote.textContent = 'Temporary secure access is active. Download controls are hidden where the browser allows it.';
+        if (resumeViewerWatermark) {
+            const watermark = `Verified for ${email}`;
+            resumeViewerWatermark.textContent = watermark;
+            resumeViewerWatermark.dataset.watermark = watermark;
+        }
+        resumeViewerModal.classList.add('active');
+        resumeViewerModal.setAttribute('aria-hidden', 'false');
+        document.body.classList.add('modal-open');
+    };
+
+    const closeResumeViewer = () => {
+        if (!resumeViewerModal) return;
+        resumeViewerModal.classList.remove('active');
+        resumeViewerModal.setAttribute('aria-hidden', 'true');
+        document.body.classList.remove('modal-open');
+        if (resumeViewerFrame) resumeViewerFrame.src = 'about:blank';
     };
 
     const startApprovalPolling = ({ requestId, email }) => {
@@ -974,13 +1006,18 @@ const initDocumentGate = () => {
     });
 
     closeButton.addEventListener('click', () => setOpen(false));
+    resumeViewerClose?.addEventListener('click', closeResumeViewer);
 
     modal.addEventListener('click', event => {
         if (event.target === modal) setOpen(false);
     });
+    resumeViewerModal?.addEventListener('click', event => {
+        if (event.target === resumeViewerModal) closeResumeViewer();
+    });
 
     window.addEventListener('keydown', event => {
         if (event.key === 'Escape' && modal.classList.contains('active')) setOpen(false);
+        if (event.key === 'Escape' && resumeViewerModal?.classList.contains('active')) closeResumeViewer();
     });
 
     form.addEventListener('submit', async event => {

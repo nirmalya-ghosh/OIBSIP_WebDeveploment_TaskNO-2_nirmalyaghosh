@@ -8475,6 +8475,112 @@ footer {
     }
 }
 
+.resume-viewer-modal {
+    align-items: center;
+    background: rgba(2, 6, 23, 0.82);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    display: flex;
+    inset: 0;
+    justify-content: center;
+    opacity: 0;
+    padding: 1rem;
+    pointer-events: none;
+    position: fixed;
+    transition: opacity 0.25s ease;
+    z-index: 20010;
+}
+
+.resume-viewer-modal.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.resume-viewer-panel {
+    background: linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(8, 15, 28, 0.9));
+    border: 1px solid rgba(125, 211, 252, 0.22);
+    border-radius: 22px;
+    box-shadow: 0 34px 90px rgba(0, 0, 0, 0.5);
+    display: grid;
+    gap: 1rem;
+    grid-template-rows: auto minmax(0, 1fr);
+    height: min(92vh, 920px);
+    overflow: hidden;
+    padding: 1rem;
+    width: min(94vw, 980px);
+}
+
+.resume-viewer-header {
+    align-items: center;
+    display: flex;
+    gap: 1rem;
+    justify-content: space-between;
+}
+
+.resume-viewer-header h3 {
+    color: #f8fafc;
+    font-size: clamp(1.35rem, 3vw, 2rem);
+    line-height: 1;
+    margin: 0.25rem 0 0.3rem;
+}
+
+.resume-viewer-header p {
+    color: #b9c7d8;
+    font-size: 0.85rem;
+    margin: 0;
+}
+
+.resume-viewer-close {
+    align-items: center;
+    background: rgba(15, 23, 42, 0.76);
+    border: 1px solid rgba(94, 234, 212, 0.24);
+    border-radius: 14px;
+    color: #5eead4;
+    cursor: pointer;
+    display: inline-flex;
+    flex: 0 0 auto;
+    height: 42px;
+    justify-content: center;
+    width: 42px;
+}
+
+.resume-viewer-frame-wrap {
+    background: rgba(2, 6, 23, 0.6);
+    border: 1px solid rgba(148, 163, 184, 0.16);
+    border-radius: 16px;
+    min-height: 0;
+    overflow: hidden;
+    position: relative;
+}
+
+.resume-viewer-frame {
+    border: 0;
+    height: 100%;
+    width: 100%;
+}
+
+.resume-viewer-watermark {
+    color: rgba(15, 23, 42, 0.32);
+    display: grid;
+    font-size: clamp(1rem, 2.8vw, 2.4rem);
+    font-weight: 900;
+    inset: 0;
+    place-items: center;
+    letter-spacing: 0.04em;
+    pointer-events: none;
+    position: absolute;
+    text-align: center;
+    text-transform: uppercase;
+    transform: rotate(-24deg);
+    user-select: none;
+    z-index: 2;
+}
+
+.resume-viewer-watermark::before,
+.resume-viewer-watermark::after {
+    content: none;
+}
+
 /* Smoothness/performance pass */
 #scroll-progress {
     will-change: transform;
