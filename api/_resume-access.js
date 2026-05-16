@@ -95,7 +95,11 @@ const sendEmail = async ({ to, subject, html, replyTo }) => {
     const result = await response.json();
     if (!response.ok) {
         const message = result?.message || 'Email could not be sent.';
-        if (message.includes('onboarding@resend.dev') || message.includes('resend.dev')) {
+        if (
+            message.includes('onboarding@resend.dev') ||
+            message.includes('resend.dev') ||
+            message.includes('You can only send testing emails')
+        ) {
             throw new Error('Email sending is in Resend test mode. Verify a domain in Resend and set RESEND_FROM_EMAIL in Vercel to send OTPs to any address.');
         }
         throw new Error(message);
