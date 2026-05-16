@@ -6,6 +6,16 @@ const PROFILE_CONFIG = {
     analyticsEndpoint: ""
 };
 
+const PERF_CONFIG = {
+    isCoarsePointer: window.matchMedia('(pointer: coarse)').matches,
+    isSmallScreen: window.matchMedia('(max-width: 900px)').matches,
+    reducedMotion: window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+    lowMemory: navigator.deviceMemory && navigator.deviceMemory <= 4
+};
+
+const allowEnhancedMotion = () =>
+    !PERF_CONFIG.reducedMotion && !PERF_CONFIG.isCoarsePointer && !PERF_CONFIG.isSmallScreen && !PERF_CONFIG.lowMemory;
+
 const splitTextToSpans = () => {
     // Kept as a safe hook for the existing GSAP setup.
 };
@@ -28,12 +38,13 @@ const animateCount = (element, target, options = {}) => {
 
 const initTilt = () => {
     if (typeof VanillaTilt === 'undefined') return;
+    if (!allowEnhancedMotion()) return;
 
-    VanillaTilt.init(document.querySelectorAll('[data-tilt]'), {
-        max: 12,
-        speed: 500,
-        glare: true,
-        "max-glare": 0.18
+    VanillaTilt.init(document.querySelectorAll('.hero-img, .project-card[data-tilt]'), {
+        max: 6,
+        speed: 420,
+        glare: false,
+        scale: 1.01
     });
 };
 
@@ -97,6 +108,7 @@ const initActiveNav = () => {
 
     if (!sections.length) return;
 
+    let ticking = false;
     const updateActiveLink = () => {
         const current = sections.reduce((active, section) => {
             const rect = section.getBoundingClientRect();
@@ -107,9 +119,17 @@ const initActiveNav = () => {
             link.classList.toggle('active', link.getAttribute('href') === `#${current.id}`);
         });
     };
+    const requestUpdate = () => {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(() => {
+            updateActiveLink();
+            ticking = false;
+        });
+    };
 
     updateActiveLink();
-    window.addEventListener('scroll', updateActiveLink, { passive: true });
+    window.addEventListener('scroll', requestUpdate, { passive: true });
 };
 
 const initDigitalClock = () => {
@@ -913,16 +933,27 @@ const initCursor = () => {
 
 // Scroll Progress (GSAP Optimized)
 const initScrollProgress = () => {
-    gsap.to("#scroll-progress", {
-        width: "100%",
-        ease: "none",
-        scrollTrigger: {
-            trigger: "body",
-            start: "top top",
-            end: "bottom bottom",
-            scrub: 0
+    const progress = document.getElementById('scroll-progress');
+    if (!progress) return;
+
+    let ticking = false;
+    const update = () => {
+        const scrollTop = window.scrollY || document.documentElement.scrollTop;
+        const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+        progress.style.transform = `scaleX(${Math.min(1, scrollTop / maxScroll)})`;
+        ticking = false;
+    };
+
+    progress.style.transformOrigin = 'left center';
+    progress.style.width = '100%';
+    progress.style.transform = 'scaleX(0)';
+    window.addEventListener('scroll', () => {
+        if (!ticking) {
+            ticking = true;
+            requestAnimationFrame(update);
         }
-    });
+    }, { passive: true });
+    update();
 };
 
 // Mobile Menu
@@ -1122,7 +1153,10 @@ class AntigravityElement {
 const physicsWorld = {
     elements: [],
     lastTime: performance.now(),
+    started: false,
     init() {
+        if (this.started) return;
+        this.started = true;
         // Start Loop
         const loop = (time) => {
             const dt = Math.min((time - this.lastTime) / 1000, 0.1);
@@ -1139,6 +1173,7 @@ const physicsWorld = {
 
 // Replace old Magnetic function
 const initMagneticButtons = () => {
+    if (!allowEnhancedMotion()) return;
     physicsWorld.init();
 
     // Interactive Magnets
@@ -1174,17 +1209,17 @@ window.addEventListener('load', () => {
         }, 100);
     }
 
-    // Advanced Lenis Setup for Maximum Smoothness
-    if (typeof Lenis !== 'undefined') {
+    // Desktop-only smooth scroll. Native scrolling is faster on mobile Chrome.
+    if (typeof Lenis !== 'undefined' && allowEnhancedMotion()) {
         const lenis = new Lenis({
-            duration: 2.0, // Ultra Smooth Setting
+            duration: 0.85,
             easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
             direction: 'vertical',
             gestureDirection: 'vertical',
             smooth: true,
-            mouseMultiplier: 0.8, // Smoother control
+            mouseMultiplier: 1,
             smoothTouch: false,
-            touchMultiplier: 2,
+            touchMultiplier: 1.35,
         });
 
         // Sync Lenis with ScrollTrigger
@@ -1194,9 +1229,14 @@ window.addEventListener('load', () => {
             lenis.raf(time * 1000);
         });
 
-        gsap.ticker.lagSmoothing(0);
+        gsap.ticker.lagSmoothing(500, 33);
 
         // Global ScrollTrigger Optimization
+        ScrollTrigger.defaults({
+            fastScrollEnd: true,
+            preventOverlaps: true
+        });
+    } else if (typeof ScrollTrigger !== 'undefined') {
         ScrollTrigger.defaults({
             fastScrollEnd: true,
             preventOverlaps: true
@@ -1237,41 +1277,44 @@ document.addEventListener('DOMContentLoaded', () => {
 // Advanced GSAP Animations
 const initAdvancedAnimations = () => {
     gsap.registerPlugin(ScrollTrigger);
+    const lightweightMotion = !allowEnhancedMotion();
 
     gsap.from(".hero-greeting, .hero-name, .hero-role, .hero-buttons .cta-button", {
         opacity: 0,
-        y: 28,
-        duration: 0.9,
-        stagger: 0.12,
+        y: lightweightMotion ? 10 : 28,
+        duration: lightweightMotion ? 0.35 : 0.9,
+        stagger: lightweightMotion ? 0.04 : 0.12,
         ease: "power3.out"
     });
 
     gsap.from(".hero-image-wrapper", {
         opacity: 0,
-        scale: 0.94,
-        y: 24,
-        duration: 1,
+        scale: lightweightMotion ? 1 : 0.94,
+        y: lightweightMotion ? 8 : 24,
+        duration: lightweightMotion ? 0.35 : 1,
         ease: "power3.out"
     });
 
     // 0. Text Reveals
-    splitTextToSpans('.section-title, .about-arrow-header');
+    if (!lightweightMotion) {
+        splitTextToSpans('.section-title, .about-arrow-header');
 
-    document.querySelectorAll('.section-title, .about-arrow-header').forEach(title => {
-        const chars = title.querySelectorAll('span');
-        gsap.from(chars, {
-            scrollTrigger: {
-                trigger: title,
-                start: "top 80%",
-            },
-            opacity: 0,
-            y: 50,
-            rotateX: -90,
-            stagger: 0.1, // Slower stagger
-            duration: 1,
-            ease: "back.out(1.7)"
+        document.querySelectorAll('.section-title, .about-arrow-header').forEach(title => {
+            const chars = title.querySelectorAll('span');
+            gsap.from(chars, {
+                scrollTrigger: {
+                    trigger: title,
+                    start: "top 80%",
+                },
+                opacity: 0,
+                y: 50,
+                rotateX: -90,
+                stagger: 0.1,
+                duration: 1,
+                ease: "back.out(1.7)"
+            });
         });
-    });
+    }
 
     // 1. Responsive Layout Logic
     const handleLayout = () => {
@@ -1311,25 +1354,26 @@ const initAdvancedAnimations = () => {
         gsap.set(".hero-image-wrapper", { opacity: 1, y: 0, scale: 1, visibility: "visible", clearProps: "transform" });
     });
 
-    // Section Reveals
-    const sections = document.querySelectorAll("#about, #skills, #activity, #projects, #contact");
-    sections.forEach(section => {
-        gsap.fromTo(section, {
-            opacity: 0,
-            y: 50
-        }, {
-            scrollTrigger: {
-                trigger: section,
-                start: "top 80%",
-                end: "top 50%",
-                toggleActions: "play none none reverse"
-            },
-            opacity: 1,
-            y: 0,
-            duration: 1,
-            ease: "power2.out"
+    if (!lightweightMotion) {
+        // Section Reveals
+        const sections = document.querySelectorAll("#about, #skills, #activity, #projects, #contact");
+        sections.forEach(section => {
+            gsap.fromTo(section, {
+                opacity: 0,
+                y: 42
+            }, {
+                scrollTrigger: {
+                    trigger: section,
+                    start: "top 85%",
+                    toggleActions: "play none none none"
+                },
+                opacity: 1,
+                y: 0,
+                duration: 0.7,
+                ease: "power2.out"
+            });
         });
-    });
+    }
 
     gsap.utils.toArray(".education-content, .skills-grid-new").forEach(timeline => {
         ScrollTrigger.create({
@@ -1340,19 +1384,22 @@ const initAdvancedAnimations = () => {
         });
     });
 
-    // Staggered Animations (Updated)
-    gsap.utils.toArray(".glossy-card, .project-card, .heatmap-card, .contact-pill, .skill-item").forEach(el => {
-        gsap.from(el, {
-            scrollTrigger: {
-                trigger: el,
-                start: "top 90%",
-            },
-            y: 30,
-            opacity: 0,
-            duration: 0.6,
-            ease: "back.out(1.7)"
+    if (!lightweightMotion) {
+        // Staggered Animations (Updated)
+        gsap.utils.toArray(".glossy-card, .project-card, .heatmap-card, .contact-pill, .skill-item").forEach(el => {
+            gsap.from(el, {
+                scrollTrigger: {
+                    trigger: el,
+                    start: "top 92%",
+                    once: true
+                },
+                y: 24,
+                opacity: 0,
+                duration: 0.45,
+                ease: "power2.out"
+            });
         });
-    });
+    }
 };
 
 // Initialization

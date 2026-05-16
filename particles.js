@@ -7,6 +7,14 @@ const initParticles = () => {
     const container = document.getElementById('canvas-container');
     if (!container) return;
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (window.matchMedia('(max-width: 900px), (pointer: coarse)').matches) {
+        container.remove();
+        return;
+    }
+    if (navigator.deviceMemory && navigator.deviceMemory <= 4) {
+        container.remove();
+        return;
+    }
 
     // SCENE SETUP
     const scene = new THREE.Scene();
@@ -16,15 +24,19 @@ const initParticles = () => {
     camera.position.z = 100;
 
     // RENDERER
-    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    const renderer = new THREE.WebGLRenderer({
+        alpha: true,
+        antialias: false,
+        powerPreference: 'low-power'
+    });
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Limit pixel ratio for performance
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.25));
     container.innerHTML = ''; // Clear existing
     container.appendChild(renderer.domElement);
 
     // PARTICLES CONFIG
-    const particleCount = window.innerWidth < 900 ? 32 : 88;
-    const connectionDistance = window.innerWidth < 900 ? 86 : 118;
+    const particleCount = 44;
+    const connectionDistance = 108;
     const particles = [];
     const particleGeometry = new THREE.BufferGeometry();
     const particlePositions = new Float32Array(particleCount * 3);
@@ -50,7 +62,7 @@ const initParticles = () => {
     // MATERIAL
     const particleMaterial = new THREE.PointsMaterial({
         color: 0x20f7b4,
-        size: window.innerWidth < 900 ? 2.8 : 3.6,
+        size: 3.1,
         map: createCircleTexture(),
         alphaTest: 0.5, // Discard transparent pixels
         transparent: true,
@@ -109,8 +121,12 @@ const initParticles = () => {
     }, { passive: true });
 
     // ANIMATION LOOP
-    const animate = () => {
+    let lastFrame = 0;
+    const frameInterval = 1000 / 30;
+    const animate = (time = 0) => {
         requestAnimationFrame(animate);
+        if (document.hidden || time - lastFrame < frameInterval) return;
+        lastFrame = time;
 
         targetX = mouseX * 0.001;
         targetY = mouseY * 0.001;
@@ -163,29 +179,6 @@ const initParticles = () => {
             }
 
             // MOUSE INTERACTION: Connect to mouse
-            const mouseVec = new THREE.Vector3(
-                (mouseX / windowHalfX) * 120,
-                -(mouseY / windowHalfY) * 100,
-                0
-            );
-
-            const dxM = p.x - mouseVec.x;
-            const dyM = p.y - mouseVec.y;
-            const distMouseSq = dxM * dxM + dyM * dyM;
-            const mouseConnectDist = 150;
-
-            if (distMouseSq < mouseConnectDist * mouseConnectDist) {
-                const lPos = linePosAttrib.array;
-                if (lineVertexIndex < linePositions.length - 6) {
-                    lPos[lineVertexIndex++] = p.x;
-                    lPos[lineVertexIndex++] = p.y;
-                    lPos[lineVertexIndex++] = p.z;
-
-                    lPos[lineVertexIndex++] = mouseVec.x;
-                    lPos[lineVertexIndex++] = mouseVec.y;
-                    lPos[lineVertexIndex++] = p.z;
-                }
-            }
         }
 
         particlesMesh.geometry.attributes.position.needsUpdate = true;
@@ -200,11 +193,15 @@ const initParticles = () => {
     animate();
 
     // RESIZE HANDLER
+    let resizeTimer;
     window.addEventListener('resize', () => {
+        window.clearTimeout(resizeTimer);
+        resizeTimer = window.setTimeout(() => {
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
         renderer.setSize(window.innerWidth, window.innerHeight);
-    });
+        }, 120);
+    }, { passive: true });
 };
 
 // Auto-init if DOM ready, else wait

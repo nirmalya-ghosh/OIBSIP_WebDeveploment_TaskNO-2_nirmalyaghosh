@@ -8372,6 +8372,72 @@ footer {
     opacity: 0.72;
 }
 
+/* Smoothness/performance pass */
+#scroll-progress {
+    will-change: transform;
+}
+
+@media (max-width: 900px), (pointer: coarse) {
+    html,
+    body {
+        scroll-behavior: auto !important;
+    }
+
+    #canvas-container,
+    .cursor-dot,
+    .cursor-outline {
+        display: none !important;
+    }
+
+    .hero-text,
+    .hero-image-wrapper,
+    .about-story-panel,
+    .about-focus-panel,
+    .education-container,
+    .skills-header-panel,
+    .skill-pill,
+    .glossy-card,
+    .heatmap-card,
+    .project-card,
+    .contact-copy-panel,
+    .contact-form-panel,
+    .document-gate-panel,
+    .metrics-modal-panel {
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        box-shadow: 0 14px 34px rgba(2, 6, 23, 0.22) !important;
+        transform: none !important;
+        transition-duration: 0.18s !important;
+        will-change: auto !important;
+    }
+
+    .orbit-icon,
+    .loader-orbit,
+    .loader-core-ring,
+    .loader-signal span {
+        animation: none !important;
+    }
+
+    .hero-portrait-shell:hover .hero-img,
+    .project-card:hover,
+    .skill-pill:hover,
+    .contact-box:hover,
+    .cta-button:hover {
+        transform: none !important;
+    }
+}
+
+@media (min-width: 901px) {
+    #about,
+    #skills,
+    #activity,
+    #projects,
+    #contact {
+        content-visibility: auto;
+        contain-intrinsic-size: 900px;
+    }
+}
+
 @media (max-width: 520px) {
     .document-gate-panel {
         border-radius: 22px;
