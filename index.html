@@ -15,6 +15,7 @@
     <!-- Icons -->
     <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
 
 
 
@@ -187,27 +188,14 @@
             <p id="document-gate-copy">Complete the verification to open this document.</p>
 
             <div class="document-captcha-card">
-                <span class="captcha-label">Verification code</span>
-                <strong id="captcha-code">------</strong>
-                <button type="button" id="captcha-refresh" class="captcha-refresh" aria-label="Generate new code">
-                    <i class="fas fa-rotate-right"></i>
-                </button>
+                <span class="captcha-label">Cloudflare Turnstile</span>
+                <div id="turnstile-widget" class="turnstile-widget"
+                    data-sitekey="1x00000000000000000000AA"></div>
             </div>
 
             <form id="document-gate-form" class="document-gate-form" autocomplete="off">
                 <input type="text" name="company" class="document-honeypot" tabindex="-1" autocomplete="off"
                     aria-hidden="true">
-
-                <div class="form-group">
-                    <input type="text" id="captcha-input" placeholder=" " required autocomplete="off"
-                        autocapitalize="characters">
-                    <label for="captcha-input">Enter verification code</label>
-                </div>
-
-                <div class="form-group">
-                    <input type="number" id="captcha-math-input" placeholder=" " required autocomplete="off">
-                    <label id="captcha-math-label" for="captcha-math-input">Solve challenge</label>
-                </div>
 
                 <p id="document-gate-error" class="document-gate-error" aria-live="polite"></p>
                 <button type="submit" class="cta-button submit-btn">Verify & Open <i
@@ -240,17 +228,15 @@
 
                 <div class="hero-buttons">
                     <!-- Resume -->
-                    <a href="#" class="cta-button subtle-btn protected-document-link"
-                        data-document-label="Resume"
-                        data-protected-url="https://drive.google.com/file/d/11PAPOiUQRf-lMziJCz0ROhQoja_QhBSx/view?usp=sharing">
+                    <a href="#" class="cta-button subtle-btn protected-document-link" data-document-id="resume"
+                        data-document-label="Resume">
                         <span class="btn-text">Resume</span>
                         <i class="fas fa-download"></i>
                     </a>
 
                     <!-- Certifications -->
-                    <a href="#" class="cta-button subtle-btn protected-document-link"
-                        data-document-label="Certifications"
-                        data-protected-url="https://little-cake-29a6.nirmalyaghosh2127.workers.dev/">
+                    <a href="#" class="cta-button subtle-btn protected-document-link" data-document-id="certifications"
+                        data-document-label="Certifications">
                         <span class="btn-text">Certifications</span>
                         <i class="fas fa-certificate"></i>
                     </a>

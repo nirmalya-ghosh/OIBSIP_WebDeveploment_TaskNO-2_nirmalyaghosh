@@ -726,37 +726,56 @@ const initDocumentGate = () => {
     const modal = document.getElementById('document-gate-modal');
     const form = document.getElementById('document-gate-form');
     const closeButton = modal?.querySelector('.document-gate-close');
-    const refreshButton = document.getElementById('captcha-refresh');
-    const codeElement = document.getElementById('captcha-code');
-    const codeInput = document.getElementById('captcha-input');
-    const mathInput = document.getElementById('captcha-math-input');
-    const mathLabel = document.getElementById('captcha-math-label');
+    const turnstileElement = document.getElementById('turnstile-widget');
     const copyElement = document.getElementById('document-gate-copy');
     const errorElement = document.getElementById('document-gate-error');
+    const submitButton = form?.querySelector('button[type="submit"]');
 
-    if (!links.length || !modal || !form || !closeButton || !codeElement || !codeInput || !mathInput || !mathLabel) return;
+    if (!links.length || !modal || !form || !closeButton || !turnstileElement || !submitButton) return;
 
-    const alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-    let activeUrl = '';
+    let activeDocumentId = '';
     let activeLabel = 'document';
-    let currentCode = '';
-    let mathAnswer = 0;
-    let attempts = 0;
-    let lockedUntil = 0;
+    let turnstileWidgetId = null;
+    let turnstileToken = '';
 
-    const randomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+    const setError = (message = '') => {
+        if (errorElement) errorElement.textContent = message;
+    };
 
-    const generateCode = () => {
-        currentCode = Array.from({ length: 6 }, () => alphabet[randomInt(0, alphabet.length - 1)]).join('');
-        const first = randomInt(11, 39);
-        const second = randomInt(7, 24);
-        mathAnswer = first + second;
+    const renderTurnstile = () => {
+        if (!window.turnstile) {
+            setError('Verification is still loading. Please try again in a moment.');
+            return;
+        }
 
-        codeElement.textContent = currentCode;
-        mathLabel.textContent = `Solve challenge: ${first} + ${second}`;
-        codeInput.value = '';
-        mathInput.value = '';
-        if (errorElement) errorElement.textContent = '';
+        const sitekey = turnstileElement.dataset.sitekey;
+        if (!sitekey || sitekey === 'YOUR_TURNSTILE_SITE_KEY') {
+            setError('Turnstile site key is not configured yet.');
+            return;
+        }
+
+        if (turnstileWidgetId !== null) {
+            window.turnstile.reset(turnstileWidgetId);
+            turnstileToken = '';
+            return;
+        }
+
+        turnstileWidgetId = window.turnstile.render(turnstileElement, {
+            sitekey,
+            theme: 'dark',
+            callback: token => {
+                turnstileToken = token;
+                setError('');
+            },
+            'expired-callback': () => {
+                turnstileToken = '';
+                setError('Verification expired. Please complete it again.');
+            },
+            'error-callback': () => {
+                turnstileToken = '';
+                setError('Verification could not load. Refresh and try again.');
+            }
+        });
     };
 
     const setOpen = (isOpen) => {
@@ -765,24 +784,24 @@ const initDocumentGate = () => {
         document.body.classList.toggle('modal-open', isOpen);
 
         if (isOpen) {
-            generateCode();
-            window.setTimeout(() => codeInput.focus(), 80);
+            setError('');
+            window.setTimeout(renderTurnstile, 80);
+        } else if (window.turnstile && turnstileWidgetId !== null) {
+            window.turnstile.reset(turnstileWidgetId);
+            turnstileToken = '';
         }
     };
-
-    const lockoutRemaining = () => Math.max(0, Math.ceil((lockedUntil - Date.now()) / 1000));
 
     links.forEach(link => {
         link.addEventListener('click', event => {
             event.preventDefault();
-            activeUrl = link.dataset.protectedUrl || '';
+            activeDocumentId = link.dataset.documentId || '';
             activeLabel = link.dataset.documentLabel || 'document';
             if (copyElement) copyElement.textContent = `Complete the verification to open ${activeLabel}.`;
             setOpen(true);
         });
     });
 
-    refreshButton?.addEventListener('click', generateCode);
     closeButton.addEventListener('click', () => setOpen(false));
 
     modal.addEventListener('click', event => {
@@ -793,37 +812,46 @@ const initDocumentGate = () => {
         if (event.key === 'Escape' && modal.classList.contains('active')) setOpen(false);
     });
 
-    form.addEventListener('submit', event => {
+    form.addEventListener('submit', async event => {
         event.preventDefault();
 
         const honeypot = form.querySelector('.document-honeypot');
         if (honeypot?.value) return;
 
-        const remaining = lockoutRemaining();
-        if (remaining > 0) {
-            if (errorElement) errorElement.textContent = `Too many failed attempts. Try again in ${remaining}s.`;
+        if (!turnstileToken) {
+            setError('Please complete the Cloudflare verification first.');
             return;
         }
 
-        const enteredCode = codeInput.value.trim().toUpperCase().replace(/\s+/g, '');
-        const enteredMath = Number(mathInput.value);
+        submitButton.disabled = true;
+        submitButton.classList.add('is-loading');
+        setError('Verifying...');
 
-        if (enteredCode !== currentCode || enteredMath !== mathAnswer) {
-            attempts += 1;
-            if (attempts >= 3) {
-                lockedUntil = Date.now() + 30000;
-                attempts = 0;
-                if (errorElement) errorElement.textContent = 'Verification locked for 30 seconds. Please try again.';
-            } else if (errorElement) {
-                errorElement.textContent = `Verification failed. ${3 - attempts} attempt${3 - attempts === 1 ? '' : 's'} left.`;
+        try {
+            const response = await fetch('/api/verify-turnstile', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    token: turnstileToken,
+                    documentId: activeDocumentId
+                })
+            });
+            const result = await response.json();
+
+            if (!response.ok || !result?.url) {
+                throw new Error(result?.error || 'Verification failed. Please try again.');
             }
-            generateCode();
-            return;
-        }
 
-        attempts = 0;
-        setOpen(false);
-        if (activeUrl) window.open(activeUrl, '_blank', 'noopener,noreferrer');
+            setOpen(false);
+            window.open(result.url, '_blank', 'noopener,noreferrer');
+        } catch (error) {
+            setError(error.message || 'Verification failed. Please try again.');
+            if (window.turnstile && turnstileWidgetId !== null) window.turnstile.reset(turnstileWidgetId);
+            turnstileToken = '';
+        } finally {
+            submitButton.disabled = false;
+            submitButton.classList.remove('is-loading');
+        }
     });
 };
 

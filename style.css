@@ -8305,6 +8305,15 @@ footer {
     text-transform: uppercase;
 }
 
+.turnstile-widget {
+    grid-column: 1 / -1;
+    min-height: 65px;
+}
+
+.turnstile-widget iframe {
+    max-width: 100%;
+}
+
 #captcha-code {
     color: #f8fafc;
     font-size: clamp(1.6rem, 8vw, 2.35rem);
@@ -8356,6 +8365,11 @@ footer {
     justify-content: center;
     min-height: 54px;
     width: 100%;
+}
+
+.document-gate-form .submit-btn:disabled {
+    cursor: wait;
+    opacity: 0.72;
 }
 
 @media (max-width: 520px) {
