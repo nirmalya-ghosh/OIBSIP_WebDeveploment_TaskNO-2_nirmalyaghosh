@@ -8575,10 +8575,10 @@ footer {
 
 /* Smooth contained social icon motion */
 .hero-image-wrapper .orbit-icon {
-    --orbit-dx: 10px;
-    --orbit-dy: 8px;
+    --orbit-dx: 18px;
+    --orbit-dy: 14px;
     --orbit-scale: 1;
-    animation: profileIconDrift 8.5s ease-in-out infinite alternate !important;
+    animation: profileIconDrift 11s cubic-bezier(0.45, 0, 0.2, 1) infinite alternate !important;
     transform: translate3d(0, 0, 0) scale(var(--orbit-scale)) !important;
     will-change: transform;
 }
@@ -8590,29 +8590,29 @@ footer {
 }
 
 .hero-image-wrapper .orbit-1 {
-    --orbit-dx: -14px;
-    --orbit-dy: 12px;
-    animation-duration: 9.2s !important;
+    --orbit-dx: -24px;
+    --orbit-dy: 18px;
+    animation-duration: 12s !important;
 }
 
 .hero-image-wrapper .orbit-2 {
-    --orbit-dx: -16px;
-    --orbit-dy: -10px;
-    animation-duration: 10.4s !important;
+    --orbit-dx: -26px;
+    --orbit-dy: -18px;
+    animation-duration: 13.5s !important;
     animation-delay: -2.3s !important;
 }
 
 .hero-image-wrapper .orbit-3 {
-    --orbit-dx: 16px;
-    --orbit-dy: -9px;
-    animation-duration: 9.8s !important;
+    --orbit-dx: 26px;
+    --orbit-dy: -18px;
+    animation-duration: 12.8s !important;
     animation-delay: -4.1s !important;
 }
 
 .hero-image-wrapper .orbit-4 {
-    --orbit-dx: 14px;
-    --orbit-dy: 11px;
-    animation-duration: 10.8s !important;
+    --orbit-dx: 24px;
+    --orbit-dy: 18px;
+    animation-duration: 13.2s !important;
     animation-delay: -1.4s !important;
 }
 
@@ -8626,7 +8626,33 @@ footer {
     }
 
     100% {
-        transform: translate3d(calc(var(--orbit-dx) * -0.65), calc(var(--orbit-dy) * -0.75), 0) scale(var(--orbit-scale));
+        transform: translate3d(calc(var(--orbit-dx) * -0.45), calc(var(--orbit-dy) * -0.45), 0) scale(var(--orbit-scale));
+    }
+}
+
+@media (max-width: 768px) {
+    .hero-image-wrapper .orbit-icon {
+        animation-duration: 10.5s !important;
+    }
+
+    .hero-image-wrapper .orbit-1 {
+        --orbit-dx: -16px;
+        --orbit-dy: 14px;
+    }
+
+    .hero-image-wrapper .orbit-2 {
+        --orbit-dx: -16px;
+        --orbit-dy: -12px;
+    }
+
+    .hero-image-wrapper .orbit-3 {
+        --orbit-dx: 16px;
+        --orbit-dy: -12px;
+    }
+
+    .hero-image-wrapper .orbit-4 {
+        --orbit-dx: 16px;
+        --orbit-dy: 14px;
     }
 }
 
