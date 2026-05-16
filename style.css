@@ -8535,3 +8535,111 @@ footer {
         padding-right: 0.75rem !important;
     }
 }
+
+/* Smooth contained social icon motion */
+.hero-image-wrapper .orbit-icon {
+    --orbit-dx: 10px;
+    --orbit-dy: 8px;
+    --orbit-scale: 1;
+    animation: profileIconDrift 8.5s ease-in-out infinite alternate !important;
+    transform: translate3d(0, 0, 0) scale(var(--orbit-scale)) !important;
+    will-change: transform;
+}
+
+.hero-image-wrapper .orbit-icon:hover,
+.hero-image-wrapper .orbit-icon:focus {
+    --orbit-scale: 1.08;
+    animation-play-state: paused !important;
+}
+
+.hero-image-wrapper .orbit-1 {
+    --orbit-dx: -14px;
+    --orbit-dy: 12px;
+    animation-duration: 9.2s !important;
+}
+
+.hero-image-wrapper .orbit-2 {
+    --orbit-dx: -16px;
+    --orbit-dy: -10px;
+    animation-duration: 10.4s !important;
+    animation-delay: -2.3s !important;
+}
+
+.hero-image-wrapper .orbit-3 {
+    --orbit-dx: 16px;
+    --orbit-dy: -9px;
+    animation-duration: 9.8s !important;
+    animation-delay: -4.1s !important;
+}
+
+.hero-image-wrapper .orbit-4 {
+    --orbit-dx: 14px;
+    --orbit-dy: 11px;
+    animation-duration: 10.8s !important;
+    animation-delay: -1.4s !important;
+}
+
+@keyframes profileIconDrift {
+    0% {
+        transform: translate3d(0, 0, 0) scale(var(--orbit-scale));
+    }
+
+    48% {
+        transform: translate3d(var(--orbit-dx), var(--orbit-dy), 0) scale(var(--orbit-scale));
+    }
+
+    100% {
+        transform: translate3d(calc(var(--orbit-dx) * -0.65), calc(var(--orbit-dy) * -0.75), 0) scale(var(--orbit-scale));
+    }
+}
+
+/* Clearer loading monogram accents */
+.loader-core strong {
+    position: relative !important;
+    z-index: 3 !important;
+}
+
+.loader-orbit {
+    animation: loaderAccentDot 2.8s ease-in-out infinite alternate !important;
+    background: #2dd4bf !important;
+    box-shadow: 0 0 16px rgba(45, 212, 191, 0.5) !important;
+    height: 8px !important;
+    left: auto !important;
+    right: 14px !important;
+    top: 15px !important;
+    transform: none !important;
+    transform-origin: center !important;
+    width: 8px !important;
+    z-index: 2 !important;
+}
+
+.loader-orbit-two {
+    animation-delay: -1.1s !important;
+    background: #facc15 !important;
+    bottom: 14px !important;
+    height: 7px !important;
+    left: 15px !important;
+    opacity: 0.95 !important;
+    right: auto !important;
+    top: auto !important;
+    width: 7px !important;
+}
+
+@keyframes loaderAccentDot {
+    from {
+        opacity: 0.78;
+        transform: translate3d(0, 0, 0) scale(0.92);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate3d(2px, -2px, 0) scale(1.08);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hero-image-wrapper .orbit-icon,
+    .loader-orbit {
+        animation: none !important;
+    }
+}
