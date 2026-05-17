@@ -13,7 +13,8 @@ Cybersecurity: Kali Linux, Nmap, vulnerability assessment, penetration testing b
 Tools: Git, GitHub, VS Code, Linux, AWS basics, Docker, Android Studio.
 Concepts: OOP, data structures, algorithms, system design, problem solving, clean code.
 Activity profiles: GitHub username nirmalya-ghosh. LeetCode username nirmalya2127.
-Project surfaces: GitHub repositories, LinkedIn project/activity updates, LeetCode progress.
+Project surfaces: a Featured Projects page at /featured-projects.html, GitHub repositories, LinkedIn project/activity updates, LeetCode progress.
+Featured project highlights: Secure Resume Access System, Recruiter AI Profile Assistant, Coding Activity Dashboard, Responsive Portfolio Interface, and DSA/LeetCode Practice Track.
 Availability: open for internships, projects, collaborations, research ideas, AI/ML, software engineering, intelligent web products, and cybersecurity-aware development.
 Contact: email nirmalyaghosh2127@gmail.com, phone +91 8967836222, LinkedIn https://www.linkedin.com/in/nirmalya-ghosh-422569377/, GitHub https://github.com/nirmalya-ghosh, WhatsApp https://wa.me/918967836222.
 Resume access: the website has a secure resume gate with email OTP and owner approval. Recruiters should use the Resume button on the portfolio to request access.
@@ -22,7 +23,7 @@ Resume access: the website has a secure resume gate with email OTP and owner app
 const QUICK_TOPICS = {
     hire: 'Nirmalya is a strong early-career candidate for internships where fast learning, fundamentals, and product-minded engineering matter. Emphasize AI/ML learning, DSA practice, web development, security-aware thinking, and willingness to grow through real work.',
     skills: 'Core strengths include Java, Python, C, JavaScript, HTML, CSS, React, Node.js, Express.js, REST APIs, MySQL, MongoDB, Git/GitHub, Linux, Docker basics, Android development, and AI/ML foundations.',
-    projects: 'The portfolio points recruiters toward GitHub repositories, LinkedIn project updates, and LeetCode progress. For specific code evidence, direct them to GitHub: https://github.com/nirmalya-ghosh.',
+    projects: 'The portfolio has a Featured Projects page at /featured-projects.html with highlights for the secure resume access system, recruiter AI assistant, coding activity dashboard, responsive portfolio interface, and DSA/LeetCode practice track. For code evidence, direct recruiters to GitHub: https://github.com/nirmalya-ghosh.',
     contact: 'Best contact routes: email nirmalyaghosh2127@gmail.com, LinkedIn profile, phone +91 8967836222, or WhatsApp link on the site.'
 };
 
