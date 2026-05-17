@@ -156,7 +156,7 @@ const detectIntents = (question = '') => {
     if (!scores.length) return ['fit'];
 
     return scores
-        .slice(0, 3)
+        .slice(0, 5)
         .map(item => item.intent);
 };
 
