@@ -763,11 +763,16 @@ const initDocumentGate = () => {
     const otpInput = document.getElementById('document-otp');
     const sendOtpButton = document.getElementById('document-send-otp');
     const otpStatus = document.getElementById('document-otp-status');
+    const approvalStatus = document.getElementById('document-approval-status');
+    const approvalTitle = document.getElementById('document-approval-title');
+    const approvalCopy = document.getElementById('document-approval-copy');
     const resumeViewerModal = document.getElementById('resume-viewer-modal');
     const resumeViewerFrame = document.getElementById('resume-viewer-frame');
     const resumeViewerNote = document.getElementById('resume-viewer-note');
     const resumeViewerWatermark = document.getElementById('resume-viewer-watermark');
     const resumeViewerClose = resumeViewerModal?.querySelector('.resume-viewer-close');
+    const resumeOpenNewTab = document.getElementById('resume-open-new-tab');
+    const resumeFrameOpenLink = document.getElementById('resume-frame-open-link');
 
     if (!links.length || !modal || !form || !closeButton || !turnstileElement || !submitButton) return;
     const submitButtonOriginalHtml = submitButton.innerHTML;
@@ -779,6 +784,12 @@ const initDocumentGate = () => {
     let otpRequestId = '';
     let verifiedOtpEmail = '';
     let approvalPollTimer = null;
+
+    const syncModalScrollLock = () => {
+        const hasOpenModal = modal.classList.contains('active') || Boolean(resumeViewerModal?.classList.contains('active'));
+        document.documentElement.classList.toggle('modal-open', hasOpenModal);
+        document.body.classList.toggle('modal-open', hasOpenModal);
+    };
 
     const setError = (message = '') => {
         if (errorElement) errorElement.textContent = message;
@@ -799,6 +810,26 @@ const initDocumentGate = () => {
         setOtpStatus('');
     };
 
+    const setApprovalStage = (stage = 'idle', copy = '') => {
+        if (!approvalStatus) return;
+
+        const isVisible = stage !== 'idle';
+        approvalStatus.hidden = !isVisible;
+        modal.classList.toggle('is-awaiting-approval', stage === 'waiting');
+        modal.classList.toggle('is-approval-approved', stage === 'approved');
+        approvalStatus.dataset.stage = stage;
+
+        if (stage === 'waiting') {
+            if (approvalTitle) approvalTitle.textContent = 'Verification complete';
+            if (approvalCopy) approvalCopy.textContent = copy || 'Your email and OTP are verified. Waiting for approval to release the resume securely.';
+        }
+
+        if (stage === 'approved') {
+            if (approvalTitle) approvalTitle.textContent = 'Access approved';
+            if (approvalCopy) approvalCopy.textContent = copy || 'Approval received. Opening the secure resume viewer now.';
+        }
+    };
+
     const stopApprovalPolling = () => {
         if (approvalPollTimer) {
             window.clearInterval(approvalPollTimer);
@@ -809,15 +840,16 @@ const initDocumentGate = () => {
     const setRedirectingState = (url) => {
         stopApprovalPolling();
         setError('');
-        setOtpStatus('Approved. Redirecting to resume...');
+        setOtpStatus('Approval received. Preparing your secure resume viewer...');
+        setApprovalStage('approved', 'Approval received. Preparing your secure resume viewer now.');
         submitButton.disabled = true;
         submitButton.classList.add('is-redirecting');
-        submitButton.innerHTML = 'Approved. Opening Resume <i class="fas fa-spinner fa-spin"></i>';
+        submitButton.innerHTML = 'Opening Secure Resume <i class="fas fa-spinner fa-spin"></i>';
 
         window.setTimeout(() => {
             openResumeViewer(url, verifiedOtpEmail);
             setOpen(false);
-        }, 1400);
+        }, 1650);
     };
 
     const openResumeViewer = (url, email) => {
@@ -828,7 +860,9 @@ const initDocumentGate = () => {
 
         const viewerUrl = `${url}#toolbar=0&navpanes=0&scrollbar=1`;
         resumeViewerFrame.src = viewerUrl;
-        if (resumeViewerNote) resumeViewerNote.textContent = 'Temporary secure access is active. Download controls are hidden where the browser allows it.';
+        if (resumeOpenNewTab) resumeOpenNewTab.href = url;
+        if (resumeFrameOpenLink) resumeFrameOpenLink.href = url;
+        if (resumeViewerNote) resumeViewerNote.textContent = 'Your approval is confirmed. The secure PDF is available in this viewer and can also be opened in a new tab.';
         if (resumeViewerWatermark) {
             const watermark = `Verified for ${email}`;
             resumeViewerWatermark.textContent = watermark;
@@ -836,15 +870,17 @@ const initDocumentGate = () => {
         }
         resumeViewerModal.classList.add('active');
         resumeViewerModal.setAttribute('aria-hidden', 'false');
-        document.body.classList.add('modal-open');
+        syncModalScrollLock();
     };
 
     const closeResumeViewer = () => {
         if (!resumeViewerModal) return;
         resumeViewerModal.classList.remove('active');
         resumeViewerModal.setAttribute('aria-hidden', 'true');
-        document.body.classList.remove('modal-open');
+        syncModalScrollLock();
         if (resumeViewerFrame) resumeViewerFrame.src = 'about:blank';
+        if (resumeOpenNewTab) resumeOpenNewTab.href = '#';
+        if (resumeFrameOpenLink) resumeFrameOpenLink.href = '#';
     };
 
     const startApprovalPolling = ({ requestId, email }) => {
@@ -876,10 +912,13 @@ const initDocumentGate = () => {
                 }
 
                 const dotCount = (checks % 3) + 1;
-                setOtpStatus(`Waiting for approval${'.'.repeat(dotCount)}`);
+                const waitingCopy = `Verification complete. Waiting for approval${'.'.repeat(dotCount)}`;
+                setOtpStatus(waitingCopy);
+                setApprovalStage('waiting', 'Your request is in review. This window will update automatically as soon as access is approved.');
             } catch (error) {
                 if (checks > 3) {
-                    setOtpStatus('Waiting for approval. Keep this window open.');
+                    setOtpStatus('Still waiting for approval. Keep this window open.');
+                    setApprovalStage('waiting', 'Still waiting for approval. The resume will open here automatically once access is granted.');
                 }
             }
         };
@@ -896,7 +935,7 @@ const initDocumentGate = () => {
 
         const sitekey = turnstileElement.dataset.sitekey;
         if (!sitekey || sitekey === 'YOUR_TURNSTILE_SITE_KEY') {
-            setError('Turnstile site key is not configured yet.');
+            setError('Cloudflare site key is not configured yet.');
             return;
         }
 
@@ -928,7 +967,7 @@ const initDocumentGate = () => {
     const setOpen = (isOpen) => {
         modal.classList.toggle('active', isOpen);
         modal.setAttribute('aria-hidden', String(!isOpen));
-        document.body.classList.toggle('modal-open', isOpen);
+        syncModalScrollLock();
 
         if (isOpen) {
             setError('');
@@ -936,6 +975,7 @@ const initDocumentGate = () => {
             resetOtp();
             if (companyEmailInput) companyEmailInput.value = '';
             if (emailCard) emailCard.hidden = activeDocumentId !== 'resume';
+            setApprovalStage('idle');
             submitButton.disabled = false;
             submitButton.classList.remove('is-redirecting');
             submitButton.innerHTML = submitButtonOriginalHtml;
@@ -945,6 +985,7 @@ const initDocumentGate = () => {
             window.turnstile.reset(turnstileWidgetId);
             turnstileToken = '';
             resetOtp();
+            setApprovalStage('idle');
         }
     };
 
@@ -1077,9 +1118,10 @@ const initDocumentGate = () => {
             if (result?.pendingApproval) {
                 requestCompleted = true;
                 setError('');
-                setOtpStatus(result.message || 'Request sent. Keep this window open; the resume will open after approval.');
+                setOtpStatus(result.message || 'Verification complete. Waiting for approval.');
+                setApprovalStage('waiting', 'Your email and OTP are verified. Waiting for approval to release the resume securely.');
                 submitButton.disabled = true;
-                submitButton.innerHTML = 'Waiting For Approval <i class="fas fa-hourglass-half"></i>';
+                submitButton.innerHTML = 'Waiting for Approval <i class="fas fa-hourglass-half"></i>';
                 startApprovalPolling({ requestId: otpRequestId, email: accessEmail });
             }
         } catch (error) {

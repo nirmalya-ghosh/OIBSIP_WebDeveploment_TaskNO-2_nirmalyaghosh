@@ -96,7 +96,7 @@ module.exports = async (request, response) => {
             <div style="font-family:Arial,sans-serif;line-height:1.6;color:#111827">
                 <h2>Resume access request</h2>
                 <p><strong>Email:</strong> ${escapeHtml(email)}</p>
-                <p>The requester verified this email with OTP and completed Cloudflare Turnstile.</p>
+                <p>The requester verified this email with OTP and completed Cloudflare.</p>
                 <p>
                     <a href="${approveUrl}" style="display:inline-block;background:#0f766e;color:#fff;padding:10px 16px;border-radius:8px;text-decoration:none;margin-right:8px">Approve</a>
                     <a href="${rejectUrl}" style="display:inline-block;background:#991b1b;color:#fff;padding:10px 16px;border-radius:8px;text-decoration:none">Reject</a>

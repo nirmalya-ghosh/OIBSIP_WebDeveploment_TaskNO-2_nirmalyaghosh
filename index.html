@@ -202,7 +202,7 @@
             </div>
 
             <div class="document-captcha-card">
-                <span class="captcha-label">Cloudflare Turnstile</span>
+                <span class="captcha-label">Cloudflare</span>
                 <div id="turnstile-widget" class="turnstile-widget"
                     data-sitekey="0x4AAAAAADQfWWPgqGOhLmha"></div>
             </div>
@@ -210,6 +210,22 @@
             <form id="document-gate-form" class="document-gate-form" autocomplete="off">
                 <input type="text" name="company" class="document-honeypot" tabindex="-1" autocomplete="off"
                     aria-hidden="true">
+
+                <div id="document-approval-status" class="document-approval-status" hidden aria-live="polite">
+                    <div class="approval-orbit" aria-hidden="true">
+                        <span></span>
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div>
+                        <strong id="document-approval-title">Verification submitted</strong>
+                        <p id="document-approval-copy">Your email and OTP are verified. Waiting for approval to release the resume securely.</p>
+                    </div>
+                    <div class="approval-progress" aria-hidden="true">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
 
                 <p id="document-gate-error" class="document-gate-error" aria-live="polite"></p>
                 <button type="submit" class="cta-button submit-btn">Verify & Open <i
@@ -227,11 +243,30 @@
                     <h3 id="resume-viewer-title">Resume Viewer</h3>
                     <p id="resume-viewer-note">Temporary secure access is active.</p>
                 </div>
-                <button type="button" class="resume-viewer-close" aria-label="Close resume viewer">
-                    <i class="fas fa-times"></i>
-                </button>
+                <div class="resume-viewer-actions">
+                    <a id="resume-open-new-tab" class="resume-viewer-open" href="#" target="_blank" rel="noopener noreferrer">
+                        <i class="fas fa-up-right-from-square"></i>
+                        <span>Open in New Tab</span>
+                    </a>
+                    <button type="button" class="resume-viewer-close" aria-label="Close resume viewer">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="resume-viewer-status" aria-live="polite">
+                <span class="viewer-success-mark"><i class="fas fa-check"></i></span>
+                <div>
+                    <strong>Access approved</strong>
+                    <p>The resume is loading below. If your mobile browser shows a PDF placeholder, use the new-tab option.</p>
+                </div>
             </div>
             <div class="resume-viewer-frame-wrap">
+                <div class="resume-frame-fallback">
+                    <i class="fas fa-file-pdf"></i>
+                    <strong>Resume preview</strong>
+                    <span>Loading the secure PDF inside this window.</span>
+                    <a id="resume-frame-open-link" href="#" target="_blank" rel="noopener noreferrer">Open PDF in New Tab</a>
+                </div>
                 <iframe id="resume-viewer-frame" class="resume-viewer-frame" title="Nirmalya Ghosh Resume"></iframe>
                 <div id="resume-viewer-watermark" class="resume-viewer-watermark" aria-hidden="true"></div>
             </div>
