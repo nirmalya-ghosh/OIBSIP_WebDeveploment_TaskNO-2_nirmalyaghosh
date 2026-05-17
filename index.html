@@ -840,6 +840,49 @@
         </section>
     </main>
 
+    <aside id="profile-assistant" class="profile-assistant" aria-label="AI profile assistant">
+        <button id="assistant-launcher" class="assistant-launcher" type="button" aria-expanded="false"
+            aria-controls="assistant-panel">
+            <i class="fas fa-wand-magic-sparkles"></i>
+            <span>Ask AI</span>
+        </button>
+
+        <section id="assistant-panel" class="assistant-panel" aria-hidden="true">
+            <div class="assistant-header">
+                <div>
+                    <span class="assistant-kicker">Recruiter Assistant</span>
+                    <h2>Nirmalya AI</h2>
+                </div>
+                <button id="assistant-close" class="assistant-icon-btn" type="button" aria-label="Close assistant">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div class="assistant-status">
+                <span class="assistant-pulse"></span>
+                <p>Ask about skills, fit, projects, resume access, or contact details.</p>
+            </div>
+
+            <div class="assistant-suggestions" aria-label="Suggested recruiter questions">
+                <button type="button" data-assistant-prompt="Why should we hire Nirmalya for an internship?">Hiring fit</button>
+                <button type="button" data-assistant-prompt="Summarize Nirmalya's technical skills.">Skills</button>
+                <button type="button" data-assistant-prompt="Where can I review Nirmalya's projects and code?">Projects</button>
+                <button type="button" data-assistant-prompt="How can I contact Nirmalya or request his resume?">Contact</button>
+            </div>
+
+            <div id="assistant-messages" class="assistant-messages" aria-live="polite"></div>
+
+            <form id="assistant-form" class="assistant-form">
+                <label for="assistant-input" class="sr-only">Ask Nirmalya AI</label>
+                <textarea id="assistant-input" name="message" rows="2"
+                    placeholder="Ask a recruiter question..." maxlength="900"></textarea>
+                <button class="assistant-send" type="submit" aria-label="Send question">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </form>
+        </section>
+    </aside>
+
     <footer>
         <p>Designed & Built by Nirmalya Ghosh &copy; 2026</p>
         <a href="#hero" class="back-to-top" aria-label="Back to top"><i class="fas fa-arrow-up"></i></a>

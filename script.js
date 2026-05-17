@@ -1861,6 +1861,109 @@ const initAdvancedAnimations = () => {
     }
 };
 
+const initProfileAssistant = () => {
+    const assistant = document.getElementById('profile-assistant');
+    const launcher = document.getElementById('assistant-launcher');
+    const panel = document.getElementById('assistant-panel');
+    const closeButton = document.getElementById('assistant-close');
+    const messagesElement = document.getElementById('assistant-messages');
+    const form = document.getElementById('assistant-form');
+    const input = document.getElementById('assistant-input');
+    const promptButtons = document.querySelectorAll('[data-assistant-prompt]');
+
+    if (!assistant || !launcher || !panel || !messagesElement || !form || !input) return;
+
+    const messages = [{
+        role: 'assistant',
+        content: "Hi, I am Nirmalya AI. Ask me what kind of internship roles fit him, what he is learning, where to review his work, or how to contact him."
+    }];
+
+    const escapeText = (value = '') =>
+        String(value)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+
+    const renderMessages = () => {
+        messagesElement.innerHTML = messages.map(message => `
+            <div class="assistant-message ${message.role}">
+                <span>${message.role === 'assistant' ? 'Nirmalya AI' : 'You'}</span>
+                <p>${escapeText(message.content).replace(/\n/g, '<br>')}</p>
+            </div>
+        `).join('');
+        messagesElement.scrollTop = messagesElement.scrollHeight;
+    };
+
+    const setOpen = (open) => {
+        assistant.classList.toggle('is-open', open);
+        panel.setAttribute('aria-hidden', String(!open));
+        launcher.setAttribute('aria-expanded', String(open));
+        if (open) window.setTimeout(() => input.focus(), 120);
+    };
+
+    const setLoading = (loading) => {
+        assistant.classList.toggle('is-thinking', loading);
+        input.disabled = loading;
+        form.querySelector('button')?.toggleAttribute('disabled', loading);
+    };
+
+    const askAssistant = async (question) => {
+        const content = question.trim();
+        if (!content) return;
+
+        messages.push({ role: 'user', content });
+        renderMessages();
+        input.value = '';
+        setLoading(true);
+
+        try {
+            const response = await fetch('/api/profile-assistant', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ messages: messages.slice(-8) })
+            });
+            const result = await response.json();
+
+            if (!response.ok) throw new Error(result?.error || 'Assistant unavailable.');
+
+            messages.push({
+                role: 'assistant',
+                content: result.answer || 'I could not find a reliable answer for that. Please contact Nirmalya directly for the latest details.'
+            });
+        } catch (error) {
+            messages.push({
+                role: 'assistant',
+                content: 'I am having trouble connecting right now. You can still reach Nirmalya at nirmalyaghosh2127@gmail.com or review his GitHub at github.com/nirmalya-ghosh.'
+            });
+        } finally {
+            setLoading(false);
+            renderMessages();
+        }
+    };
+
+    renderMessages();
+    launcher.addEventListener('click', () => setOpen(!assistant.classList.contains('is-open')));
+    closeButton?.addEventListener('click', () => setOpen(false));
+    promptButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            setOpen(true);
+            askAssistant(button.dataset.assistantPrompt || '');
+        });
+    });
+    form.addEventListener('submit', event => {
+        event.preventDefault();
+        askAssistant(input.value);
+    });
+    input.addEventListener('keydown', event => {
+        if (event.key === 'Enter' && !event.shiftKey) {
+            event.preventDefault();
+            form.requestSubmit();
+        }
+    });
+};
+
 // Initialization
 document.addEventListener('DOMContentLoaded', () => {
     initPreloader();
@@ -1877,4 +1980,5 @@ document.addEventListener('DOMContentLoaded', () => {
     initTypewriters();
     initProfileIconBounce();
     initScrollProgress();
+    initProfileAssistant();
 });
