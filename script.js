@@ -844,7 +844,7 @@ const initDocumentGate = () => {
         }
     };
 
-    const setRedirectingState = (url) => {
+    const setRedirectingState = (url, openUrl = url) => {
         stopApprovalPolling();
         setError('');
         setOtpStatus('Approval received. Preparing your secure resume viewer...');
@@ -854,22 +854,23 @@ const initDocumentGate = () => {
         submitButton.innerHTML = 'Opening Secure Resume <i class="fas fa-spinner fa-spin"></i>';
 
         window.setTimeout(() => {
-            openResumeViewer(url, verifiedOtpEmail);
+            openResumeViewer(url, verifiedOtpEmail, openUrl);
             setOpen(false);
         }, 1650);
     };
 
-    const openResumeViewer = (url, email) => {
+    const openResumeViewer = (url, email, openUrl = url) => {
         if (!resumeViewerModal || !resumeViewerFrame) {
-            window.location.href = url;
+            window.location.href = openUrl;
             return;
         }
 
-        const viewerUrl = `${url}#toolbar=0&navpanes=0&scrollbar=1`;
+        const isExternalViewer = /drive\.google\.com\/file\/d\/[^/]+\/preview/.test(url);
+        const viewerUrl = isExternalViewer ? url : `${url}#toolbar=0&navpanes=0&scrollbar=1`;
         resumeViewerFrame.src = viewerUrl;
-        if (resumeOpenNewTab) resumeOpenNewTab.href = url;
-        if (resumeFrameOpenLink) resumeFrameOpenLink.href = url;
-        if (resumeViewerNote) resumeViewerNote.textContent = 'Your approval is confirmed. The secure PDF is available in this viewer and can also be opened in a new tab.';
+        if (resumeOpenNewTab) resumeOpenNewTab.href = openUrl;
+        if (resumeFrameOpenLink) resumeFrameOpenLink.href = openUrl;
+        if (resumeViewerNote) resumeViewerNote.textContent = 'Your approval is confirmed. The resume is available in this viewer and can also be opened in a new tab.';
         if (resumeViewerWatermark) {
             const watermark = `Verified for ${email}`;
             resumeViewerWatermark.textContent = watermark;
@@ -907,7 +908,7 @@ const initDocumentGate = () => {
                 if (!response.ok) throw new Error(result?.error || 'Approval check failed.');
 
                 if (result.status === 'approved' && result.url) {
-                    setRedirectingState(result.url);
+                    setRedirectingState(result.url, result.openUrl || result.url);
                     return;
                 }
 

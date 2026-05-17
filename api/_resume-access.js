@@ -7,6 +7,10 @@ const OTP_EXPIRY_MS = 10 * 60 * 1000;
 const RESUME_BUCKET = process.env.RESUME_BUCKET || 'private-resume';
 const RESUME_FILE = process.env.RESUME_FILE || 'nirmalya-ghosh-resume.pdf';
 const RESUME_SIGNED_URL_SECONDS = Number(process.env.RESUME_SIGNED_URL_SECONDS || 300);
+const RESUME_EXTERNAL_URL =
+    process.env.RESUME_EXTERNAL_URL || 'https://drive.google.com/file/d/1feNwsLa8S0FORRYVxGUAm2gHBjOvHOMV/preview';
+const RESUME_EXTERNAL_OPEN_URL =
+    process.env.RESUME_EXTERNAL_OPEN_URL || 'https://drive.google.com/file/d/1feNwsLa8S0FORRYVxGUAm2gHBjOvHOMV/view?usp=sharing';
 
 const sendJson = (response, statusCode, payload) => {
     response.statusCode = statusCode;
@@ -110,6 +114,21 @@ const createResumeSignedUrl = async () => {
     return signedPath.startsWith('http') ? signedPath : `${url.replace(/\/$/, '')}/storage/v1${signedPath}`;
 };
 
+const createResumeAccessPayload = async () => {
+    if (RESUME_EXTERNAL_URL) {
+        return {
+            url: RESUME_EXTERNAL_URL,
+            openUrl: RESUME_EXTERNAL_OPEN_URL || RESUME_EXTERNAL_URL,
+            expiresIn: null
+        };
+    }
+
+    return {
+        url: await createResumeSignedUrl(),
+        expiresIn: RESUME_SIGNED_URL_SECONDS
+    };
+};
+
 let smtpTransporter;
 
 const getSmtpTransporter = () => {
@@ -176,6 +195,7 @@ module.exports = {
     RESUME_BUCKET,
     RESUME_FILE,
     RESUME_SIGNED_URL_SECONDS,
+    createResumeAccessPayload,
     createResumeSignedUrl,
     createToken,
     escapeHtml,

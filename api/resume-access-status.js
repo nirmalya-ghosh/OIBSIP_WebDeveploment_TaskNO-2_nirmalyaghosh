@@ -1,6 +1,5 @@
 const {
-    RESUME_SIGNED_URL_SECONDS,
-    createResumeSignedUrl,
+    createResumeAccessPayload,
     isValidEmail,
     sendJson,
     supabaseFetch
@@ -42,8 +41,7 @@ module.exports = async (request, response) => {
         if (record.status === 'approved') {
             return sendJson(response, 200, {
                 status: 'approved',
-                url: await createResumeSignedUrl(),
-                expiresIn: RESUME_SIGNED_URL_SECONDS
+                ...(await createResumeAccessPayload())
             });
         }
 
