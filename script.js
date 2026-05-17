@@ -755,6 +755,7 @@ const initDocumentGate = () => {
     const form = document.getElementById('document-gate-form');
     const closeButton = modal?.querySelector('.document-gate-close');
     const turnstileElement = document.getElementById('turnstile-widget');
+    const turnstileStatus = document.getElementById('turnstile-status');
     const copyElement = document.getElementById('document-gate-copy');
     const errorElement = document.getElementById('document-gate-error');
     const submitButton = form?.querySelector('button[type="submit"]');
@@ -781,6 +782,8 @@ const initDocumentGate = () => {
     let activeLabel = 'document';
     let turnstileWidgetId = null;
     let turnstileToken = '';
+    let turnstileReadyTimer = null;
+    let turnstileRenderStarted = false;
     let otpRequestId = '';
     let verifiedOtpEmail = '';
     let approvalPollTimer = null;
@@ -797,6 +800,10 @@ const initDocumentGate = () => {
 
     const setOtpStatus = (message = '') => {
         if (otpStatus) otpStatus.textContent = message;
+    };
+
+    const setCloudflareStatus = (message = '') => {
+        if (turnstileStatus) turnstileStatus.textContent = message;
     };
 
     const getAccessEmail = () => String(companyEmailInput?.value || '').trim().toLowerCase();
@@ -927,41 +934,73 @@ const initDocumentGate = () => {
         approvalPollTimer = window.setInterval(checkStatus, 4500);
     };
 
-    const renderTurnstile = () => {
+    const renderTurnstile = ({ forceReset = false } = {}) => {
+        if (turnstileReadyTimer) {
+            window.clearTimeout(turnstileReadyTimer);
+            turnstileReadyTimer = null;
+        }
+
         if (!window.turnstile) {
-            setError('Verification is still loading. Please try again in a moment.');
+            setCloudflareStatus('Connecting to Cloudflare...');
+            turnstileElement.classList.add('is-loading');
+            turnstileReadyTimer = window.setTimeout(() => renderTurnstile(), 160);
             return;
         }
 
         const sitekey = turnstileElement.dataset.sitekey;
         if (!sitekey || sitekey === 'YOUR_TURNSTILE_SITE_KEY') {
             setError('Cloudflare site key is not configured yet.');
+            setCloudflareStatus('');
             return;
         }
 
         if (turnstileWidgetId !== null) {
-            window.turnstile.reset(turnstileWidgetId);
-            turnstileToken = '';
+            if (forceReset) {
+                window.turnstile.reset(turnstileWidgetId);
+                turnstileToken = '';
+                setCloudflareStatus('Refreshing Cloudflare verification...');
+                turnstileElement.classList.add('is-loading');
+            } else if (turnstileToken) {
+                setCloudflareStatus('Cloudflare verified.');
+                turnstileElement.classList.remove('is-loading');
+            }
             return;
         }
 
+        turnstileRenderStarted = true;
+        setCloudflareStatus('Preparing Cloudflare verification...');
+        turnstileElement.classList.add('is-loading');
         turnstileWidgetId = window.turnstile.render(turnstileElement, {
             sitekey,
             size: 'flexible',
             theme: 'dark',
+            retry: 'auto',
+            'retry-interval': 800,
+            'refresh-expired': 'auto',
+            'refresh-timeout': 'auto',
             callback: token => {
                 turnstileToken = token;
                 setError('');
+                setCloudflareStatus('Cloudflare verified.');
+                turnstileElement.classList.remove('is-loading');
             },
             'expired-callback': () => {
                 turnstileToken = '';
-                setError('Verification expired. Please complete it again.');
+                setCloudflareStatus('Refreshing Cloudflare verification...');
+                turnstileElement.classList.add('is-loading');
+                renderTurnstile({ forceReset: true });
             },
             'error-callback': () => {
                 turnstileToken = '';
-                setError('Verification could not load. Refresh and try again.');
+                setCloudflareStatus('Cloudflare is reconnecting...');
+                turnstileElement.classList.add('is-loading');
             }
         });
+    };
+
+    const warmTurnstile = () => {
+        if (turnstileRenderStarted || turnstileWidgetId !== null) return;
+        renderTurnstile();
     };
 
     const setOpen = (isOpen) => {
@@ -979,11 +1018,9 @@ const initDocumentGate = () => {
             submitButton.disabled = false;
             submitButton.classList.remove('is-redirecting');
             submitButton.innerHTML = submitButtonOriginalHtml;
-            window.setTimeout(renderTurnstile, 80);
+            renderTurnstile();
         } else if (window.turnstile && turnstileWidgetId !== null) {
             stopApprovalPolling();
-            window.turnstile.reset(turnstileWidgetId);
-            turnstileToken = '';
             resetOtp();
             setApprovalStage('idle');
         }
@@ -1068,7 +1105,8 @@ const initDocumentGate = () => {
         if (honeypot?.value) return;
 
         if (!turnstileToken) {
-            setError('Please complete the Cloudflare verification first.');
+            renderTurnstile();
+            setError('Cloudflare is finishing verification. Please wait a moment and try again.');
             return;
         }
 
@@ -1128,11 +1166,19 @@ const initDocumentGate = () => {
             setError(error.message || 'Verification failed. Please try again.');
             if (window.turnstile && turnstileWidgetId !== null) window.turnstile.reset(turnstileWidgetId);
             turnstileToken = '';
+            setCloudflareStatus('Refreshing Cloudflare verification...');
+            turnstileElement.classList.add('is-loading');
         } finally {
             if (!requestCompleted) submitButton.disabled = false;
             submitButton.classList.remove('is-loading');
         }
     });
+
+    if ('requestIdleCallback' in window) {
+        window.requestIdleCallback(warmTurnstile, { timeout: 1800 });
+    } else {
+        window.setTimeout(warmTurnstile, 900);
+    }
 };
 
 // Custom Cursor Logic
