@@ -241,7 +241,7 @@ module.exports = async (request, response) => {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                model: process.env.PROFILE_ASSISTANT_MODEL || 'gpt-4.1-mini',
+                model: process.env.PROFILE_ASSISTANT_MODEL || 'gpt-4o-mini',
                 instructions: buildInstructions(),
                 input: messages.map(message => ({
                     role: message.role,
@@ -266,6 +266,7 @@ module.exports = async (request, response) => {
             mode: 'ai'
         });
     } catch (error) {
+        console.warn('Profile assistant OpenAI fallback:', error?.message || 'Unknown OpenAI error');
         return sendJson(response, 200, {
             answer: fallbackReply(latestUserMessage),
             mode: 'portfolio-knowledge',
