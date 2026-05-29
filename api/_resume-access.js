@@ -12,7 +12,15 @@ const RESUME_EXTERNAL_URL =
 const RESUME_EXTERNAL_OPEN_URL =
     process.env.RESUME_EXTERNAL_OPEN_URL || 'https://drive.google.com/file/d/1feNwsLa8S0FORRYVxGUAm2gHBjOvHOMV/view?usp=sharing';
 
+const applySecurityHeaders = (response) => {
+    response.setHeader('X-Content-Type-Options', 'nosniff');
+    response.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+    response.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), payment=()');
+    response.setHeader('X-Frame-Options', 'SAMEORIGIN');
+};
+
 const sendJson = (response, statusCode, payload) => {
+    applySecurityHeaders(response);
     response.statusCode = statusCode;
     response.setHeader('Content-Type', 'application/json');
     response.setHeader('Cache-Control', 'no-store');
@@ -20,6 +28,7 @@ const sendJson = (response, statusCode, payload) => {
 };
 
 const sendHtml = (response, statusCode, html) => {
+    applySecurityHeaders(response);
     response.statusCode = statusCode;
     response.setHeader('Content-Type', 'text/html; charset=utf-8');
     response.setHeader('Cache-Control', 'no-store');
@@ -199,6 +208,7 @@ module.exports = {
     createResumeSignedUrl,
     createToken,
     escapeHtml,
+    applySecurityHeaders,
     getBaseUrl,
     hashOtp,
     isValidEmail,
@@ -206,5 +216,6 @@ module.exports = {
     sendHtml,
     sendJson,
     supabaseFetch,
+    supabaseStorageFetch,
     verifyTurnstile
 };

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Admin | Featured Projects</title>
+    <link rel="icon" href="favicon.svg?v=3" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="featured-projects-page admin-project-page admin-verify-page">
+    <nav class="navbar featured-nav">
+        <a href="index.html#hero" class="featured-logo">NG<span>.</span></a>
+        <div class="featured-nav-links">
+            <a href="featured-projects.html"><i class="fas fa-arrow-left"></i> Featured Projects</a>
+            <a href="index.html#hero" class="featured-back-link">Portfolio</a>
+        </div>
+    </nav>
+
+    <main class="featured-projects-shell admin-project-shell admin-verify-shell">
+        <section class="admin-verify-hero admin-gate-hero">
+            <span class="section-kicker">Admin access</span>
+            <h1>Project Admin Verification</h1>
+            <p>Project publishing is protected by a private two-step verification flow.</p>
+        </section>
+
+        <section id="admin-identity-panel" class="admin-auth-panel admin-auth-panel-hero admin-gate-card"
+            aria-label="Admin sign in">
+            <div class="admin-gate-card-heading">
+                <span class="admin-step-badge">1</span>
+                <div>
+                    <span class="section-kicker">Identity</span>
+                    <h2>Secure Sign In</h2>
+                </div>
+            </div>
+            <div class="admin-gate-card-body">
+                <p id="admin-auth-status">Manually verify access with Google sign-in.</p>
+                <div class="admin-auth-actions">
+                    <button id="admin-google-login" type="button" class="featured-action primary">
+                        <i class="fab fa-google"></i>
+                        Verify with Google
+                    </button>
+                    <button id="admin-sign-out" type="button" class="featured-action" hidden>
+                        <i class="fas fa-right-from-bracket"></i>
+                        Sign Out
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <form id="admin-verification-form" class="admin-project-form admin-verification-form admin-gate-card" hidden>
+            <div class="admin-gate-card-heading">
+                <span class="admin-step-badge">2</span>
+                <div class="admin-step-card">
+                    <span class="section-kicker">Password</span>
+                    <h2>Final Confirmation</h2>
+                    <p>Enter the admin password to unlock the upload page for this browser session.</p>
+                </div>
+            </div>
+            <div class="admin-gate-card-body">
+                <div class="admin-field">
+                    <label for="admin-password">Admin verification password</label>
+                    <input id="admin-password" name="adminPassword" type="password" autocomplete="current-password"
+                        required>
+                </div>
+                <p id="admin-project-status" class="admin-project-status" aria-live="polite"></p>
+                <div class="admin-password-actions">
+                    <button type="submit" class="featured-action primary admin-submit">
+                        <i class="fas fa-shield-halved"></i>
+                        Continue to Upload
+                    </button>
+                    <button id="admin-password-sign-out" type="button" class="featured-action">
+                        <i class="fas fa-right-from-bracket"></i>
+                        Sign Out
+                    </button>
+                </div>
+            </div>
+        </form>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+    <script src="featured-project-admin.js?v=20260517-deny-existing-wrong-account" defer></script>
+</body>
+
+</html>

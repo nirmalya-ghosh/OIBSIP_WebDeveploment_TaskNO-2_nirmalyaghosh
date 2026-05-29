@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Featured Project | Nirmalya Ghosh</title>
+    <link rel="icon" href="favicon.svg?v=3" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css">
+    <link rel="stylesheet" href="style.css?v=20260518-admin-flow">
+</head>
+
+<body class="featured-projects-page admin-project-page admin-upload-page">
+    <nav class="navbar featured-nav">
+        <a href="index.html#hero" class="featured-logo">NG<span>.</span></a>
+        <div class="featured-nav-links">
+            <a href="featured-project-admin.html"><i class="fas fa-shield-halved"></i> Verification</a>
+            <a href="featured-projects.html"><i class="fas fa-arrow-left"></i> Featured Projects</a>
+            <a href="index.html#hero" class="featured-back-link">Portfolio</a>
+        </div>
+    </nav>
+
+    <main class="featured-projects-shell admin-project-shell">
+        <section class="featured-projects-hero admin-upload-hero">
+            <span class="section-kicker">Verified Workspace</span>
+            <h1>Upload Featured Project</h1>
+            <p id="upload-auth-status">Checking secure upload session...</p>
+        </section>
+
+        <form id="featured-project-upload-form" class="admin-project-form admin-upload-form">
+            <div class="admin-upload-console">
+                <aside class="admin-publish-panel">
+                    <div class="admin-panel-header">
+                        <span class="section-kicker">Media</span>
+                        <strong>Thumbnail</strong>
+                    </div>
+
+                    <div class="admin-field admin-field-media">
+                        <label for="project-thumbnail">Project thumbnail</label>
+                        <input id="project-thumbnail" class="admin-file-input" name="thumbnail" type="file" accept="image/png,image/jpeg,image/webp" required>
+                        <label class="admin-file-drop" for="project-thumbnail">
+                            <span class="admin-file-icon"><i class="fas fa-cloud-arrow-up"></i></span>
+                            <span>
+                                <strong>Upload thumbnail</strong>
+                                <small id="project-thumbnail-name">PNG, JPG, or WebP. Free crop enabled.</small>
+                            </span>
+                        </label>
+                        <div class="admin-crop-shell">
+                            <img id="project-crop-image" alt="Project thumbnail crop preview">
+                        </div>
+                        <div class="admin-crop-tools" aria-label="Thumbnail crop controls">
+                            <div class="admin-crop-aspects admin-crop-mode" aria-label="Crop mode">
+                                <span><i class="fas fa-crop-simple"></i> Free crop mode</span>
+                                <small>Drag, resize, zoom, or fit the whole image before saving.</small>
+                            </div>
+                            <label class="admin-crop-zoom" for="project-crop-zoom">
+                                <span>Zoom</span>
+                                <input id="project-crop-zoom" type="range" min="0.35" max="3" value="1" step="0.01" disabled>
+                            </label>
+                            <div class="admin-crop-actions" role="group" aria-label="Edit thumbnail">
+                                <button type="button" data-crop-action="zoom-out" aria-label="Zoom out"><i class="fas fa-magnifying-glass-minus"></i></button>
+                                <button type="button" data-crop-action="zoom-in" aria-label="Zoom in"><i class="fas fa-magnifying-glass-plus"></i></button>
+                                <button type="button" data-crop-action="rotate-left" aria-label="Rotate left"><i class="fas fa-rotate-left"></i></button>
+                                <button type="button" data-crop-action="rotate-right" aria-label="Rotate right"><i class="fas fa-rotate-right"></i></button>
+                                <button type="button" data-crop-action="flip-horizontal" aria-label="Flip horizontal"><i class="fas fa-arrows-left-right"></i></button>
+                                <button type="button" data-crop-action="flip-vertical" aria-label="Flip vertical"><i class="fas fa-arrows-up-down"></i></button>
+                                <button type="button" data-crop-action="fit-image" aria-label="Fit whole image"><i class="fas fa-expand"></i></button>
+                                <button type="button" data-crop-action="reset" aria-label="Reset crop"><i class="fas fa-wand-magic-sparkles"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="admin-field">
+                        <label for="project-image-alt">Image alt text</label>
+                        <input id="project-image-alt" name="imageAlt" type="text" maxlength="180" placeholder="Briefly describe the thumbnail">
+                    </div>
+
+                    <div class="admin-live-preview" aria-live="polite">
+                        <span class="section-kicker">Preview</span>
+                        <article class="admin-preview-card">
+                            <div class="admin-preview-thumb" id="preview-thumb">
+                                <i class="fas fa-image"></i>
+                            </div>
+                            <div class="admin-preview-body">
+                                <span id="preview-badge">Featured</span>
+                                <h2 id="preview-title">Project title</h2>
+                                <p id="preview-description">Your project summary will appear here while you type.</p>
+                                <div id="preview-tech" class="admin-preview-tech"></div>
+                            </div>
+                        </article>
+                    </div>
+                </aside>
+
+                <section class="admin-publish-panel admin-publish-main">
+                    <div class="admin-panel-header admin-brief-header">
+                        <span class="admin-panel-icon"><i class="fas fa-pen-nib"></i></span>
+                        <div>
+                            <span class="section-kicker">Content</span>
+                            <strong>Project brief</strong>
+                            <p>Capture the public-facing story, stack, links, and publishing controls for this project.</p>
+                        </div>
+                    </div>
+
+                    <div class="admin-form-grid">
+                        <div class="admin-field">
+                            <label for="project-title">Project title</label>
+                            <input id="project-title" name="title" type="text" maxlength="140" placeholder="e.g. AI Resume Gate" required>
+                            <small data-counter-for="project-title">0 / 140</small>
+                        </div>
+
+                        <div class="admin-field">
+                            <label for="project-category">Category</label>
+                            <input id="project-category" name="category" type="text" maxlength="80" placeholder="AI, Web App, Security">
+                        </div>
+                    </div>
+
+                    <div class="admin-field">
+                        <label for="project-description">Short description</label>
+                        <textarea id="project-description" name="shortDescription" rows="4" maxlength="520" placeholder="Write the one-paragraph summary visitors should see on the featured card." required></textarea>
+                        <small data-counter-for="project-description">0 / 520</small>
+                    </div>
+
+                    <div class="admin-form-grid">
+                        <div class="admin-field">
+                            <label for="project-role">Your role</label>
+                            <input id="project-role" name="projectRole" type="text" maxlength="120" placeholder="Full-stack developer, UI engineer">
+                        </div>
+
+                        <div class="admin-field">
+                            <label for="project-status">Project status</label>
+                            <select id="project-status" name="projectStatus">
+                                <option value="completed">Completed</option>
+                                <option value="in_progress">In progress</option>
+                                <option value="case_study">Case study</option>
+                                <option value="archived">Archived</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="admin-field">
+                        <label for="project-problem">Problem solved</label>
+                        <textarea id="project-problem" name="problemSolved" rows="3" maxlength="700" placeholder="What user/business problem does this project solve?"></textarea>
+                    </div>
+
+                    <div class="admin-field">
+                        <label for="project-highlights">Key highlights</label>
+                        <textarea id="project-highlights" name="highlights" rows="3" maxlength="700" placeholder="One highlight per line"></textarea>
+                    </div>
+
+                    <div class="admin-field">
+                        <label for="project-tech-stack">Tech stack</label>
+                        <input id="project-tech-stack" name="techStack" type="text" maxlength="240" placeholder="React, Supabase, Vercel, Three.js">
+                    </div>
+
+                    <div class="admin-form-grid">
+                        <div class="admin-field">
+                            <label for="project-demo-type">Demo type</label>
+                            <select id="project-demo-type" name="demoType" required>
+                                <option value="website">Website</option>
+                                <option value="video">Video</option>
+                            </select>
+                        </div>
+
+                        <div class="admin-field">
+                            <label for="project-demo-label">Demo button label</label>
+                            <input id="project-demo-label" name="demoLabel" type="text" maxlength="40" placeholder="Live Demo">
+                        </div>
+                    </div>
+
+                    <div class="admin-form-grid">
+                        <div class="admin-field">
+                            <label for="project-demo-url">Video / website link</label>
+                            <input id="project-demo-url" name="demoUrl" type="url" required>
+                        </div>
+
+                        <div class="admin-field">
+                            <label for="project-github-url">GitHub repo link</label>
+                            <input id="project-github-url" name="githubUrl" type="url" required>
+                        </div>
+                    </div>
+
+                    <div class="admin-form-grid">
+                        <div class="admin-field">
+                            <label for="project-display-order">Display order</label>
+                            <input id="project-display-order" name="displayOrder" type="number" value="100" min="1" step="1">
+                        </div>
+
+                        <div class="admin-field">
+                            <label for="project-date">Project date</label>
+                            <input id="project-date" name="projectDate" type="date">
+                        </div>
+                    </div>
+
+                    <div class="admin-form-grid">
+                        <div class="admin-field">
+                            <label for="project-badge">Badge</label>
+                            <input id="project-badge" name="featuredBadge" type="text" maxlength="40" placeholder="Featured, Best UI, AI Build">
+                        </div>
+
+                        <div class="admin-field">
+                            <label for="project-slug">SEO slug</label>
+                            <input id="project-slug" name="slug" type="text" maxlength="96" placeholder="generated-from-title">
+                        </div>
+                    </div>
+
+                    <div class="admin-publish-toggles">
+                        <label class="admin-checkbox">
+                            <input id="project-published" name="published" type="checkbox" checked>
+                            <span>Publish immediately</span>
+                        </label>
+                        <label class="admin-checkbox">
+                            <input id="project-pinned" name="isPinned" type="checkbox">
+                            <span>Pin above other projects</span>
+                        </label>
+                    </div>
+
+                    <p id="admin-project-status" class="admin-project-status" aria-live="polite"></p>
+
+                    <div class="admin-submit-row">
+                        <button type="submit" class="featured-action primary admin-submit">
+                            <i class="fas fa-cloud-arrow-up"></i>
+                            Save Project
+                        </button>
+                        <button type="reset" class="featured-action admin-reset">
+                            <i class="fas fa-rotate-left"></i>
+                            Reset
+                        </button>
+                    </div>
+                </section>
+            </div>
+        </form>
+
+        <div id="admin-save-next" class="admin-save-next" role="dialog" aria-modal="true" aria-labelledby="admin-save-next-title" hidden>
+            <div class="admin-save-next-panel">
+                <span class="admin-panel-icon"><i class="fas fa-circle-check"></i></span>
+                <div>
+                    <span class="section-kicker">Saved</span>
+                    <h2 id="admin-save-next-title">Add another project?</h2>
+                    <p>The project is saved and published projects appear on the Featured Projects page immediately.</p>
+                </div>
+                <div class="admin-save-next-actions">
+                    <button id="admin-add-another" type="button" class="featured-action primary">
+                        <i class="fas fa-plus"></i>
+                        Yes
+                    </button>
+                    <button id="admin-view-featured" type="button" class="featured-action">
+                        <i class="fas fa-arrow-right"></i>
+                        No
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+    <script src="featured-project-upload.js?v=20260518-admin-flow" defer></script>
+</body>
+
+</html>

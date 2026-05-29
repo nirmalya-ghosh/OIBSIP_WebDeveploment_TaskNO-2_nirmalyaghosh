@@ -3,7 +3,7 @@
 const PROFILE_CONFIG = {
     github: "nirmalya-ghosh",
     leetcode: "nirmalya2127",
-    analyticsEndpoint: ""
+    analyticsEndpoint: "/api/analytics-event"
 };
 
 const PERF_CONFIG = {
@@ -58,7 +58,7 @@ const initPreloader = () => {
     const statusSteps = [
         { at: 18, text: 'Loading profile' },
         { at: 42, text: 'Preparing projects' },
-        { at: 66, text: 'Syncing activity' },
+        { at: 66, text: 'Syncing heatmaps' },
         { at: 84, text: 'Optimizing interface' },
         { at: 100, text: 'Ready' }
     ];
@@ -367,61 +367,77 @@ const getBrowserName = () => {
     return 'Browser';
 };
 
-const getFlagEmoji = (countryCode) => {
-    if (!countryCode || countryCode.length !== 2) return '🌐';
-    return countryCode
-        .toUpperCase()
-        .split('')
-        .map(char => String.fromCodePoint(127397 + char.charCodeAt(0)))
-        .join('');
+const getClientId = () => {
+    const key = 'portfolioVisitorId';
+    let value = localStorage.getItem(key);
+    if (!value) {
+        value = crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+        localStorage.setItem(key, value);
+    }
+    return value;
 };
 
-const renderCountryTraffic = (countries = []) => {
-    const lists = [
-        document.getElementById('country-traffic-list'),
-        document.getElementById('metrics-country-list')
-    ].filter(Boolean);
-    if (!lists.length) return;
-
-    const normalized = countries
-        .filter(country => country && country.country)
-        .map(country => ({
-            country: country.country,
-            code: country.code || country.countryCode || '',
-            visitors: Number(country.visitors) || 0
-        }))
-        .sort((a, b) => b.visitors - a.visitors)
-        .slice(0, 5);
-
-    const maxVisitors = Math.max(1, ...normalized.map(country => country.visitors));
-
-    const markup = normalized.map(country => {
-        const width = Math.max(6, Math.round((country.visitors / maxVisitors) * 100));
-        return `<span><b>${getFlagEmoji(country.code)} ${country.country}</b><i style="--bar: ${width}%"></i><em>${formatNumber(country.visitors)}</em></span>`;
-    }).join('') || '<span><b>Unknown</b><i style="--bar: 0%"></i><em>--</em></span>';
-
-    lists.forEach(list => {
-        list.innerHTML = markup;
-    });
+const getSessionId = () => {
+    const key = 'portfolioSessionId';
+    let value = sessionStorage.getItem(key);
+    if (!value) {
+        value = crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+        sessionStorage.setItem(key, value);
+    }
+    return value;
 };
 
-const renderVisitorGraph = (values) => {
-    const line = document.getElementById('visitor-graph-line');
-    const area = document.getElementById('visitor-graph-area');
-    if (!line || !area || !values.length) return;
+const getUtmParams = () => {
+    const params = new URLSearchParams(window.location.search);
+    return ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content']
+        .reduce((utm, key) => {
+            const value = params.get(key);
+            if (value) utm[key] = value.slice(0, 200);
+            return utm;
+        }, {});
+};
 
-    const width = 320;
-    const height = 120;
-    const padding = 12;
-    const max = Math.max(1, ...values);
-    const points = values.map((value, index) => {
-        const x = values.length === 1 ? padding : padding + (index / (values.length - 1)) * (width - padding * 2);
-        const y = height - padding - (value / max) * (height - padding * 2);
-        return `${x.toFixed(1)},${y.toFixed(1)}`;
+const buildAnalyticsPayload = (eventName, metadata = {}) => ({
+    eventName,
+    visitorId: getClientId(),
+    sessionId: getSessionId(),
+    pagePath: window.location.pathname,
+    pageTitle: document.title,
+    referrer: document.referrer,
+    deviceType: getDeviceType(),
+    browser: getBrowserName(),
+    viewportWidth: window.innerWidth,
+    viewportHeight: window.innerHeight,
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || '',
+    language: navigator.language || '',
+    metadata: {
+        ...metadata,
+        hash: window.location.hash || '',
+        utm: getUtmParams()
+    }
+});
+
+const sendAnalyticsEvent = (eventName, metadata = {}, options = {}) => {
+    if (!PROFILE_CONFIG.analyticsEndpoint) return;
+
+    const body = JSON.stringify(buildAnalyticsPayload(eventName, metadata));
+
+    if (options.beacon && navigator.sendBeacon) {
+        const sent = navigator.sendBeacon(
+            PROFILE_CONFIG.analyticsEndpoint,
+            new Blob([body], { type: 'application/json' })
+        );
+        if (sent) return;
+    }
+
+    fetch(PROFILE_CONFIG.analyticsEndpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body,
+        keepalive: Boolean(options.keepalive)
+    }).catch(() => {
+        // Analytics is best-effort and must never interrupt the portfolio experience.
     });
-
-    line.setAttribute('points', points.join(' '));
-    area.setAttribute('d', `M ${points[0]} L ${points.slice(1).join(' L ')} L ${width - padding},${height - padding} L ${padding},${height - padding} Z`);
 };
 
 const getStrongestDifficulty = (data) => {
@@ -573,7 +589,7 @@ const initGitHubHeatmap = async () => {
         animateCount(document.getElementById('github-active-days'), insights.activeDays);
         animateCount(document.getElementById('github-current-streak'), insights.currentStreak);
         if (focusElement) {
-            focusElement.textContent = `Longest streak: ${insights.longestStreak} days. Hover a square for daily GitHub activity.`;
+            focusElement.textContent = `Longest streak: ${insights.longestStreak} days. Hover a square for daily GitHub heatmap data.`;
         }
 
         renderHeatmap(container, days, getGitHubDay, {
@@ -594,7 +610,7 @@ const initLeetCodeHeatmap = async () => {
 
     try {
         const response = await fetch(`https://leetcode-api-faisalshohag.vercel.app/${PROFILE_CONFIG.leetcode}`);
-        if (!response.ok) throw new Error('LeetCode activity request failed');
+        if (!response.ok) throw new Error('LeetCode heatmap request failed');
 
         const data = await response.json();
         const calendar = data.submissionCalendar || {};
@@ -636,117 +652,91 @@ const initCodingHeatmaps = () => {
     initLeetCodeHeatmap();
 };
 
-const initVisitorAnalytics = async () => {
+const initSupabaseAnalytics = () => {
+    localStorage.removeItem('portfolioTotalVisits');
+
     const sessionStart = Date.now();
-    const visitorSeries = Array.from({ length: 18 }, () => 0);
-    const totalKey = 'portfolioTotalVisits';
-    const storedVisits = Number(localStorage.getItem(totalKey)) || 0;
-    const totalVisits = storedVisits + 1;
-    localStorage.setItem(totalKey, String(totalVisits));
+    let maxScrollDepth = 0;
+    let lastSectionId = '';
+    let lastEngagementSentAt = 0;
 
-    updateText('metric-active-visitors', '1');
-    updateText('metric-total-visitors', formatNumber(totalVisits));
-    const deviceType = getDeviceType();
-    updateText('metric-device-type', deviceType);
-    updateText('metric-browser', getBrowserName());
-    updateText('metric-viewport', `${window.innerWidth} x ${window.innerHeight}`);
-    updateText('metric-timezone', Intl.DateTimeFormat().resolvedOptions().timeZone || 'Local');
-    updateText('metric-session-summary', 'Session started just now');
-    updateText('metric-environment-summary', `${deviceType} on ${getBrowserName()}`);
-    renderCountryTraffic([{ country: 'This device', visitors: totalVisits }]);
-    renderVisitorGraph(visitorSeries);
+    sendAnalyticsEvent('page_view', {
+        screenWidth: window.screen?.width || null,
+        screenHeight: window.screen?.height || null,
+        colorDepth: window.screen?.colorDepth || null,
+        connection: navigator.connection?.effectiveType || '',
+        reducedMotion: window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    });
 
-    const tickSessionDuration = () => {
-        const elapsedSeconds = Math.floor((Date.now() - sessionStart) / 1000);
-        const duration = formatDuration(elapsedSeconds);
-        updateText('metric-session-duration', duration);
-        updateText('metric-session-summary', `${duration} active, ${formatNumber(totalVisits)} local visits`);
-        visitorSeries.push(1 + Math.round(Math.abs(Math.sin(elapsedSeconds / 7)) * 2));
-        visitorSeries.shift();
-        renderVisitorGraph(visitorSeries);
-    };
-    tickSessionDuration();
-    setInterval(tickSessionDuration, 1000);
-
-    try {
-        const geoResponse = await fetch('https://ipapi.co/json/');
-        if (geoResponse.ok) {
-            const geo = await geoResponse.json();
-            if (!PROFILE_CONFIG.analyticsEndpoint) {
-                renderCountryTraffic([{
-                    country: geo.country_name || 'Current country',
-                    code: geo.country_code,
-                    visitors: totalVisits
-                }]);
-                updateText('metric-source', 'Local session');
-                updateText('metric-visitor-source', geo.country_name || 'Local session');
-            }
-        }
-    } catch (error) {
-        // Keep local analytics if geo lookup is blocked.
-    }
-
-    if (!PROFILE_CONFIG.analyticsEndpoint) return;
-
-    try {
-        const response = await fetch(PROFILE_CONFIG.analyticsEndpoint);
-        if (!response.ok) throw new Error('Analytics endpoint failed');
-        const data = await response.json();
-
-        updateText('metric-active-visitors', formatNumber(data.activeVisitors));
-        updateText('metric-total-visitors', formatNumber(data.totalVisitors));
-        if (data.averageSessionDuration) {
-            updateText('metric-session-duration', data.averageSessionDuration);
-        }
-        if (data.deviceTypes?.top) {
-            updateText('metric-device-type', data.deviceTypes.top);
-        }
-        if (Array.isArray(data.countries)) {
-            renderCountryTraffic(data.countries);
-        }
-        if (Array.isArray(data.visitorSeries)) {
-            renderVisitorGraph(data.visitorSeries.map(value => Number(value) || 0));
-            updateText('metric-graph-caption', 'Live feed');
-        }
-
-        updateText('metric-source', 'Live feed');
-        updateText('metric-visitor-source', 'Live feed');
-    } catch (error) {
-        updateText('metric-source', 'Local session');
-        updateText('metric-visitor-source', 'Local session');
-    }
-};
-
-const initMetricsModal = () => {
-    const modal = document.getElementById('metrics-modal');
-    const openButton = document.getElementById('live-metrics-button');
-    const closeButton = modal?.querySelector('.metrics-close');
-    if (!modal || !openButton || !closeButton) return;
-
-    const setOpen = (isOpen) => {
-        modal.classList.toggle('active', isOpen);
-        modal.setAttribute('aria-hidden', String(!isOpen));
-        openButton.setAttribute('aria-expanded', String(isOpen));
-        document.body.classList.toggle('modal-open', isOpen);
-        if (isOpen) closeButton.focus();
+    const updateScrollDepth = () => {
+        const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+        maxScrollDepth = Math.max(maxScrollDepth, Math.round(((window.scrollY || 0) / maxScroll) * 100));
     };
 
-    openButton.addEventListener('click', () => setOpen(true));
-    closeButton.addEventListener('click', () => setOpen(false));
-    modal.addEventListener('click', (event) => {
-        if (event.target === modal) setOpen(false);
+    window.addEventListener('scroll', updateScrollDepth, { passive: true });
+    updateScrollDepth();
+
+    const sectionObserver = 'IntersectionObserver' in window
+        ? new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (!entry.isIntersecting || entry.intersectionRatio < 0.45) return;
+                const sectionId = entry.target.id || '';
+                if (!sectionId || sectionId === lastSectionId) return;
+                lastSectionId = sectionId;
+                sendAnalyticsEvent('section_view', { sectionId });
+            });
+        }, { threshold: [0.45] })
+        : null;
+
+    sectionObserver?.observe(document.getElementById('hero'));
+    document.querySelectorAll('main section[id]').forEach(section => sectionObserver?.observe(section));
+
+    document.addEventListener('click', event => {
+        if (!(event.target instanceof Element)) return;
+        const link = event.target.closest('a');
+        const button = event.target.closest('button');
+        const target = link || button;
+        if (!target) return;
+
+        const href = link?.getAttribute('href') || '';
+        const url = link?.href || '';
+        const text = (target.getAttribute('aria-label') || target.textContent || '').trim().replace(/\s+/g, ' ').slice(0, 140);
+        const projectCard = target.closest('.project-card');
+        const contactBox = target.closest('.contact-box, .orbit-icon');
+
+        let eventName = button ? 'button_click' : 'link_click';
+        if (link?.classList.contains('protected-document-link')) eventName = 'document_gate_open';
+        if (projectCard) eventName = 'project_link_click';
+        if (contactBox) eventName = 'contact_link_click';
+        if (url && /^https?:\/\//.test(url) && !url.startsWith(window.location.origin)) eventName = 'outbound_link_click';
+        if (href?.startsWith('#')) eventName = 'anchor_link_click';
+        if (target.matches('[data-assistant-prompt]')) eventName = 'assistant_prompt_click';
+
+        sendAnalyticsEvent(eventName, {
+            label: text,
+            href,
+            url,
+            documentId: link?.dataset.documentId || '',
+            documentLabel: link?.dataset.documentLabel || '',
+            projectTitle: projectCard?.querySelector('h3')?.textContent?.trim() || '',
+            contactTarget: contactBox?.getAttribute('aria-label') || ''
+        });
+    }, { capture: true });
+
+    const flushEngagement = () => {
+        const now = Date.now();
+        if (now - lastEngagementSentAt < 1000) return;
+        lastEngagementSentAt = now;
+        sendAnalyticsEvent('session_engagement', {
+            durationSeconds: Math.round((now - sessionStart) / 1000),
+            maxScrollDepth
+        }, { beacon: true, keepalive: true });
+    };
+
+    document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'hidden') flushEngagement();
     });
-    window.addEventListener('keydown', (event) => {
-        if (event.key === 'Escape' && modal.classList.contains('active')) {
-            setOpen(false);
-            openButton.focus();
-        }
-    });
-    window.addEventListener('resize', () => {
-        updateText('metric-viewport', `${window.innerWidth} x ${window.innerHeight}`);
-        const deviceType = getDeviceType();
-        updateText('metric-device-type', deviceType);
-    }, { passive: true });
+    window.addEventListener('pagehide', flushEngagement);
 };
 
 const initDocumentGate = () => {
@@ -849,6 +839,9 @@ const initDocumentGate = () => {
         setError('');
         setOtpStatus('Approval received. Preparing your secure resume viewer...');
         setApprovalStage('approved', 'Approval received. Preparing your secure resume viewer now.');
+        sendAnalyticsEvent('resume_access_approved', {
+            documentId: activeDocumentId
+        });
         submitButton.disabled = true;
         submitButton.classList.add('is-redirecting');
         submitButton.innerHTML = 'Opening Secure Resume <i class="fas fa-spinner fa-spin"></i>';
@@ -1070,6 +1063,9 @@ const initDocumentGate = () => {
 
             otpRequestId = result.requestId;
             verifiedOtpEmail = email;
+            sendAnalyticsEvent('resume_otp_requested', {
+                documentId: activeDocumentId
+            });
             setOtpStatus('OTP sent. Check your inbox.');
             otpInput?.focus();
         } catch (error) {
@@ -1156,6 +1152,9 @@ const initDocumentGate = () => {
 
             if (result?.pendingApproval) {
                 requestCompleted = true;
+                sendAnalyticsEvent('resume_access_pending_approval', {
+                    documentId: activeDocumentId
+                });
                 setError('');
                 setOtpStatus(result.message || 'Verification complete. Waiting for approval.');
                 setApprovalStage('waiting', 'Your email and OTP are verified. Waiting for approval to release the resume securely.');
@@ -1452,6 +1451,12 @@ const initForm = () => {
             subject: form.subject?.value?.trim(),
             message: form.message?.value?.trim()
         };
+        sendAnalyticsEvent('contact_form_submit_attempt', {
+            hasName: Boolean(payload.name),
+            hasEmail: Boolean(payload.email),
+            hasSubject: Boolean(payload.subject),
+            messageLength: payload.message?.length || 0
+        });
 
         btn.disabled = true;
         btn.innerHTML = 'Sending...';
@@ -1471,9 +1476,16 @@ const initForm = () => {
 
             btn.innerHTML = 'Message Sent!';
             form.reset();
+            sendAnalyticsEvent('contact_form_submit_success', {
+                subjectLength: payload.subject?.length || 0,
+                messageLength: payload.message?.length || 0
+            });
             alert('Message Sent Successfully!');
         } catch (error) {
             btn.innerHTML = 'Try Again';
+            sendAnalyticsEvent('contact_form_submit_error', {
+                message: error.message || 'Message could not be sent.'
+            });
             alert(error.message || 'Message could not be sent. Please try again.');
         } finally {
             btn.disabled = false;
@@ -1815,7 +1827,7 @@ const initAdvancedAnimations = () => {
 
     if (!lightweightMotion) {
         // Section Reveals
-        const sections = document.querySelectorAll("#about, #skills, #activity, #projects, #contact");
+        const sections = document.querySelectorAll("#about, #skills, #heatmaps, #featured-projects, #projects, #contact");
         sections.forEach(section => {
             gsap.fromTo(section, {
                 opacity: 0,
@@ -1913,6 +1925,10 @@ const initProfileAssistant = () => {
         const content = question.trim();
         if (!content) return;
 
+        sendAnalyticsEvent('assistant_question_submitted', {
+            questionLength: content.length,
+            fromSuggestion: Boolean([...promptButtons].some(button => button.dataset.assistantPrompt === content))
+        });
         messages.push({ role: 'user', content });
         renderMessages();
         input.value = '';
@@ -1970,8 +1986,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initMobileMenu();
     initMagneticButtons();
     initCodingHeatmaps();
-    initVisitorAnalytics();
-    initMetricsModal();
+    initSupabaseAnalytics();
     initDocumentGate();
     if (document.getElementById('contactForm')) initForm();
     initAdvancedAnimations();

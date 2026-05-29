@@ -21,7 +21,7 @@
 
 
 
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=20260518-admin-flow">
 </head>
 
 <body>
@@ -74,8 +74,9 @@
                 <li><a href="#hero">Home</a></li>
                 <li><a href="#about">About</a></li>
                 <li><a href="#skills">Skills</a></li>
-                <li><a href="#activity">Activity</a></li>
-                <li><a href="#projects">Work</a></li>
+                <li><a href="#heatmaps">Heatmaps</a></li>
+                <li><a href="#featured-projects">Featured Projects</a></li>
+                <li><a href="#projects">Projects</a></li>
                 <li><a href="#contact">Contact</a></li>
             </ul>
 
@@ -85,11 +86,6 @@
                 <span></span>
             </div>
 
-            <button type="button" id="live-metrics-button" class="live-metrics-button" aria-haspopup="dialog"
-                aria-expanded="false">
-                <i class="fas fa-chart-line"></i>
-                <span>Live Metrics</span>
-            </button>
         </div>
 
         <div class="nav-status-cluster">
@@ -106,77 +102,11 @@
         <a href="#hero" aria-label="Home"><i class="fas fa-terminal"></i></a>
         <a href="#about" aria-label="About"><i class="fas fa-user"></i></a>
         <a href="#skills" aria-label="Skills"><i class="fas fa-code"></i></a>
-        <a href="#activity" aria-label="Activity"><i class="fas fa-chart-simple"></i></a>
+        <a href="#heatmaps" aria-label="Heatmaps"><i class="fas fa-chart-simple"></i></a>
+        <a href="#featured-projects" aria-label="Featured Projects"><i class="fas fa-star"></i></a>
         <a href="#projects" aria-label="Projects"><i class="fas fa-folder-open"></i></a>
         <a href="#contact" aria-label="Contact"><i class="fas fa-envelope"></i></a>
     </aside>
-
-    <div id="metrics-modal" class="metrics-modal" role="dialog" aria-modal="true" aria-labelledby="metrics-modal-title"
-        aria-hidden="true">
-        <div class="metrics-modal-panel">
-            <button type="button" class="metrics-close" aria-label="Close live metrics">
-                <i class="fas fa-times"></i>
-            </button>
-            <div class="heatmap-header">
-                <div>
-                    <span class="heatmap-kicker">Visitors</span>
-                    <h3 id="metrics-modal-title">Live Portfolio Metrics</h3>
-                </div>
-                <div class="analytics-icon"><i class="fas fa-chart-line"></i></div>
-            </div>
-
-            <div class="metrics-modal-body">
-                <div class="metrics-summary">
-                    <div>
-                        <span>Current session</span>
-                        <strong id="metric-session-summary">--</strong>
-                    </div>
-                    <div>
-                        <span>Environment</span>
-                        <strong id="metric-environment-summary">--</strong>
-                    </div>
-                </div>
-
-                <div class="visitor-graph-card">
-                    <div class="country-panel-header">
-                        <strong>Real-time visitors graph</strong>
-                        <span id="metric-graph-caption">Session pulse</span>
-                    </div>
-                    <svg id="visitor-live-graph" class="visitor-live-graph" viewBox="0 0 320 120" aria-label="Real-time visitors graph">
-                        <defs>
-                            <linearGradient id="visitorGraphFill" x1="0" x2="0" y1="0" y2="1">
-                                <stop offset="0%" stop-color="#007bff" stop-opacity="0.28"></stop>
-                                <stop offset="100%" stop-color="#007bff" stop-opacity="0"></stop>
-                            </linearGradient>
-                        </defs>
-                        <path id="visitor-graph-area" d=""></path>
-                        <polyline id="visitor-graph-line" points=""></polyline>
-                    </svg>
-                </div>
-
-                <div class="metrics-detail-grid">
-                    <span><strong id="metric-active-visitors">--</strong> active now</span>
-                    <span><strong id="metric-total-visitors">--</strong> total visits</span>
-                    <span><strong id="metric-session-duration">--</strong> session duration</span>
-                    <span><strong id="metric-device-type">--</strong> device type</span>
-                    <span><strong id="metric-browser">--</strong> browser</span>
-                    <span><strong id="metric-viewport">--</strong> viewport</span>
-                    <span><strong id="metric-timezone">--</strong> timezone</span>
-                    <span><strong id="metric-source">Local session</strong> data source</span>
-                </div>
-
-                <div class="country-panel">
-                    <div class="country-panel-header">
-                        <strong>Country-wise traffic</strong>
-                        <span id="metric-visitor-source">Local session</span>
-                    </div>
-                    <div id="metrics-country-list" class="country-list">
-                        <span><b>--</b><i style="--bar: 0%"></i><em>--</em></span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <div id="document-gate-modal" class="document-gate-modal" role="dialog" aria-modal="true"
         aria-labelledby="document-gate-title" aria-hidden="true">
@@ -618,9 +548,9 @@
             </div>
         </section>
 
-        <!-- Coding Activity Section -->
-        <section id="activity">
-            <h2 class="section-title"><span style="margin-right: 0.5em;">Coding</span>Activity</h2>
+        <!-- Heatmaps Section -->
+        <section id="heatmaps">
+            <h2 class="section-title"><span style="margin-right: 0.5em;">Coding</span>Heatmaps</h2>
             <div class="activity-wrapper">
                 <article class="heatmap-card github-heatmap-card" data-tilt>
                     <div class="heatmap-header">
@@ -651,7 +581,7 @@
                     <div id="github-months" class="heatmap-months" aria-hidden="true"></div>
                     <div id="github-heatmap" class="contribution-heatmap is-loading" aria-label="GitHub contribution calendar">
                     </div>
-                    <p id="github-focus" class="heatmap-focus">Hover a square to inspect a GitHub activity day.</p>
+                    <p id="github-focus" class="heatmap-focus">Hover a square to inspect a GitHub heatmap day.</p>
                     <div class="heatmap-legend" aria-hidden="true">
                         <span>Less</span>
                         <i data-level="0"></i>
@@ -713,19 +643,33 @@
             </div>
         </section>
 
-        <!-- Connect Section -->
+        <!-- Featured Projects Section -->
+        <section id="featured-projects">
+            <div class="featured-projects-wrapper">
+                <div class="featured-projects-heading">
+                    <span class="section-kicker">Selected Work</span>
+                    <h2 class="section-title"><span style="margin-right: 0.5em;">Featured</span>Projects</h2>
+                    <a href="featured-projects.html" class="featured-projects-more">
+                        <span>View More</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+
+                <div id="featured-projects-preview" class="featured-projects-preview" aria-live="polite">
+                    <div class="featured-projects-empty">
+                        <i class="fas fa-folder-plus"></i>
+                        <strong>No featured projects published yet.</strong>
+                        <span>Published projects will appear here automatically.</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Projects Section -->
         <section id="projects">
-            <h2 class="section-title"><span style="margin-right: 0.5em;">Latest</span>Projects</h2>
+            <h2 class="section-title">Projects</h2>
             <div class="projects-wrapper">
                 <div class="projects-horizontal-track">
-                    <!-- Featured Projects -->
-                    <a href="featured-projects.html" class="project-card card-featured" data-tilt>
-                        <div class="icon-circle"><i class="fas fa-star"></i></div>
-                        <h3>Featured Projects</h3>
-                        <p>Top selected work across secure resume access, AI assistant, activity dashboards, and portfolio engineering.</p>
-                        <div class="view-project">View Highlights <i class="fas fa-arrow-right"></i></div>
-                    </a>
-
                     <!-- Github -->
                     <a href="https://github.com/nirmalya-ghosh?tab=repositories" target="_blank"
                         class="project-card card-github" data-tilt>
@@ -904,6 +848,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js" defer></script>
     <script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js" defer></script>
+    <script src="featured-projects.js?v=20260518-delete-otp" defer></script>
     <script src="script.js" defer></script>
 
 </body>
