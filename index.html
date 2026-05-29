@@ -15,7 +15,7 @@
     <!-- Icons -->
     <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css?v=20260529-clean-architecture">
+    <link rel="stylesheet" href="style.css?v=20260529-vercel-dark-nav-hero">
 </head>
 
 <body>
@@ -25,101 +25,39 @@
 
     <!-- Scroll Progress -->
     <div id="scroll-progress"></div>
-    <!-- Theme Toggle & Navigation -->
-    <nav class="navbar">
-        <div class="nav-actions">
-            <ul class="nav-links">
-                <li><a href="#hero">Home</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#skills">Skills</a></li>
-                <li><a href="#heatmaps">Heatmaps</a></li>
-                <li><a href="#featured-projects">Featured Projects</a></li>
-                <li><a href="#projects">Projects</a></li>
-                <li><a href="#contact">Contact</a></li>
-            </ul>
-
-            <div class="hamburger" role="button" aria-label="Toggle navigation" tabindex="0">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
-
-        </div>
-
-        <div class="nav-status-cluster">
-            <div class="digital-clock" aria-label="Current time">
-                <span id="clock-day">---</span>
-                <strong id="clock-time">--:--:--</strong>
-            </div>
-            <div class="logo">NG<span>.</span></div>
-        </div>
+    <nav class="top-nav" aria-label="Primary navigation">
+        <a href="#hero" class="nav-brand" aria-label="Nirmalya Ghosh home">NG</a>
+        <ul class="nav-links">
+            <li><a href="#hero">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#skills">Skills</a></li>
+            <li><a href="#projects">Projects</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
     </nav>
 
     <div id="canvas-container" aria-hidden="true"></div>
 
     <main>
         <!-- Hero Section -->
-        <section id="hero">
-            <div class="hero-text">
-                <span class="hero-greeting">B.Tech CSE at KIIT</span>
-                <h1 class="hero-name">Nirmalya Ghosh</h1>
-                <p class="hero-role">Software Builder & AI/ML Learner.</p>
-                <p class="hero-bio">I turn code, data, and fundamentals into thoughtful products that feel fast, useful, and ready for real users.</p>
+        <section id="hero" class="hero clean-section">
+            <div class="clean-container hero-grid">
+                <div class="hero-copy">
+                    <p class="hero-eyebrow">19-year-old B.Tech CSE student at KIIT</p>
+                    <h1 class="hero-name">Nirmalya Ghosh</h1>
+                    <p class="hero-role">Software Builder &amp; AI/ML Learner</p>
+                    <p class="hero-bio">I turn code, data, and fundamentals into thoughtful products that feel fast, useful, and ready for real users.</p>
 
-                <div class="hero-signal-grid" aria-label="Core strengths">
-                    <span><i class="fas fa-brain"></i> AI/ML</span>
-                    <span><i class="fas fa-code"></i> DSA</span>
-                    <span><i class="fas fa-layer-group"></i> Software Architecture</span>
-                </div>
-
-                <div class="hero-buttons">
-                    <a href="/resume.pdf" class="cta-button primary-btn resume-download" download>
-                        <span class="btn-text">Download Resume (PDF)</span>
-                        <i class="fas fa-download"></i>
-                    </a>
-                    <a href="#featured-projects" class="cta-button subtle-btn">
-                        <span class="btn-text">View Projects</span>
-                        <i class="fas fa-arrow-right"></i>
-                    </a>
-                </div>
-            </div>
-
-            <div class="hero-image-wrapper">
-                <div class="hero-bg-shape"></div>
-                <div class="hero-portrait-shell">
-                    <img src="./assets/images/profile.jpg" alt="Nirmalya Ghosh" class="hero-img" data-tilt
-                        fetchpriority="high" width="400" height="400">
-                </div>
-
-                <div class="hero-status-card" aria-label="Current focus">
-                    <span class="status-dot"></span>
-                    <div>
-                        <strong>Currently focused on</strong>
-                        <p>AI-ready products, clean engineering, and practical problem solving.</p>
+                    <div class="hero-actions">
+                        <a href="/resume.pdf" class="resume-button" download>Download Resume</a>
+                        <a href="#projects" class="secondary-link">View Projects</a>
                     </div>
                 </div>
 
-                <!-- Orbiting Social Icons -->
-                <!-- LinkedIn (Top Rightish) -->
-                <a href="https://www.linkedin.com/in/nirmalya-ghosh-422569377/" target="_blank"
-                    class="orbit-icon orbit-1" aria-label="LinkedIn">
-                    <i class="fab fa-linkedin-in"></i>
-                </a>
-                <!-- GitHub (Bottom Rightish) -->
-                <a href="https://github.com/nirmalya-ghosh" target="_blank" class="orbit-icon orbit-2"
-                    aria-label="GitHub">
-                    <i class="fab fa-github"></i>
-                </a>
-                <!-- WhatsApp (Bottom Leftish) -->
-                <a href="https://wa.me/918967836222" target="_blank" class="orbit-icon orbit-3" aria-label="WhatsApp">
-                    <i class="fab fa-whatsapp"></i>
-                </a>
-                <!-- Gmail (Top Leftish) -->
-                <a href="mailto:nirmalyaghosh0727@gmail.com" class="orbit-icon orbit-4" aria-label="Email">
-                    <i class="fas fa-envelope"></i>
-                </a>
-
-                <p class="hero-image-tagline">"Build useful intelligence. Ship reliable software."</p>
+                <aside class="hero-panel clean-card" aria-label="Current focus">
+                    <span>Focus</span>
+                    <strong>AI/ML systems, clean engineering, and competitive programming.</strong>
+                </aside>
             </div>
         </section>
 
@@ -669,8 +607,8 @@
     <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js" defer></script>
-    <script src="featured-projects.js?v=20260529-clean-architecture" defer></script>
-    <script src="script.js?v=20260529-clean-architecture" defer></script>
+    <script src="featured-projects.js?v=20260529-vercel-dark-nav-hero" defer></script>
+    <script src="script.js?v=20260529-vercel-dark-nav-hero" defer></script>
 
 </body>
 

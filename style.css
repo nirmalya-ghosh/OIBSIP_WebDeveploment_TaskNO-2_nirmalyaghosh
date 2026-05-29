@@ -11363,6 +11363,386 @@ footer {
     }
 }
 
+/* EOF strict dark correction */
+html,
+body {
+    background: #000000 !important;
+    background-color: #000000 !important;
+    color: #ededed !important;
+}
+
+.hero-panel,
+.clean-card,
+.top-nav,
+.resume-button,
+.secondary-link {
+    box-shadow: none !important;
+}
+
+.hero-panel,
+.clean-card {
+    background: #111111 !important;
+    border-color: #333333 !important;
+}
+
+/* Strict Vercel-style black mode: top navigation + hero foundation */
+:root {
+    --bg: #000000;
+    --bg-color: #000000;
+    --surface: #111111;
+    --surface-2: #1a1a1a;
+    --border: #333333;
+    --border-color: #333333;
+    --text: #ededed;
+    --text-color: #ededed;
+    --muted: #888888;
+    --text-light: #888888;
+    --text-muted: #888888;
+    --accent: #0070f3;
+    --accent-color: #0070f3;
+    --accent-secondary: #0070f3;
+    --card-bg: #111111;
+    --shadow-soft: none;
+    --shadow-hover: none;
+    --font-body: "Inter", "Geist", -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
+    --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+}
+
+html,
+body {
+    background-color: #000000 !important;
+    background: #000000 !important;
+    color: var(--text) !important;
+    font-family: var(--font-body) !important;
+}
+
+body {
+    background-color: #000000 !important;
+    background-image: none !important;
+    font-size: 16px !important;
+    letter-spacing: 0 !important;
+    line-height: 1.5 !important;
+}
+
+*:not(code):not(pre):not(kbd):not(samp):not(.fa):not(.fas):not(.far):not(.fab):not(.fa-solid):not(.fa-regular):not(.fa-brands) {
+    font-family: var(--font-body) !important;
+}
+
+code,
+pre,
+kbd,
+samp {
+    font-family: var(--font-mono) !important;
+}
+
+*,
+*::before,
+*::after {
+    box-shadow: none !important;
+}
+
+.navbar,
+.nav-actions,
+.nav-status-cluster,
+.digital-clock,
+.hamburger,
+.terminal-rail,
+.document-gate-modal,
+.resume-viewer-modal,
+.cursor-dot,
+.cursor-outline,
+#preloader,
+#canvas-container,
+.hero-text,
+.hero-image-wrapper,
+.hero-typewriter,
+.terminal-typewriter-line,
+.hero-signal-grid,
+.hero-bg-shape,
+.hero-portrait-shell,
+.hero-status-card,
+.hero-image-tagline,
+.orbit-icon {
+    display: none !important;
+}
+
+.top-nav {
+    align-items: center;
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+    background: rgba(0, 0, 0, 0.72);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    height: 72px;
+    justify-content: center;
+    left: 0;
+    padding: 0 24px;
+    position: sticky;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+}
+
+.nav-brand {
+    color: #ffffff;
+    font-size: 0.95rem;
+    font-weight: 800;
+    left: 24px;
+    letter-spacing: -0.02em;
+    position: absolute;
+}
+
+.top-nav .nav-links {
+    align-items: center;
+    display: flex !important;
+    gap: clamp(18px, 3vw, 36px);
+    justify-content: center;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.top-nav .nav-links a {
+    color: var(--muted) !important;
+    font-size: 0.92rem !important;
+    font-weight: 500 !important;
+    letter-spacing: 0 !important;
+    text-decoration: none;
+    text-transform: none !important;
+    transition: color 160ms ease;
+}
+
+.top-nav .nav-links a:hover,
+.top-nav .nav-links a:focus,
+.top-nav .nav-links a.active {
+    color: var(--accent) !important;
+}
+
+.clean-section {
+    padding: clamp(96px, 12vw, 160px) clamp(20px, 5vw, 64px) !important;
+}
+
+.clean-container {
+    margin: 0 auto;
+    max-width: 1120px;
+    width: 100%;
+}
+
+#hero.hero {
+    align-items: center !important;
+    background: #000000 !important;
+    display: grid !important;
+    min-height: calc(100vh - 72px) !important;
+    padding-top: clamp(96px, 12vw, 160px) !important;
+}
+
+.hero-grid {
+    align-items: center;
+    display: grid;
+    gap: clamp(48px, 8vw, 96px);
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 420px);
+}
+
+.hero-copy {
+    max-width: 760px;
+}
+
+.hero-eyebrow {
+    color: var(--muted) !important;
+    font-size: 0.95rem !important;
+    font-weight: 500 !important;
+    letter-spacing: 0 !important;
+    margin: 0 0 24px !important;
+    text-transform: none !important;
+}
+
+.hero-name {
+    color: #ffffff !important;
+    font-size: clamp(4rem, 10vw, 8.5rem) !important;
+    font-weight: 850 !important;
+    letter-spacing: -0.07em !important;
+    line-height: 0.9 !important;
+    margin: 0 !important;
+    text-shadow: none !important;
+}
+
+.hero-role {
+    color: var(--muted) !important;
+    font-size: clamp(1.3rem, 2.6vw, 2rem) !important;
+    font-weight: 500 !important;
+    line-height: 1.25 !important;
+    margin: 28px 0 0 !important;
+}
+
+.hero-bio {
+    color: var(--text) !important;
+    font-size: clamp(1.05rem, 1.6vw, 1.25rem) !important;
+    line-height: 1.7 !important;
+    margin: 28px 0 0 !important;
+    max-width: 660px;
+}
+
+.hero-actions {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 40px;
+}
+
+.resume-button,
+.secondary-link {
+    align-items: center;
+    border-radius: 8px;
+    display: inline-flex;
+    font-size: 0.95rem;
+    font-weight: 700;
+    justify-content: center;
+    min-height: 48px;
+    padding: 0 20px;
+    text-decoration: none;
+    transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease, opacity 160ms ease;
+}
+
+.resume-button {
+    background: var(--accent);
+    border: 1px solid var(--accent);
+    color: #ffffff;
+}
+
+.resume-button:hover,
+.resume-button:focus {
+    opacity: 0.9;
+}
+
+.secondary-link {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text);
+}
+
+.secondary-link:hover,
+.secondary-link:focus {
+    border-color: #555555;
+}
+
+.clean-card,
+.hero-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+}
+
+.hero-panel {
+    display: grid;
+    gap: 16px;
+    padding: clamp(28px, 4vw, 40px);
+}
+
+.hero-panel span {
+    color: var(--muted);
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.hero-panel strong {
+    color: var(--text);
+    font-size: clamp(1.25rem, 2vw, 1.7rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.25;
+}
+
+.about-story-panel,
+.about-focus-panel,
+.education-container,
+.skills-header-panel,
+.skill-pill,
+.glossy-card,
+.heatmap-card,
+.featured-projects-preview,
+.featured-cms-card,
+.project-card,
+.contact-copy-panel,
+.contact-form-panel,
+.assistant-panel,
+.assistant-message,
+.assistant-form textarea,
+.assistant-suggestions button {
+    background: var(--surface) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 12px !important;
+}
+
+.section-kicker,
+.heatmap-kicker,
+.featured-cms-kicker {
+    color: var(--muted) !important;
+}
+
+.section-title,
+.about-arrow-header,
+.about-focus-panel h3,
+.heatmap-card h3,
+.featured-cms-body h3,
+.project-card h3,
+.contact-copy-panel h2 {
+    color: var(--text) !important;
+}
+
+.hero-copy p,
+.about-bio,
+.about-focus-list p,
+.edu-details,
+.skills-header-panel p,
+.heatmap-focus,
+.featured-cms-body p,
+.project-card p,
+.contact-intro {
+    color: var(--muted) !important;
+}
+
+@media (max-width: 860px) {
+    .hero-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .hero-name {
+        font-size: clamp(3.4rem, 17vw, 5.4rem) !important;
+    }
+}
+
+@media (max-width: 640px) {
+    .top-nav {
+        height: auto;
+        justify-content: flex-start;
+        overflow-x: auto;
+        padding: 16px 20px;
+    }
+
+    .nav-brand {
+        display: none;
+    }
+
+    .top-nav .nav-links {
+        gap: 20px;
+        min-width: max-content;
+    }
+
+    .hero-actions {
+        align-items: stretch;
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+    .resume-button,
+    .secondary-link {
+        width: 100%;
+    }
+}
+
 @media (max-width: 360px), (max-height: 720px) {
     .document-gate-modal {
         align-items: flex-start;
@@ -12718,4 +13098,20 @@ footer {
     .featured-projects-more {
         width: 100% !important;
     }
+}
+
+/* EOF strict dark correction */
+html,
+body {
+    background: #000000 !important;
+    background-color: #000000 !important;
+    color: #ededed !important;
+}
+
+.hero-panel,
+.clean-card,
+.top-nav,
+.resume-button,
+.secondary-link {
+    box-shadow: none !important;
 }
