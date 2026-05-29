@@ -1,6 +1,6 @@
 const PROFILE_CONTEXT = `
 Nirmalya Ghosh is an AI/ML learner and software builder.
-Positioning: turns code, data, and security fundamentals into thoughtful products that are fast, useful, and ready for real users.
+Positioning: turns code, data, and fundamentals into thoughtful products that are fast, useful, and ready for real users.
 Education: B.Tech in Computer Science / Information Technology at KIIT, Kalinga Institute of Industrial Technology, Bhubaneswar, 2025-2029. Schooling: Beachwood School CBSE Higher Secondary, 2025; St. Xavier's School ICSE Secondary Education, 2023.
 Focus areas: AI/ML systems, DSA, software engineering fundamentals, intelligent web products, cybersecurity-aware development, ethical hacking basics, clean engineering, practical product thinking.
 Languages: Java, Python, C, JavaScript, HTML, CSS.
@@ -14,10 +14,10 @@ Tools: Git, GitHub, VS Code, Linux, AWS basics, Docker, Android Studio.
 Concepts: OOP, data structures, algorithms, system design, problem solving, clean code.
 Activity profiles: GitHub username nirmalya-ghosh. LeetCode username nirmalya2127.
 Project surfaces: a Featured Projects page at /featured-projects.html, GitHub repositories, LinkedIn project/activity updates, LeetCode progress.
-Featured project highlights: Secure Resume Access System, Recruiter AI Profile Assistant, Coding Activity Dashboard, Responsive Portfolio Interface, and DSA/LeetCode Practice Track.
+Featured project highlights: Structure-X, Recruiter AI Profile Assistant, Coding Activity Dashboard, Responsive Portfolio Interface, and DSA/LeetCode Practice Track.
 Availability: open for internships, projects, collaborations, research ideas, AI/ML, software engineering, intelligent web products, and cybersecurity-aware development.
 Contact: email nirmalyaghosh2127@gmail.com, phone +91 8967836222, LinkedIn https://www.linkedin.com/in/nirmalya-ghosh-422569377/, GitHub https://github.com/nirmalya-ghosh, WhatsApp https://wa.me/918967836222.
-Resume access: the website has a secure resume gate with email OTP and owner approval. Recruiters should use the Resume button on the portfolio to request access.
+Resume access: the website provides a direct Download Resume (PDF) button in the hero section.
 `;
 
 const PROFILE_FACTS = {
@@ -25,11 +25,11 @@ const PROFILE_FACTS = {
         title: 'Hiring fit',
         summary: 'Nirmalya is a strong early-career candidate for internships where fast learning, software fundamentals, AI/ML curiosity, and product-minded execution matter.',
         evidence: [
-            'He is building practical portfolio systems, including secure resume access, an AI recruiter assistant, activity dashboards, and responsive web interfaces.',
+            'He is building practical portfolio systems, including Structure-X, an AI recruiter assistant, activity dashboards, and responsive web interfaces.',
             'His learning path combines DSA, web development, AI/ML foundations, databases, Linux tooling, and cybersecurity-aware development.',
             'He shows useful internship signals: initiative, public project evidence, willingness to learn, and comfort connecting engineering work to recruiter needs.'
         ],
-        next: 'Review the Featured Projects page, GitHub repositories, LeetCode activity, and request the gated resume from the portfolio.'
+        next: 'Review the Featured Projects page, GitHub repositories, LeetCode activity, and download the resume from the hero section.'
     },
     skills: {
         title: 'Technical skills',
@@ -46,7 +46,7 @@ const PROFILE_FACTS = {
         title: 'Project evidence',
         summary: 'The best project entry point is the Featured Projects page at /featured-projects.html, followed by GitHub repositories for source-level review.',
         evidence: [
-            'Secure Resume Access System: gated resume workflow with OTP, approval, signed access, and Vercel Function support.',
+            'Structure-X: a featured engineering project presented with screenshots, stack tags, and direct review links.',
             'Recruiter AI Profile Assistant: embedded assistant that answers from verified portfolio knowledge and can use OpenAI when configured.',
             'Coding Activity Dashboard: recruiter-friendly GitHub and LeetCode activity surfaces.',
             'Responsive Portfolio Interface: mobile-aware personal site with contact workflows and polished interactions.',
@@ -64,17 +64,17 @@ const PROFILE_FACTS = {
             'GitHub: https://github.com/nirmalya-ghosh',
             'WhatsApp: https://wa.me/918967836222'
         ],
-        next: 'For resume access, use the Resume button on the portfolio so the secure approval flow can track the request.'
+        next: 'Use the Download Resume (PDF) button in the hero section for the resume.'
     },
     resume: {
         title: 'Resume access',
-        summary: 'Nirmalya keeps resume access protected through the portfolio resume gate.',
+        summary: 'Nirmalya provides a direct resume download from the portfolio hero section.',
         evidence: [
-            'Recruiters should use the Resume button on the website.',
-            'The flow verifies email with OTP and waits for owner approval.',
-            'After approval, the secure viewer opens the resume access route.'
+            'Recruiters should use the Download Resume (PDF) button on the website.',
+            'There is no OTP or approval flow for resume access.',
+            'The resume path is /resume.pdf.'
         ],
-        next: 'Use a professional email address when requesting access so the approval decision is easier.'
+        next: 'If the PDF is unavailable, contact Nirmalya directly by email or LinkedIn.'
     },
     education: {
         title: 'Education',
@@ -102,7 +102,7 @@ const PROFILE_FACTS = {
         summary: 'Nirmalya has cybersecurity fundamentals and uses them to think about safer product workflows.',
         evidence: [
             'Known tools and topics include Kali Linux, Nmap, vulnerability assessment, penetration testing basics, and secure workflow thinking.',
-            'The resume access system reflects practical security awareness: verification, approval, access control, and protected document viewing.',
+            'He is moving the portfolio toward a cleaner engineering presentation with less friction for recruiters.',
             'This is an early-career security foundation, not a claim of senior security specialization.'
         ],
         next: 'For security-focused roles, ask about threat modeling, web security basics, and how he would protect a user-facing workflow.'
@@ -114,7 +114,7 @@ const INTENT_KEYWORDS = {
     skills: ['skill', 'stack', 'language', 'technology', 'tech', 'framework', 'tool', 'database', 'programming', 'know', 'web', 'website', 'frontend', 'backend', 'full-stack', 'fullstack', 'react', 'node'],
     projects: ['project', 'github', 'repo', 'repository', 'work', 'portfolio', 'built', 'code', 'featured', 'evidence'],
     contact: ['contact', 'email', 'phone', 'linkedin', 'whatsapp', 'reach', 'connect', 'message', 'call'],
-    resume: ['resume', 'cv', 'document', 'download', 'view', 'access', 'approval', 'otp'],
+    resume: ['resume', 'cv', 'document', 'download', 'view', 'pdf'],
     education: ['education', 'college', 'university', 'kiit', 'degree', 'school', 'academic', 'study', 'b.tech'],
     ai: ['ai', 'ml', 'machine', 'learning', 'model', 'data', 'automation', 'intelligent', 'openai'],
     security: ['security', 'cyber', 'ethical', 'hacking', 'kali', 'nmap', 'vulnerability', 'penetration', 'secure']
@@ -195,7 +195,7 @@ You are Nirmalya Ghosh's recruiter-facing portfolio assistant.
 Your audience is recruiters, hirers, collaborators, and visitors evaluating Nirmalya.
 Be concise, confident, warm, and specific. Use only the profile context below. If asked for unknown facts, say you do not have that detail and suggest contacting Nirmalya.
 Do not invent employers, grades, awards, private resume content, salary expectations, legal claims, or confidential information.
-Guide recruiters toward evidence: GitHub, LinkedIn, LeetCode, resume gate, and contact options.
+Guide recruiters toward evidence: GitHub, LinkedIn, LeetCode, the resume download, and contact options.
 When useful, structure answers as "Short answer", "Evidence", and "Next step".
 
 PROFILE CONTEXT:

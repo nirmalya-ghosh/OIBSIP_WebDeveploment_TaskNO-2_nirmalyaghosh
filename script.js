@@ -456,7 +456,7 @@ const getStrongestDifficulty = (data) => {
 };
 
 const updateLeetCodeOverview = (data) => {
-    const solved = Number(data.totalSolved) || 0;
+    const solved = 435;
     const totalQuestions = Number(data.totalQuestions) || 0;
     const completion = totalQuestions ? Math.min(100, (solved / totalQuestions) * 100) : 0;
     const easySolved = Number(data.easySolved) || 0;
@@ -466,11 +466,9 @@ const updateLeetCodeOverview = (data) => {
     const ring = document.querySelector('.leetcode-progress-ring');
 
     updateText('leetcode-total', formatNumber(solved));
-    updateText('leetcode-total-questions', formatNumber(totalQuestions));
     updateText('leetcode-easy', formatNumber(easySolved));
     updateText('leetcode-medium', formatNumber(mediumSolved));
     updateText('leetcode-hard', formatNumber(hardSolved));
-    updateText('leetcode-coverage', `${completion.toFixed(1)}%`);
     updateText('leetcode-rank', formatNumber(data.ranking));
     updateText('leetcode-strongest', strongest ? strongest.label : '--');
     updateText('leetcode-difficulty-mix', `${formatNumber(easySolved)}/${formatNumber(mediumSolved)}/${formatNumber(hardSolved)}`);
@@ -480,11 +478,10 @@ const updateLeetCodeOverview = (data) => {
         ring.style.setProperty('--easy-deg', `${easySolved * degreesPerProblem}deg`);
         ring.style.setProperty('--medium-deg', `${mediumSolved * degreesPerProblem}deg`);
         ring.style.setProperty('--hard-deg', `${hardSolved * degreesPerProblem}deg`);
-        ring.setAttribute('aria-label', `${formatNumber(solved)} solved out of ${formatNumber(totalQuestions)} LeetCode problems`);
-        ring.title = `${completion.toFixed(1)}% complete: ${formatNumber(easySolved)} easy, ${formatNumber(mediumSolved)} medium, ${formatNumber(hardSolved)} hard`;
+        ring.setAttribute('aria-label', `${formatNumber(solved)} LeetCode problems solved`);
+        ring.title = `${formatNumber(solved)} solved: ${formatNumber(easySolved)} easy, ${formatNumber(mediumSolved)} medium, ${formatNumber(hardSolved)} hard`;
     }
 
-    animateCount(document.getElementById('leetcode-total'), solved);
     animateCount(document.getElementById('leetcode-easy'), easySolved);
     animateCount(document.getElementById('leetcode-medium'), mediumSolved);
     animateCount(document.getElementById('leetcode-hard'), hardSolved);
@@ -580,14 +577,11 @@ const initGitHubHeatmap = async () => {
         const insights = getActivityInsights(days, day => getGitHubDay(day).count);
 
         updateText('github-active-days', insights.activeDays);
-        updateText('github-current-streak', insights.currentStreak);
-        updateText('github-density', `${Math.round((insights.activeDays / days.length) * 100)}%`);
         updateText('github-average', insights.activeDays ? (sumCounts(days, day => getGitHubDay(day).count) / insights.activeDays).toFixed(1) : '0');
         updateText('github-longest-streak', insights.longestStreak);
         updateText('github-best-day', insights.bestDate ? `${insights.bestCount} on ${formatShortDate(insights.bestDate)}` : '0');
         updateText('github-last-30', formatNumber(sumCounts(days.slice(-30), day => getGitHubDay(day).count)));
         animateCount(document.getElementById('github-active-days'), insights.activeDays);
-        animateCount(document.getElementById('github-current-streak'), insights.currentStreak);
         if (focusElement) {
             focusElement.textContent = `Longest streak: ${insights.longestStreak} days. Hover a square for daily GitHub heatmap data.`;
         }
@@ -632,7 +626,6 @@ const initLeetCodeHeatmap = async () => {
         const insights = getActivityInsights(days, day => getLeetCodeDay(day).count);
 
         updateText('leetcode-active-days', insights.activeDays);
-        updateText('leetcode-current-streak', insights.currentStreak);
         if (focusElement) {
             focusElement.textContent = `Longest streak: ${insights.longestStreak} days. Hover a square for daily LeetCode submissions.`;
         }
@@ -1887,7 +1880,7 @@ const initProfileAssistant = () => {
 
     const messages = [{
         role: 'assistant',
-        content: "Hi, I am Nirmalya AI. Ask me what kind of internship roles fit him, what he is learning, where to review his work, or how to contact him."
+        content: "Hi, I am Nirmalya AI. Ask about internship fit, skills, projects, resume download, or contact details."
     }];
 
     const escapeText = (value = '') =>
@@ -1982,17 +1975,14 @@ const initProfileAssistant = () => {
 
 // Initialization
 document.addEventListener('DOMContentLoaded', () => {
-    initPreloader();
     initMobileMenu();
     initMagneticButtons();
     initCodingHeatmaps();
     initSupabaseAnalytics();
-    initDocumentGate();
     if (document.getElementById('contactForm')) initForm();
     initAdvancedAnimations();
     initActiveNav();
     initDigitalClock();
-    initTypewriters();
     initProfileIconBounce();
     initScrollProgress();
     initProfileAssistant();

@@ -7,60 +7,18 @@
     <title>Nirmalya Ghosh | Portfolio</title>
     <link rel="icon" href="favicon.svg?v=3" type="image/svg+xml">
     <!-- Fonts -->
-    <link rel="preconnect" href="https://challenges.cloudflare.com" crossorigin>
-    <link rel="dns-prefetch" href="//challenges.cloudflare.com">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
         rel="stylesheet">
     <!-- Icons -->
     <!-- Icons -->
     <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
-
-
-
-    <link rel="stylesheet" href="style.css?v=20260518-admin-flow">
+    <link rel="stylesheet" href="style.css?v=20260529-clean-architecture">
 </head>
 
 <body>
-    <!-- Preloader -->
-    <div id="preloader">
-        <div class="loader-content">
-            <div class="loader-brand">
-                <div class="loader-core" aria-hidden="true">
-                    <span class="loader-orbit loader-orbit-one"></span>
-                    <span class="loader-orbit loader-orbit-two"></span>
-                    <span class="loader-core-ring"></span>
-                    <strong>NG</strong>
-                </div>
-                <div>
-                    <span class="loader-kicker">Nirmalya Ghosh</span>
-                    <span class="loader-text">Portfolio<span>.</span></span>
-                </div>
-            </div>
-
-            <div class="loader-signal" aria-hidden="true">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
-
-            <div class="loader-meta">
-                <span>AI/ML</span>
-                <span>Software Engineering</span>
-                <span>Cybersecurity</span>
-            </div>
-
-            <div class="loader-progress" aria-hidden="true"><span id="loader-progress-bar"></span></div>
-            <div class="loader-footer">
-                <strong class="loader-status" id="loader-status">Preparing experience</strong>
-                <b class="loader-percent" id="loader-percent">00%</b>
-            </div>
-        </div>
-    </div>
-
     <!-- Custom Cursor -->
     <div class="cursor-dot" data-cursor-dot></div>
     <div class="cursor-outline" data-cursor-outline></div>
@@ -97,150 +55,31 @@
         </div>
     </nav>
 
-    <aside class="terminal-rail" aria-label="Portfolio command rail">
-        <div class="rail-lights" aria-hidden="true"><span></span><span></span><span></span></div>
-        <a href="#hero" aria-label="Home"><i class="fas fa-terminal"></i></a>
-        <a href="#about" aria-label="About"><i class="fas fa-user"></i></a>
-        <a href="#skills" aria-label="Skills"><i class="fas fa-code"></i></a>
-        <a href="#heatmaps" aria-label="Heatmaps"><i class="fas fa-chart-simple"></i></a>
-        <a href="#featured-projects" aria-label="Featured Projects"><i class="fas fa-star"></i></a>
-        <a href="#projects" aria-label="Projects"><i class="fas fa-folder-open"></i></a>
-        <a href="#contact" aria-label="Contact"><i class="fas fa-envelope"></i></a>
-    </aside>
-
-    <div id="document-gate-modal" class="document-gate-modal" role="dialog" aria-modal="true"
-        aria-labelledby="document-gate-title" aria-hidden="true">
-        <div class="document-gate-panel">
-            <button type="button" class="document-gate-close" aria-label="Close document verification">
-                <i class="fas fa-times"></i>
-            </button>
-
-            <span class="section-kicker">Human Verification</span>
-            <h3 id="document-gate-title">Secure Document Access</h3>
-            <p id="document-gate-copy">Complete the verification to open this document.</p>
-
-            <div id="document-email-card" class="document-email-card" hidden>
-                <span class="captcha-label">Email OTP</span>
-                <label for="document-company-email">Email address</label>
-                <div class="document-email-row">
-                    <input type="email" id="document-company-email" name="companyEmail"
-                        placeholder="name@example.com" autocomplete="email">
-                    <button type="button" id="document-send-otp" class="document-otp-button">Send OTP</button>
-                </div>
-                <label for="document-otp">Verification code</label>
-                <input type="text" id="document-otp" name="otp" inputmode="numeric" pattern="[0-9]*"
-                    maxlength="6" placeholder="6-digit code" autocomplete="one-time-code">
-                <small id="document-otp-status" aria-live="polite"></small>
-            </div>
-
-            <div class="document-captcha-card">
-                <span class="captcha-label">Cloudflare</span>
-                <div id="turnstile-widget" class="turnstile-widget"
-                    data-sitekey="0x4AAAAAADQfWWPgqGOhLmha"></div>
-                <small id="turnstile-status" class="turnstile-status" aria-live="polite">Connecting to Cloudflare...</small>
-            </div>
-
-            <form id="document-gate-form" class="document-gate-form" autocomplete="off">
-                <input type="text" name="company" class="document-honeypot" tabindex="-1" autocomplete="off"
-                    aria-hidden="true">
-
-                <div id="document-approval-status" class="document-approval-status" hidden aria-live="polite">
-                    <div class="approval-orbit" aria-hidden="true">
-                        <span></span>
-                        <i class="fas fa-shield-alt"></i>
-                    </div>
-                    <div>
-                        <strong id="document-approval-title">Verification submitted</strong>
-                        <p id="document-approval-copy">Your email and OTP are verified. Waiting for approval to release the resume securely.</p>
-                    </div>
-                    <div class="approval-progress" aria-hidden="true">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </div>
-                </div>
-
-                <p id="document-gate-error" class="document-gate-error" aria-live="polite"></p>
-                <button type="submit" class="cta-button submit-btn">Verify & Open <i
-                        class="fas fa-lock-open"></i></button>
-            </form>
-        </div>
-    </div>
-
-    <div id="resume-viewer-modal" class="resume-viewer-modal" role="dialog" aria-modal="true"
-        aria-labelledby="resume-viewer-title" aria-hidden="true">
-        <div class="resume-viewer-panel">
-            <div class="resume-viewer-header">
-                <div>
-                    <span class="section-kicker">Approved Access</span>
-                    <h3 id="resume-viewer-title">Resume Viewer</h3>
-                    <p id="resume-viewer-note">Temporary secure access is active.</p>
-                </div>
-                <div class="resume-viewer-actions">
-                    <a id="resume-open-new-tab" class="resume-viewer-open" href="#" target="_blank" rel="noopener noreferrer">
-                        <i class="fas fa-up-right-from-square"></i>
-                        <span>Open in New Tab</span>
-                    </a>
-                    <button type="button" class="resume-viewer-close" aria-label="Close resume viewer">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-            </div>
-            <div class="resume-viewer-status" aria-live="polite">
-                <span class="viewer-success-mark"><i class="fas fa-check"></i></span>
-                <div>
-                    <strong>Access approved</strong>
-                    <p>The resume is loading below. If your mobile browser shows a PDF placeholder, use the new-tab option.</p>
-                </div>
-            </div>
-            <div class="resume-viewer-frame-wrap">
-                <div class="resume-frame-fallback">
-                    <i class="fas fa-file-pdf"></i>
-                    <strong>Resume preview</strong>
-                    <span>Loading the secure PDF inside this window.</span>
-                    <a id="resume-frame-open-link" href="#" target="_blank" rel="noopener noreferrer">Open PDF in New Tab</a>
-                </div>
-                <iframe id="resume-viewer-frame" class="resume-viewer-frame" title="Nirmalya Ghosh Resume"></iframe>
-                <div id="resume-viewer-watermark" class="resume-viewer-watermark" aria-hidden="true"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 3D Canvas -->
-    <div id="canvas-container"></div>
+    <div id="canvas-container" aria-hidden="true"></div>
 
     <main>
         <!-- Hero Section -->
         <section id="hero">
             <div class="hero-text">
-                <span class="hero-greeting">AI/ML Learner + Software Builder</span>
-                <h1 class="hero-name">Nirmalya <span>Ghosh</span></h1>
-                <div class="hero-typewriter" aria-live="off">
-                    <span class="typewriter-prefix">I build</span>
-                    <span id="hero-typewriter-text" class="typewriter-dynamic"></span>
-                    <span class="typewriter-caret" aria-hidden="true"></span>
-                </div>
-                <p class="hero-role">I turn code, data, and security fundamentals into thoughtful products that feel fast, useful, and ready for real users.</p>
+                <span class="hero-greeting">B.Tech CSE at KIIT</span>
+                <h1 class="hero-name">Nirmalya Ghosh</h1>
+                <p class="hero-role">Software Builder & AI/ML Learner.</p>
+                <p class="hero-bio">I turn code, data, and fundamentals into thoughtful products that feel fast, useful, and ready for real users.</p>
 
                 <div class="hero-signal-grid" aria-label="Core strengths">
                     <span><i class="fas fa-brain"></i> AI/ML</span>
                     <span><i class="fas fa-code"></i> DSA</span>
-                    <span><i class="fas fa-shield-halved"></i> Cybersecurity</span>
+                    <span><i class="fas fa-layer-group"></i> Software Architecture</span>
                 </div>
 
                 <div class="hero-buttons">
-                    <!-- Resume -->
-                    <a href="#" class="cta-button subtle-btn protected-document-link" data-document-id="resume"
-                        data-document-label="Resume">
-                        <span class="btn-text">Resume</span>
+                    <a href="/resume.pdf" class="cta-button primary-btn resume-download" download>
+                        <span class="btn-text">Download Resume (PDF)</span>
                         <i class="fas fa-download"></i>
                     </a>
-
-                    <!-- Certifications -->
-                    <a href="#" class="cta-button subtle-btn protected-document-link" data-document-id="certifications"
-                        data-document-label="Certifications">
-                        <span class="btn-text">Certifications</span>
-                        <i class="fas fa-certificate"></i>
+                    <a href="#featured-projects" class="cta-button subtle-btn">
+                        <span class="btn-text">View Projects</span>
+                        <i class="fas fa-arrow-right"></i>
                     </a>
                 </div>
             </div>
@@ -292,11 +131,6 @@
                         <span class="section-kicker">Profile</span>
                         <div class="about-header">
                             <h2 class="about-arrow-header">About Me</h2>
-                        </div>
-                        <div class="about-typewriter terminal-typewriter-line" aria-live="off">
-                            <span class="terminal-prompt">nirmalya@about:~$</span>
-                            <span id="about-typewriter-text" class="typewriter-dynamic"></span>
-                            <span class="typewriter-caret" aria-hidden="true"></span>
                         </div>
                         <p class="about-bio centered-bio">
                             I am a passionate B.Tech student at <strong>KIIT ('29)</strong> building toward a strong
@@ -357,8 +191,8 @@
                             <p class="edu-details"><strong>Relevant Coursework:</strong> Data Structures & Algorithms,
                                 Object-Oriented Programming, Computer Networks, Database Management Systems, Web
                                 Technologies, and core software engineering.</p>
-                            <p class="edu-details"><strong>Academic Focus:</strong> Building FAANG-level fundamentals in
-                                problem solving, clean engineering, AI/ML learning, and software engineering principles.</p>
+                            <p class="edu-details"><strong>Academic Focus:</strong> Developing strong foundational skills in
+                                data structures, algorithms, and software architecture.</p>
                         </div>
 
                         <!-- Schools -->
@@ -569,12 +403,10 @@
                     </div>
                     <div class="heatmap-insights">
                         <span><strong id="github-active-days">--</strong> active days</span>
-                        <span><strong id="github-current-streak">--</strong> day streak</span>
+                        <span><strong id="github-longest-streak">--</strong> longest streak</span>
                     </div>
                     <div class="github-metrics-panel">
-                        <span><strong id="github-density">--%</strong> consistency</span>
                         <span><strong id="github-average">--</strong> avg / active day</span>
-                        <span><strong id="github-longest-streak">--</strong> longest streak</span>
                         <span><strong id="github-best-day">--</strong> peak day</span>
                         <span class="wide"><strong id="github-last-30">--</strong> contributions in the last 30 days</span>
                     </div>
@@ -607,9 +439,9 @@
                     <div class="leetcode-overview">
                         <button class="leetcode-progress-ring" type="button" aria-label="LeetCode solved progress">
                             <span class="ring-center">
-                                <strong id="leetcode-total">--</strong>
+                                <strong id="leetcode-total">435</strong>
                                 <span>Solved</span>
-                                <small><b id="leetcode-total-questions">--</b> total</small>
+                                <small>LeetCode problems</small>
                             </span>
                         </button>
                         <div class="leetcode-ring-legend" aria-label="LeetCode difficulty solved counts">
@@ -619,8 +451,6 @@
                         </div>
                         <div class="leetcode-meta-panel">
                             <span><strong id="leetcode-active-days">--</strong> active days</span>
-                            <span><strong id="leetcode-current-streak">--</strong> day streak</span>
-                            <span><strong id="leetcode-coverage">--%</strong> completion</span>
                             <span><strong id="leetcode-rank">--</strong> rank</span>
                             <span><strong id="leetcode-strongest">--</strong> strongest</span>
                             <span><strong id="leetcode-difficulty-mix">--</strong> mix</span>
@@ -708,11 +538,6 @@
                     <div class="contact-copy-panel">
                         <span class="section-kicker">Open for work</span>
                         <h2 class="section-title">Get In Touch</h2>
-                        <div class="contact-typewriter terminal-typewriter-line" aria-live="off">
-                            <span class="terminal-prompt">availability:</span>
-                            <span id="contact-typewriter-text" class="typewriter-dynamic"></span>
-                            <span class="typewriter-caret" aria-hidden="true"></span>
-                        </div>
                         <p class="contact-intro">I’m ready to join for internships and open to opportunities in
                             <strong>AI/ML, software engineering, intelligent web products, and cybersecurity-aware
                                 development</strong>. If you’re looking for someone who learns fast, writes clean code,
@@ -812,14 +637,14 @@
 
             <div class="assistant-status">
                 <span class="assistant-pulse"></span>
-                <p>Ask about skills, fit, projects, resume access, or contact details.</p>
+                <p>Ask about skills, fit, projects, resume, or contact details.</p>
             </div>
 
             <div class="assistant-suggestions" aria-label="Suggested recruiter questions">
                 <button type="button" data-assistant-prompt="Why should we hire Nirmalya for an internship?">Hiring fit</button>
                 <button type="button" data-assistant-prompt="Summarize Nirmalya's technical skills.">Skills</button>
                 <button type="button" data-assistant-prompt="Where can I review Nirmalya's projects and code?">Projects</button>
-                <button type="button" data-assistant-prompt="How can I contact Nirmalya or request his resume?">Contact</button>
+                <button type="button" data-assistant-prompt="How can I contact Nirmalya or download his resume?">Contact</button>
             </div>
 
             <div id="assistant-messages" class="assistant-messages" aria-live="polite"></div>
@@ -842,14 +667,10 @@
 
     <!-- Scripts -->
     <!-- Scripts -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
-    <script src="particles.js" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js" defer></script>
-    <script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js" defer></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js" defer></script>
-    <script src="featured-projects.js?v=20260518-delete-otp" defer></script>
-    <script src="script.js" defer></script>
+    <script src="featured-projects.js?v=20260529-clean-architecture" defer></script>
+    <script src="script.js?v=20260529-clean-architecture" defer></script>
 
 </body>
 
