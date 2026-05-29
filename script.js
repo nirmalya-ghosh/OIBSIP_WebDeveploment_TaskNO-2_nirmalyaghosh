@@ -1196,7 +1196,7 @@ const initCursor = () => {
     const cursorOutline = document.querySelector('[data-cursor-outline]');
 
     // Only init on desktop
-    if (window.innerWidth < 900 || !cursorDot || !cursorOutline) return;
+    if (window.innerWidth < 900 || !cursorDot || !cursorOutline || typeof gsap === 'undefined') return;
 
     // Center the transforms first
     gsap.set(cursorDot, { xPercent: -50, yPercent: -50, left: 0, top: 0 });
@@ -1690,7 +1690,7 @@ window.addEventListener('load', () => {
     }
 
     // Desktop-only smooth scroll. Native scrolling is faster on mobile Chrome.
-    if (typeof Lenis !== 'undefined' && allowEnhancedMotion()) {
+    if (typeof Lenis !== 'undefined' && typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined' && allowEnhancedMotion()) {
         const lenis = new Lenis({
             duration: 0.85,
             easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
