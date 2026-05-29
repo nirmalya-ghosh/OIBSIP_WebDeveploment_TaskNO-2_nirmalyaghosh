@@ -459,7 +459,7 @@ const getStrongestDifficulty = (data) => {
 };
 
 const updateLeetCodeOverview = (data) => {
-    const solved = 435;
+    const solved = Number(data.solvedProblem) || Number(data.totalSolved) || Number(data.acSubmissionNum?.find(item => item.difficulty === 'All')?.count) || 0;
     const totalQuestions = Number(data.totalQuestions) || 3944;
     const easySolved = Number(data.easySolved) || 130;
     const mediumSolved = Number(data.mediumSolved) || 240;
@@ -470,6 +470,7 @@ const updateLeetCodeOverview = (data) => {
     const ring = document.querySelector('.leetcode-progress-ring');
 
     updateText('leetcode-total', formatNumber(solved));
+    updateText('proof-leetcode-solved', solved ? formatNumber(solved) : '--');
     updateText('leetcode-question-total', totalQuestions ? formatNumber(totalQuestions) : '--');
     updateText('leetcode-easy', formatNumber(easySolved));
     updateText('leetcode-medium', formatNumber(mediumSolved));
@@ -512,6 +513,7 @@ const normalizeLeetCodeData = (stats = {}, totals = {}, calendar = {}) => {
     };
 
     return {
+        solvedProblem: Number(stats.solvedProblem) || Number(stats.totalSolved) || Number(stats.acSubmissionNum?.find(item => item.difficulty === 'All')?.count) || 0,
         totalQuestions: Number(stats.totalQuestions) || getQuestionTotal('All') || Number(totals.totalQuestions) || 3944,
         easySolved: Number(stats.easySolved) || Number(stats.easy) || Number(stats.acSubmissionNum?.find(item => item.difficulty === 'Easy')?.count) || 130,
         mediumSolved: Number(stats.mediumSolved) || Number(stats.medium) || Number(stats.acSubmissionNum?.find(item => item.difficulty === 'Medium')?.count) || 240,
