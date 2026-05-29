@@ -687,11 +687,10 @@ section {
     margin: 8px 0 0;
 }
 
-.heatmap-source {
-    color: var(--subtle);
-    font-size: 0.86rem;
-    line-height: 1.5;
-    margin: 8px 0 0;
+.heatmap-kicker {
+    align-items: center;
+    display: inline-flex;
+    gap: 8px;
 }
 
 .heatmap-link {
@@ -706,56 +705,86 @@ section {
     width: 42px;
 }
 
-.leetcode-logo {
+.leetcode-logo,
+.leetcode-kicker-logo {
     height: 22px;
     width: 22px;
 }
 
-.heatmap-stats,
-.heatmap-insights,
-.github-metrics-panel,
-.leetcode-ring-legend,
-.leetcode-meta-panel {
+.heatmap-total-row {
+    align-items: end;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    padding-bottom: 18px;
+}
+
+.heatmap-total-row strong {
+    color: #ffffff;
+    font-size: clamp(2.6rem, 5vw, 4.8rem);
+    font-weight: 900;
+    letter-spacing: -0.08em;
+    line-height: 0.82;
+}
+
+.heatmap-total-row span {
+    color: var(--muted);
+    font-size: 0.95rem;
+    line-height: 1.35;
+    padding-bottom: 0.35rem;
+}
+
+.leetcode-ring-legend {
     display: grid;
     gap: 10px;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    margin-top: 14px;
+    grid-template-columns: 1fr;
 }
 
-.github-metrics-panel .wide {
-    grid-column: 1 / -1;
-}
-
-.heatmap-stats span,
-.heatmap-insights span,
-.github-metrics-panel span,
-.leetcode-ring-legend span,
-.leetcode-meta-panel span {
+.leetcode-ring-legend span {
+    align-items: center;
     color: var(--muted);
-    padding: 12px;
+    display: flex;
+    font-size: 0.92rem;
+    gap: 8px;
+    justify-content: space-between;
+    padding: 10px 12px;
 }
 
-.heatmap-stats strong,
-.heatmap-insights strong,
-.github-metrics-panel strong,
 .leetcode-ring-legend strong,
-.leetcode-meta-panel strong,
+.leetcode-ring-legend b,
 .ring-center strong {
     color: #ffffff;
 }
 
 .leetcode-overview {
+    align-items: stretch;
     display: grid;
     gap: 14px;
-    grid-template-columns: minmax(180px, 0.85fr) minmax(0, 1fr);
-    margin-top: 16px;
+    grid-template-columns: minmax(170px, 0.7fr) minmax(0, 1fr);
+    margin-top: 20px;
 }
 
 .leetcode-progress-ring {
-    background: #080808;
+    --easy-deg: 0deg;
+    --medium-deg: 0deg;
+    --hard-deg: 0deg;
+    align-items: center;
+    background:
+        radial-gradient(circle at center, #080808 0 54%, transparent 55%),
+        conic-gradient(
+            #00b8a3 0 var(--easy-deg),
+            #ffc01e var(--easy-deg) calc(var(--easy-deg) + var(--medium-deg)),
+            #ef4743 calc(var(--easy-deg) + var(--medium-deg)) calc(var(--easy-deg) + var(--medium-deg) + var(--hard-deg)),
+            #202020 0
+        );
     border: 1px solid var(--border);
-    border-radius: 18px;
-    min-height: 210px;
+    border-radius: 999px;
+    display: grid;
+    justify-items: center;
+    min-height: 178px;
+    min-width: 178px;
+    padding: 16px;
 }
 
 .ring-center {
@@ -766,7 +795,7 @@ section {
 }
 
 .ring-center strong {
-    font-size: clamp(3.6rem, 7vw, 6rem);
+    font-size: clamp(2.7rem, 5vw, 4.4rem);
     font-weight: 900;
     letter-spacing: -0.08em;
     line-height: 0.9;
@@ -775,6 +804,22 @@ section {
 .ring-center span,
 .ring-center small {
     color: var(--muted);
+}
+
+.ring-center b {
+    color: #ffffff;
+    font-weight: 800;
+}
+
+.leetcode-ring-legend .easy i { background: #00b8a3; }
+.leetcode-ring-legend .medium i { background: #ffc01e; }
+.leetcode-ring-legend .hard i { background: #ef4743; }
+
+.leetcode-ring-legend i {
+    border-radius: 999px;
+    display: inline-block;
+    height: 10px;
+    width: 10px;
 }
 
 .heatmap-board {
@@ -874,23 +919,23 @@ section {
 .heatmap-day[data-level="0"],
 .heatmap-legend i[data-level="0"],
 .leetcode-heatmap-card .heatmap-day[data-level="0"],
-.leetcode-legend i[data-level="0"] { background: #161616; }
+.leetcode-legend i[data-level="0"] { background: #161b22; }
 .heatmap-day[data-level="1"],
 .heatmap-legend i[data-level="1"],
 .leetcode-heatmap-card .heatmap-day[data-level="1"],
-.leetcode-legend i[data-level="1"] { background: #333333; }
+.leetcode-legend i[data-level="1"] { background: #0e4429; }
 .heatmap-day[data-level="2"],
 .heatmap-legend i[data-level="2"],
 .leetcode-heatmap-card .heatmap-day[data-level="2"],
-.leetcode-legend i[data-level="2"] { background: #555555; }
+.leetcode-legend i[data-level="2"] { background: #006d32; }
 .heatmap-day[data-level="3"],
 .heatmap-legend i[data-level="3"],
 .leetcode-heatmap-card .heatmap-day[data-level="3"],
-.leetcode-legend i[data-level="3"] { background: #999999; }
+.leetcode-legend i[data-level="3"] { background: #26a641; }
 .heatmap-day[data-level="4"],
 .heatmap-legend i[data-level="4"],
 .leetcode-heatmap-card .heatmap-day[data-level="4"],
-.leetcode-legend i[data-level="4"] { background: #ededed; }
+.leetcode-legend i[data-level="4"] { background: #39d353; }
 
 .contribution-heatmap.is-loading,
 .contribution-heatmap.is-error {

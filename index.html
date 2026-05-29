@@ -12,7 +12,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="home.css?v=20260529-real-heatmaps">
+    <link rel="stylesheet" href="home.css?v=20260529-green-heatmaps">
 </head>
 
 <body>
@@ -213,33 +213,23 @@
             <div class="section-heading">
                 <span class="section-kicker">Verified activity</span>
                 <h2 class="section-title"><span style="margin-right: 0.5em;">Coding</span> Activity</h2>
-                <p>Live contribution calendars for GitHub and LeetCode, reduced to recruiter-friendly signal.</p>
+                <p>Clean contribution calendars with the main numbers recruiters expect first.</p>
             </div>
             <div class="activity-wrapper">
                 <article class="heatmap-card github-heatmap-card" data-tilt>
                     <div class="heatmap-header">
                         <div>
-                            <span class="heatmap-kicker">GitHub</span>
+                            <span class="heatmap-kicker"><i class="fab fa-github"></i> GitHub</span>
                             <h3>Contribution Calendar</h3>
-                            <p class="heatmap-source">Live public data from @nirmalya-ghosh.</p>
                         </div>
                         <a href="https://github.com/nirmalya-ghosh" target="_blank" class="heatmap-link"
                             aria-label="Open GitHub profile">
                             <i class="fab fa-github"></i>
                         </a>
                     </div>
-                    <div class="heatmap-stats">
-                        <span><strong id="github-total">--</strong> contributions</span>
-                        <span>Last 12 months</span>
-                    </div>
-                    <div class="heatmap-insights">
-                        <span><strong id="github-active-days">--</strong> active days</span>
-                        <span><strong id="github-longest-streak">--</strong> longest streak</span>
-                    </div>
-                    <div class="github-metrics-panel">
-                        <span><strong id="github-average">--</strong> avg / active day</span>
-                        <span><strong id="github-best-day">--</strong> peak day</span>
-                        <span class="wide"><strong id="github-last-30">--</strong> contributions in the last 30 days</span>
+                    <div class="heatmap-total-row">
+                        <strong id="github-total">--</strong>
+                        <span>GitHub contributions so far</span>
                     </div>
                     <div class="heatmap-board" data-heatmap-board>
                         <div id="github-months" class="heatmap-months" aria-hidden="true"></div>
@@ -253,7 +243,6 @@
                             </div>
                         </div>
                     </div>
-                    <p id="github-focus" class="heatmap-focus">Hover a square to inspect a GitHub heatmap day.</p>
                     <div class="heatmap-legend" aria-hidden="true">
                         <span>Less</span>
                         <i data-level="0"></i>
@@ -268,9 +257,8 @@
                 <article class="heatmap-card leetcode-heatmap-card" data-tilt>
                     <div class="heatmap-header">
                         <div>
-                            <span class="heatmap-kicker">LeetCode</span>
+                            <span class="heatmap-kicker"><img src="https://leetcode.com/static/images/LeetCode_logo_rvs.png" alt="" class="leetcode-kicker-logo"> LeetCode</span>
                             <h3>Submission Calendar</h3>
-                            <p class="heatmap-source">Live submission data from nirmalya2127.</p>
                         </div>
                         <a href="https://leetcode.com/u/nirmalya2127/" target="_blank" class="heatmap-link"
                             aria-label="Open LeetCode profile">
@@ -278,23 +266,17 @@
                         </a>
                     </div>
                     <div class="leetcode-overview">
-                        <button class="leetcode-progress-ring" type="button" aria-label="LeetCode solved progress">
+                        <div class="leetcode-progress-ring" aria-label="LeetCode solved progress">
                             <span class="ring-center">
                                 <strong id="leetcode-total">435</strong>
                                 <span>Solved</span>
-                                <small>LeetCode problems</small>
+                                <small>out of <b id="leetcode-question-total">--</b></small>
                             </span>
-                        </button>
-                        <div class="leetcode-ring-legend" aria-label="LeetCode difficulty solved counts">
-                            <span class="easy"><i></i><strong id="leetcode-easy">--</strong> Easy</span>
-                            <span class="medium"><i></i><strong id="leetcode-medium">--</strong> Medium</span>
-                            <span class="hard"><i></i><strong id="leetcode-hard">--</strong> Hard</span>
                         </div>
-                        <div class="leetcode-meta-panel">
-                            <span><strong id="leetcode-active-days">--</strong> active days</span>
-                            <span><strong id="leetcode-rank">--</strong> rank</span>
-                            <span><strong id="leetcode-strongest">--</strong> strongest</span>
-                            <span><strong id="leetcode-difficulty-mix">--</strong> mix</span>
+                        <div class="leetcode-ring-legend" aria-label="LeetCode difficulty solved counts">
+                            <span class="easy"><i></i><strong id="leetcode-easy">--</strong>/<b id="leetcode-total-easy">--</b> Easy</span>
+                            <span class="medium"><i></i><strong id="leetcode-medium">--</strong>/<b id="leetcode-total-medium">--</b> Medium</span>
+                            <span class="hard"><i></i><strong id="leetcode-hard">--</strong>/<b id="leetcode-total-hard">--</b> Hard</span>
                         </div>
                     </div>
                     <div class="heatmap-board" data-heatmap-board>
@@ -309,7 +291,6 @@
                             </div>
                         </div>
                     </div>
-                    <p id="leetcode-focus" class="heatmap-focus">Hover a square to inspect a LeetCode submission day.</p>
                     <div class="heatmap-legend leetcode-legend" aria-hidden="true">
                         <span>Less</span>
                         <i data-level="0"></i>
@@ -545,7 +526,7 @@
 
     <!-- Scripts -->
     <!-- Scripts -->
-    <script src="script.js?v=20260529-real-heatmaps-2" defer></script>
+    <script src="script.js?v=20260529-green-heatmaps" defer></script>
 
 </body>
 

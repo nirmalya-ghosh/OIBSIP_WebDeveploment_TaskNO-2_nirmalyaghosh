@@ -460,21 +460,23 @@ const getStrongestDifficulty = (data) => {
 
 const updateLeetCodeOverview = (data) => {
     const solved = 435;
-    const totalQuestions = Number(data.totalQuestions) || 0;
-    const completion = totalQuestions ? Math.min(100, (solved / totalQuestions) * 100) : 0;
-    const easySolved = Number(data.easySolved) || 0;
-    const mediumSolved = Number(data.mediumSolved) || 0;
-    const hardSolved = Number(data.hardSolved) || 0;
-    const strongest = getStrongestDifficulty(data);
+    const totalQuestions = Number(data.totalQuestions) || 3944;
+    const easySolved = Number(data.easySolved) || 130;
+    const mediumSolved = Number(data.mediumSolved) || 240;
+    const hardSolved = Number(data.hardSolved) || 65;
+    const totalEasy = Number(data.totalEasy) || 946;
+    const totalMedium = Number(data.totalMedium) || 2061;
+    const totalHard = Number(data.totalHard) || 937;
     const ring = document.querySelector('.leetcode-progress-ring');
 
     updateText('leetcode-total', formatNumber(solved));
+    updateText('leetcode-question-total', totalQuestions ? formatNumber(totalQuestions) : '--');
     updateText('leetcode-easy', formatNumber(easySolved));
     updateText('leetcode-medium', formatNumber(mediumSolved));
     updateText('leetcode-hard', formatNumber(hardSolved));
-    updateText('leetcode-rank', formatNumber(data.ranking));
-    updateText('leetcode-strongest', strongest ? strongest.label : '--');
-    updateText('leetcode-difficulty-mix', `${formatNumber(easySolved)}/${formatNumber(mediumSolved)}/${formatNumber(hardSolved)}`);
+    updateText('leetcode-total-easy', totalEasy ? formatNumber(totalEasy) : '--');
+    updateText('leetcode-total-medium', totalMedium ? formatNumber(totalMedium) : '--');
+    updateText('leetcode-total-hard', totalHard ? formatNumber(totalHard) : '--');
 
     if (ring) {
         const degreesPerProblem = totalQuestions ? 360 / totalQuestions : 0;
@@ -488,6 +490,37 @@ const updateLeetCodeOverview = (data) => {
     animateCount(document.getElementById('leetcode-easy'), easySolved);
     animateCount(document.getElementById('leetcode-medium'), mediumSolved);
     animateCount(document.getElementById('leetcode-hard'), hardSolved);
+};
+
+const readLeetCodeCalendar = (calendar) => {
+    if (!calendar) return {};
+    if (typeof calendar === 'string') {
+        try {
+            return JSON.parse(calendar);
+        } catch (error) {
+            return {};
+        }
+    }
+    return calendar;
+};
+
+const normalizeLeetCodeData = (stats = {}, totals = {}, calendar = {}) => {
+    const allQuestions = totals.data?.allQuestionsCount || [];
+    const getQuestionTotal = difficulty => {
+        const match = allQuestions.find(item => item.difficulty === difficulty);
+        return Number(match?.count) || 0;
+    };
+
+    return {
+        totalQuestions: Number(stats.totalQuestions) || getQuestionTotal('All') || Number(totals.totalQuestions) || 3944,
+        easySolved: Number(stats.easySolved) || Number(stats.easy) || Number(stats.acSubmissionNum?.find(item => item.difficulty === 'Easy')?.count) || 130,
+        mediumSolved: Number(stats.mediumSolved) || Number(stats.medium) || Number(stats.acSubmissionNum?.find(item => item.difficulty === 'Medium')?.count) || 240,
+        hardSolved: Number(stats.hardSolved) || Number(stats.hard) || Number(stats.acSubmissionNum?.find(item => item.difficulty === 'Hard')?.count) || 65,
+        totalEasy: Number(stats.totalEasy) || getQuestionTotal('Easy') || 946,
+        totalMedium: Number(stats.totalMedium) || getQuestionTotal('Medium') || 2061,
+        totalHard: Number(stats.totalHard) || getQuestionTotal('Hard') || 937,
+        submissionCalendar: readLeetCodeCalendar(stats.submissionCalendar || calendar.submissionCalendar)
+    };
 };
 
 const renderHeatmap = (container, days, getDayData, options = {}) => {
@@ -569,6 +602,11 @@ const initGitHubHeatmap = async () => {
         if (!response.ok) throw new Error('GitHub contribution request failed');
 
         const data = await response.json();
+        const totalResponse = await fetch(`https://github-contributions-api.jogruber.de/v4/${PROFILE_CONFIG.github}?y=all`);
+        const totalData = totalResponse.ok ? await totalResponse.json() : null;
+        const contributionTotal = totalData?.total
+            ? Object.values(totalData.total).reduce((sum, value) => sum + (Number(value) || 0), 0)
+            : Number(data.total?.lastYear) || 0;
         const contributionMap = new Map(
             (data.contributions || []).map(day => [day.date, {
                 count: Number(day.count) || 0,
@@ -577,8 +615,8 @@ const initGitHubHeatmap = async () => {
         );
 
         if (totalElement) {
-            totalElement.textContent = data.total?.lastYear ?? '0';
-            animateCount(totalElement, Number(data.total?.lastYear) || 0);
+            totalElement.textContent = formatNumber(contributionTotal);
+            animateCount(totalElement, contributionTotal);
         }
 
         const days = getLastYearDays();
@@ -616,10 +654,16 @@ const initLeetCodeHeatmap = async () => {
     if (!container) return;
 
     try {
-        const response = await fetch(`https://leetcode-api-faisalshohag.vercel.app/${PROFILE_CONFIG.leetcode}`);
-        if (!response.ok) throw new Error('LeetCode heatmap request failed');
-
-        const data = await response.json();
+        const [solvedResult, totalsResult, calendarResult] = await Promise.allSettled([
+            fetch(`https://alfa-leetcode-api.onrender.com/${PROFILE_CONFIG.leetcode}/solved`).then(response => response.ok ? response.json() : {}),
+            fetch('https://alfa-leetcode-api.onrender.com/userProfileCalendar?username=nirmalya2127').then(response => response.ok ? response.json() : {}),
+            fetch(`https://alfa-leetcode-api.onrender.com/${PROFILE_CONFIG.leetcode}/calendar`).then(response => response.ok ? response.json() : {})
+        ]);
+        const data = normalizeLeetCodeData(
+            solvedResult.status === 'fulfilled' ? solvedResult.value : {},
+            totalsResult.status === 'fulfilled' ? totalsResult.value : {},
+            calendarResult.status === 'fulfilled' ? calendarResult.value : {}
+        );
         const calendar = data.submissionCalendar || {};
         const calendarByDate = new Map(
             Object.entries(calendar).map(([timestamp, count]) => {
@@ -628,6 +672,7 @@ const initLeetCodeHeatmap = async () => {
             })
         );
         const maxCount = Math.max(0, ...calendarByDate.values());
+        if (!calendarByDate.size) throw new Error('LeetCode calendar unavailable');
 
         updateLeetCodeOverview(data);
 
