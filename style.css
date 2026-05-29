@@ -11385,6 +11385,472 @@ body {
     border-color: #333333 !important;
 }
 
+/* Product Builder + Metrics First redesign */
+main {
+    background: #000000 !important;
+}
+
+.top-nav {
+    border-color: #1f1f1f !important;
+}
+
+.top-nav .nav-links a[href="#projects"] {
+    color: #ededed !important;
+}
+
+.section-heading {
+    margin: 0 auto clamp(1.5rem, 4vw, 2.75rem);
+    max-width: 760px;
+    text-align: center;
+}
+
+.section-heading .section-title {
+    font-size: clamp(2.25rem, 6vw, 4.8rem) !important;
+    letter-spacing: -0.06em !important;
+    line-height: 0.95 !important;
+    margin: 0.35rem 0 0 !important;
+}
+
+.section-heading p {
+    color: #888888 !important;
+    font-size: clamp(1rem, 1.5vw, 1.12rem) !important;
+    line-height: 1.7;
+    margin: 1rem auto 0;
+    max-width: 620px;
+}
+
+.proof-section {
+    padding-top: clamp(2rem, 5vw, 4rem) !important;
+}
+
+.proof-grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.proof-card {
+    background: #111111;
+    border: 1px solid #333333;
+    border-radius: 16px;
+    display: grid;
+    gap: 0.7rem;
+    min-height: 220px;
+    padding: clamp(1.35rem, 3vw, 2rem);
+}
+
+.proof-card span {
+    color: #888888;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.proof-card strong {
+    color: #ffffff;
+    font-size: clamp(2.1rem, 4.7vw, 4.7rem);
+    font-weight: 850;
+    letter-spacing: -0.07em;
+    line-height: 0.9;
+}
+
+.proof-card p {
+    align-self: end;
+    color: #888888;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.proof-card-primary {
+    background: #ededed;
+    border-color: #ededed;
+}
+
+.proof-card-primary span,
+.proof-card-primary p {
+    color: #333333;
+}
+
+.proof-card-primary strong {
+    color: #000000;
+}
+
+#about .about-wrapper,
+#skills .clean-container,
+#heatmaps .activity-wrapper,
+#featured-projects .clean-container,
+#projects .projects-wrapper,
+#contact .contact-wrapper {
+    margin-left: auto !important;
+    margin-right: auto !important;
+    max-width: 1120px !important;
+}
+
+.about-story-panel,
+.about-focus-panel,
+.education-container,
+.skills-header-panel,
+.heatmap-card,
+.structure-card,
+.project-card,
+.contact-copy-panel,
+.contact-form-panel {
+    background: #111111 !important;
+    border: 1px solid #333333 !important;
+    border-radius: 16px !important;
+    box-shadow: none !important;
+}
+
+.skill-tag-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: center;
+}
+
+.skill-tag-grid span {
+    background: #111111;
+    border: 1px solid #333333;
+    border-radius: 999px;
+    color: #ededed;
+    display: inline-flex;
+    font-size: 0.96rem;
+    font-weight: 600;
+    line-height: 1;
+    padding: 0.85rem 1rem;
+}
+
+.skill-tag-grid span:hover {
+    border-color: #555555;
+}
+
+.structure-card {
+    display: grid;
+    gap: clamp(1.25rem, 4vw, 2.5rem);
+    grid-template-columns: minmax(0, 1.15fr) minmax(280px, 0.85fr);
+    padding: clamp(1rem, 2.8vw, 1.5rem);
+}
+
+.structure-visual {
+    background: #050505;
+    border: 1px solid #333333;
+    border-radius: 14px;
+    min-height: 430px;
+    overflow: hidden;
+}
+
+.mock-window-bar {
+    align-items: center;
+    border-bottom: 1px solid #242424;
+    display: flex;
+    gap: 0.45rem;
+    height: 42px;
+    padding: 0 1rem;
+}
+
+.mock-window-bar span {
+    background: #333333;
+    border-radius: 999px;
+    height: 9px;
+    width: 9px;
+}
+
+.mock-dashboard {
+    display: grid;
+    grid-template-columns: 64px minmax(0, 1fr);
+    min-height: 388px;
+}
+
+.mock-sidebar {
+    border-right: 1px solid #242424;
+    display: grid;
+    gap: 0.7rem;
+    justify-items: center;
+    padding-top: 1.2rem;
+}
+
+.mock-sidebar i {
+    background: #1a1a1a;
+    border: 1px solid #333333;
+    border-radius: 10px;
+    height: 34px;
+    width: 34px;
+}
+
+.mock-main {
+    display: grid;
+    gap: 1rem;
+    padding: clamp(1rem, 3vw, 1.5rem);
+}
+
+.mock-header {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+}
+
+.mock-header span,
+.mock-stat strong {
+    color: #ededed;
+    font-weight: 800;
+}
+
+.mock-header b {
+    background: rgba(0, 112, 243, 0.16);
+    border: 1px solid rgba(0, 112, 243, 0.45);
+    border-radius: 999px;
+    color: #66b2ff;
+    font-size: 0.72rem;
+    padding: 0.35rem 0.55rem;
+}
+
+.mock-grid {
+    display: grid;
+    gap: 0.8rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.mock-stat {
+    background: #111111;
+    border: 1px solid #333333;
+    border-radius: 12px;
+    display: grid;
+    gap: 0.35rem;
+    min-height: 118px;
+    padding: 1rem;
+}
+
+.mock-stat strong {
+    font-size: clamp(1.5rem, 3vw, 2.3rem);
+    letter-spacing: -0.05em;
+}
+
+.mock-stat span {
+    color: #888888;
+    font-size: 0.84rem;
+    line-height: 1.5;
+}
+
+.mock-stat.wide {
+    grid-column: 1 / -1;
+}
+
+.mock-chart {
+    align-items: end;
+    border: 1px solid #333333;
+    border-radius: 12px;
+    display: grid;
+    gap: 0.65rem;
+    grid-template-columns: repeat(5, 1fr);
+    min-height: 108px;
+    padding: 1rem;
+}
+
+.mock-chart i {
+    background: linear-gradient(180deg, #ededed, #555555);
+    border-radius: 999px 999px 4px 4px;
+    min-height: 34px;
+}
+
+.mock-chart i:nth-child(2) {
+    min-height: 58px;
+}
+
+.mock-chart i:nth-child(3) {
+    min-height: 82px;
+}
+
+.mock-chart i:nth-child(4) {
+    min-height: 48px;
+}
+
+.mock-chart i:nth-child(5) {
+    min-height: 96px;
+}
+
+.structure-copy {
+    align-content: center;
+    display: grid;
+    gap: 1.15rem;
+    padding: clamp(0.4rem, 2vw, 1.25rem);
+}
+
+.structure-copy h3 {
+    color: #ffffff;
+    font-size: clamp(1.9rem, 4vw, 3.3rem);
+    letter-spacing: -0.06em;
+    line-height: 0.98;
+    margin: 0;
+}
+
+.structure-copy p {
+    color: #888888;
+    font-size: 1rem;
+    line-height: 1.75;
+    margin: 0;
+}
+
+.structure-tags,
+.structure-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+}
+
+.structure-tags span {
+    background: #1a1a1a;
+    border: 1px solid #333333;
+    border-radius: 999px;
+    color: #ededed;
+    font-size: 0.82rem;
+    font-weight: 700;
+    padding: 0.55rem 0.7rem;
+}
+
+.structure-links a {
+    border-bottom: 1px solid #555555;
+    color: #ededed;
+    font-weight: 700;
+    padding-bottom: 0.18rem;
+}
+
+.structure-links a:first-child {
+    color: #66b2ff;
+    border-color: #0070f3;
+}
+
+#heatmaps .section-title {
+    font-size: clamp(2.25rem, 6vw, 4.8rem) !important;
+    letter-spacing: -0.06em !important;
+    text-align: center;
+}
+
+.heatmap-card {
+    min-width: 0;
+}
+
+.heatmap-day[data-level="0"],
+.heatmap-legend i[data-level="0"] {
+    background: #161616 !important;
+}
+
+.heatmap-day[data-level="1"],
+.heatmap-legend i[data-level="1"],
+.leetcode-heatmap-card .heatmap-day[data-level="1"],
+.leetcode-legend i[data-level="1"] {
+    background: #333333 !important;
+}
+
+.heatmap-day[data-level="2"],
+.heatmap-legend i[data-level="2"],
+.leetcode-heatmap-card .heatmap-day[data-level="2"],
+.leetcode-legend i[data-level="2"] {
+    background: #555555 !important;
+}
+
+.heatmap-day[data-level="3"],
+.heatmap-legend i[data-level="3"],
+.leetcode-heatmap-card .heatmap-day[data-level="3"],
+.leetcode-legend i[data-level="3"] {
+    background: #999999 !important;
+}
+
+.heatmap-day[data-level="4"],
+.heatmap-legend i[data-level="4"],
+.leetcode-heatmap-card .heatmap-day[data-level="4"],
+.leetcode-legend i[data-level="4"] {
+    background: #ededed !important;
+}
+
+.leetcode-progress-ring {
+    min-height: 190px !important;
+}
+
+.ring-center strong {
+    font-size: clamp(3.2rem, 7vw, 5.8rem) !important;
+    letter-spacing: -0.08em;
+}
+
+.assistant-launcher {
+    background: #111111 !important;
+    border-color: #333333 !important;
+    color: #ededed !important;
+}
+
+@media (max-width: 960px) {
+    .proof-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .structure-card {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 640px) {
+    .proof-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .proof-card {
+        min-height: 170px;
+    }
+
+    .mock-dashboard {
+        grid-template-columns: 1fr;
+    }
+
+    .mock-sidebar {
+        display: none;
+    }
+
+    .mock-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .structure-visual {
+        min-height: 0;
+    }
+}
+
+/* EOF monochrome heatmap guarantee */
+.heatmap-day[data-level="0"],
+.heatmap-legend i[data-level="0"],
+.leetcode-heatmap-card .heatmap-day[data-level="0"],
+.leetcode-legend i[data-level="0"] {
+    background: #161616 !important;
+}
+
+.heatmap-day[data-level="1"],
+.heatmap-legend i[data-level="1"],
+.leetcode-heatmap-card .heatmap-day[data-level="1"],
+.leetcode-legend i[data-level="1"] {
+    background: #333333 !important;
+}
+
+.heatmap-day[data-level="2"],
+.heatmap-legend i[data-level="2"],
+.leetcode-heatmap-card .heatmap-day[data-level="2"],
+.leetcode-legend i[data-level="2"] {
+    background: #555555 !important;
+}
+
+.heatmap-day[data-level="3"],
+.heatmap-legend i[data-level="3"],
+.leetcode-heatmap-card .heatmap-day[data-level="3"],
+.leetcode-legend i[data-level="3"] {
+    background: #999999 !important;
+}
+
+.heatmap-day[data-level="4"],
+.heatmap-legend i[data-level="4"],
+.leetcode-heatmap-card .heatmap-day[data-level="4"],
+.leetcode-legend i[data-level="4"] {
+    background: #ededed !important;
+}
+
 /* Strict Vercel-style black mode: top navigation + hero foundation */
 :root {
     --bg: #000000;

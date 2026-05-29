@@ -1,4 +1,4 @@
-// Theme Handling Removed for Permanent Light Mode
+// Strict dark portfolio interactions
 
 const PROFILE_CONFIG = {
     github: "nirmalya-ghosh",
@@ -24,16 +24,7 @@ const animateCount = (element, target, options = {}) => {
     if (!element || !Number.isFinite(target)) return;
     const suffix = options.suffix || '';
     const decimals = options.decimals || 0;
-    const counter = { value: 0 };
-
-    gsap.to(counter, {
-        value: target,
-        duration: options.duration || 1.3,
-        ease: 'power2.out',
-        onUpdate: () => {
-            element.textContent = `${counter.value.toFixed(decimals)}${suffix}`;
-        }
-    });
+    element.textContent = `${target.toFixed(decimals)}${suffix}`;
 };
 
 const initTilt = () => {
@@ -577,6 +568,7 @@ const initGitHubHeatmap = async () => {
         const insights = getActivityInsights(days, day => getGitHubDay(day).count);
 
         updateText('github-active-days', insights.activeDays);
+        updateText('proof-github-active', insights.activeDays);
         updateText('github-average', insights.activeDays ? (sumCounts(days, day => getGitHubDay(day).count) / insights.activeDays).toFixed(1) : '0');
         updateText('github-longest-streak', insights.longestStreak);
         updateText('github-best-day', insights.bestDate ? `${insights.bestCount} on ${formatShortDate(insights.bestDate)}` : '0');
@@ -626,6 +618,7 @@ const initLeetCodeHeatmap = async () => {
         const insights = getActivityInsights(days, day => getLeetCodeDay(day).count);
 
         updateText('leetcode-active-days', insights.activeDays);
+        updateText('proof-leetcode-active', insights.activeDays);
         if (focusElement) {
             focusElement.textContent = `Longest streak: ${insights.longestStreak} days. Hover a square for daily LeetCode submissions.`;
         }
@@ -1976,14 +1969,10 @@ const initProfileAssistant = () => {
 // Initialization
 document.addEventListener('DOMContentLoaded', () => {
     initMobileMenu();
-    initMagneticButtons();
     initCodingHeatmaps();
     initSupabaseAnalytics();
     if (document.getElementById('contactForm')) initForm();
-    initAdvancedAnimations();
     initActiveNav();
-    initDigitalClock();
-    initProfileIconBounce();
     initScrollProgress();
     initProfileAssistant();
 });
