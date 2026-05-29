@@ -12,7 +12,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="home.css?v=20260529-mockup-match">
+    <link rel="stylesheet" href="home.css?v=20260529-real-heatmaps">
 </head>
 
 <body>
@@ -210,13 +210,18 @@
 
         <!-- Heatmaps Section -->
         <section id="heatmaps">
-            <h2 class="section-title"><span style="margin-right: 0.5em;">Coding</span>Heatmaps</h2>
+            <div class="section-heading">
+                <span class="section-kicker">Verified activity</span>
+                <h2 class="section-title"><span style="margin-right: 0.5em;">Coding</span> Activity</h2>
+                <p>Live contribution calendars for GitHub and LeetCode, reduced to recruiter-friendly signal.</p>
+            </div>
             <div class="activity-wrapper">
                 <article class="heatmap-card github-heatmap-card" data-tilt>
                     <div class="heatmap-header">
                         <div>
                             <span class="heatmap-kicker">GitHub</span>
-                            <h3>Contribution Heatmap</h3>
+                            <h3>Contribution Calendar</h3>
+                            <p class="heatmap-source">Live public data from @nirmalya-ghosh.</p>
                         </div>
                         <a href="https://github.com/nirmalya-ghosh" target="_blank" class="heatmap-link"
                             aria-label="Open GitHub profile">
@@ -236,8 +241,17 @@
                         <span><strong id="github-best-day">--</strong> peak day</span>
                         <span class="wide"><strong id="github-last-30">--</strong> contributions in the last 30 days</span>
                     </div>
-                    <div id="github-months" class="heatmap-months" aria-hidden="true"></div>
-                    <div id="github-heatmap" class="contribution-heatmap is-loading" aria-label="GitHub contribution calendar">
+                    <div class="heatmap-board" data-heatmap-board>
+                        <div id="github-months" class="heatmap-months" aria-hidden="true"></div>
+                        <div class="heatmap-grid-row">
+                            <div class="heatmap-weekdays" aria-hidden="true">
+                                <span>Mon</span>
+                                <span>Wed</span>
+                                <span>Fri</span>
+                            </div>
+                            <div id="github-heatmap" class="contribution-heatmap is-loading" aria-label="GitHub contribution calendar">
+                            </div>
+                        </div>
                     </div>
                     <p id="github-focus" class="heatmap-focus">Hover a square to inspect a GitHub heatmap day.</p>
                     <div class="heatmap-legend" aria-hidden="true">
@@ -255,7 +269,8 @@
                     <div class="heatmap-header">
                         <div>
                             <span class="heatmap-kicker">LeetCode</span>
-                            <h3>Submission Heatmap</h3>
+                            <h3>Submission Calendar</h3>
+                            <p class="heatmap-source">Live submission data from nirmalya2127.</p>
                         </div>
                         <a href="https://leetcode.com/u/nirmalya2127/" target="_blank" class="heatmap-link"
                             aria-label="Open LeetCode profile">
@@ -282,8 +297,17 @@
                             <span><strong id="leetcode-difficulty-mix">--</strong> mix</span>
                         </div>
                     </div>
-                    <div id="leetcode-months" class="heatmap-months" aria-hidden="true"></div>
-                    <div id="leetcode-heatmap" class="contribution-heatmap is-loading" aria-label="LeetCode submission calendar">
+                    <div class="heatmap-board" data-heatmap-board>
+                        <div id="leetcode-months" class="heatmap-months" aria-hidden="true"></div>
+                        <div class="heatmap-grid-row">
+                            <div class="heatmap-weekdays" aria-hidden="true">
+                                <span>Mon</span>
+                                <span>Wed</span>
+                                <span>Fri</span>
+                            </div>
+                            <div id="leetcode-heatmap" class="contribution-heatmap is-loading" aria-label="LeetCode submission calendar">
+                            </div>
+                        </div>
                     </div>
                     <p id="leetcode-focus" class="heatmap-focus">Hover a square to inspect a LeetCode submission day.</p>
                     <div class="heatmap-legend leetcode-legend" aria-hidden="true">
@@ -521,7 +545,7 @@
 
     <!-- Scripts -->
     <!-- Scripts -->
-    <script src="script.js?v=20260529-product-metrics-theme" defer></script>
+    <script src="script.js?v=20260529-real-heatmaps" defer></script>
 
 </body>
 

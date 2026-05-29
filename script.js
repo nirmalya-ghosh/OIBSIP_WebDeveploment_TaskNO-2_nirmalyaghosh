@@ -236,7 +236,12 @@ const initTypewriters = () => {
     });
 };
 
-const getDateKey = (date) => date.toISOString().slice(0, 10);
+const getDateKey = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+};
 
 const getLastYearDays = () => {
     const today = new Date();
@@ -265,6 +270,13 @@ const getLevelFromCount = (count, maxCount) => {
 const formatShortDate = (date) => date.toLocaleDateString('en-US', {
     month: 'short',
     day: 'numeric'
+});
+
+const formatFullDate = (date) => date.toLocaleDateString('en-US', {
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric'
 });
 
 const renderHeatmapMonths = (container, days) => {
@@ -482,10 +494,12 @@ const renderHeatmap = (container, days, getDayData, options = {}) => {
     if (!container) return;
 
     container.classList.remove('is-loading', 'is-error');
+    delete container.dataset.error;
     container.innerHTML = '';
     const leadingBlanks = days[0].getDay();
     const totalColumns = Math.ceil((days.length + leadingBlanks) / 7);
     container.style.gridTemplateColumns = `repeat(${totalColumns}, var(--heatmap-cell))`;
+    const todayKey = getDateKey(new Date());
 
     renderHeatmapMonths(options.monthsContainer, days);
     if (options.monthsContainer && !container.dataset.monthSyncReady) {
@@ -507,21 +521,26 @@ const renderHeatmap = (container, days, getDayData, options = {}) => {
 
     days.forEach((day, index) => {
         const { count, level } = getDayData(day);
+        const dateKey = getDateKey(day);
         const square = document.createElement('span');
         square.className = 'heatmap-day';
         square.dataset.level = level;
+        square.dataset.count = count;
+        square.dataset.date = dateKey;
         square.style.setProperty('--heatmap-index', index);
+        if (count > 0) square.classList.add('is-active');
+        if (dateKey === todayKey) square.classList.add('is-today');
         square.tabIndex = 0;
-        square.title = `${count} ${options.unit || 'activities'} on ${day.toLocaleDateString()}`;
+        square.title = `${formatFullDate(day)}: ${count} ${options.unit || 'activities'}`;
         square.setAttribute('aria-label', square.title);
         square.addEventListener('mouseenter', () => {
             if (options.focusElement) {
-                options.focusElement.textContent = `${formatShortDate(day)}: ${count} ${options.unit || 'activities'}`;
+                options.focusElement.textContent = `${formatFullDate(day)}: ${count} ${options.unit || 'activities'}`;
             }
         });
         square.addEventListener('focus', () => {
             if (options.focusElement) {
-                options.focusElement.textContent = `${formatShortDate(day)}: ${count} ${options.unit || 'activities'}`;
+                options.focusElement.textContent = `${formatFullDate(day)}: ${count} ${options.unit || 'activities'}`;
             }
         });
         fragment.appendChild(square);
@@ -530,11 +549,12 @@ const renderHeatmap = (container, days, getDayData, options = {}) => {
     container.appendChild(fragment);
 };
 
-const setHeatmapError = (container) => {
+const setHeatmapError = (container, message = 'Activity data is temporarily unavailable.') => {
     if (!container) return;
     container.innerHTML = '';
     container.classList.remove('is-loading');
     container.classList.add('is-error');
+    container.dataset.error = message;
 };
 
 const initGitHubHeatmap = async () => {
@@ -575,7 +595,7 @@ const initGitHubHeatmap = async () => {
         updateText('github-last-30', formatNumber(sumCounts(days.slice(-30), day => getGitHubDay(day).count)));
         animateCount(document.getElementById('github-active-days'), insights.activeDays);
         if (focusElement) {
-            focusElement.textContent = `Longest streak: ${insights.longestStreak} days. Hover a square for daily GitHub heatmap data.`;
+            focusElement.textContent = `${formatNumber(sumCounts(days, day => getGitHubDay(day).count))} contributions across ${insights.activeDays} active days. Hover a square for the exact date.`;
         }
 
         renderHeatmap(container, days, getGitHubDay, {
@@ -584,7 +604,8 @@ const initGitHubHeatmap = async () => {
             unit: 'contributions'
         });
     } catch (error) {
-        setHeatmapError(container);
+        if (focusElement) focusElement.textContent = 'GitHub data could not be loaded right now.';
+        setHeatmapError(container, 'Could not load GitHub contribution data.');
     }
 };
 
@@ -620,7 +641,7 @@ const initLeetCodeHeatmap = async () => {
         updateText('leetcode-active-days', insights.activeDays);
         updateText('proof-leetcode-active', insights.activeDays);
         if (focusElement) {
-            focusElement.textContent = `Longest streak: ${insights.longestStreak} days. Hover a square for daily LeetCode submissions.`;
+            focusElement.textContent = `${formatNumber(sumCounts(days, day => getLeetCodeDay(day).count))} submissions across ${insights.activeDays} active days. Hover a square for the exact date.`;
         }
 
         renderHeatmap(container, days, getLeetCodeDay, {
@@ -629,7 +650,9 @@ const initLeetCodeHeatmap = async () => {
             unit: 'submissions'
         });
     } catch (error) {
-        setHeatmapError(container);
+        if (focusElement) focusElement.textContent = 'LeetCode submission data could not be loaded right now.';
+        updateLeetCodeOverview({});
+        setHeatmapError(container, 'Could not load LeetCode submission data.');
     }
 };
 
